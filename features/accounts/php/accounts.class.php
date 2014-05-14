@@ -267,7 +267,7 @@ class Accounts {
      * @param string $activation_code
      * @return array
      */
-    protected function activate_user($email, $activation_code) {
+    protected function activate_a_user($email, $activation_code) {
         // Define the query data defaults
         $query_data = array("table_name" => $this->tData->prefix."_users", "data" => array(), "clause" => array());
 

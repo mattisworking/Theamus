@@ -133,6 +133,6 @@ class AccountsApi extends Accounts {
         }
 
         // Activate the user
-        return parent::activate_user($email, $code);
+        return parent::activate_a_user($email, $code);
     }
 }
