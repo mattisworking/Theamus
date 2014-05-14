@@ -66,12 +66,12 @@ if ($post['path-type'] != "") {
     // Check for a path
     if ($path != "") {
         // Clean the path variable
-        if($type == "null"){
-			  $path = "javascript:void();";
-		  }else{
-			  $path = trim(urldecode($path), "/");
-		  }
-		  if ($type != "js") {
+        if($type == "null") {
+            $path = "javascript:void(0);";
+        } else {
+            $path = trim(urldecode($path), "/");
+        }
+        if ($type != "js" && $type != "null") {
             $path = $path."/";
         }
     } else {

@@ -66,25 +66,14 @@ switch ($post['type']) {
             <div class="admin-formcolumn" style="width: 200px;">
                 <input type="hidden" name="path-type" id="path-type" value="path-<?=$post['type']?>" />
                 <ul class="admin-columnlist">
-                    <li><a href="" name="path" id="path-null">Title Box</a></li>
                     <li><a href="#" name="path" id="path-url">Website URL</a></li>
                     <li><a href="#" name="path" id="path-page">Theamus Page</a></li>
                     <li><a href="#" name="path" id="path-feature">Theamus Feature</a></li>
                     <li><a href="#" name="path" id="path-js">Javascript</a></li>
+                    <li><a href="" name="path" id="path-null">Text Only</a></li>
                 </ul>
             </div>
             <div class="admin-formcolumn">
-                <div id="path-null-wrapper" style="<?=$show['null']?>">
-                    <div class="admin-formrow">
-                        <div class="admin-forminput">
-                            <input type="hidden" name="null" value='null' />
-                        </div>
-                        <div class="admin-forminfo">
-                            A Title Box will not take any type of action when it is clicked
-                        </div>
-                    </div>
-                </div>
-
                 <div id="path-url-wrapper" style="<?=$show['url']?>">
                     <div class="admin-formrow">
                         <div class="admin-formlabel">URL Path</div>
@@ -160,6 +149,17 @@ switch ($post['type']) {
                             Whatever you decide to put here will be run as javascript
                             when the link is clicked on.<br />
                             Imagine the link being: 'javascript:&lt;input&gt;'
+                        </div>
+                    </div>
+                </div>
+
+                <div id="path-null-wrapper" style="<?=$show['null']?>">
+                    <div class="admin-formrow">
+                        <div class="admin-forminput">
+                            <input type="hidden" name="null" value='null' />
+                        </div>
+                        <div class="admin-forminfo afi-nopad">
+                            Creating a link that is 'Text Only' will do exactly what you think it will.
                         </div>
                     </div>
                 </div>
