@@ -44,6 +44,9 @@ if ($post['path-type'] != "") {
 
     // Define the path based on the type selected
     switch ($type) {
+        case "null":
+            $path = $post['null'];
+            break;
         case "url":
             $path = $post['url'];
             break;
@@ -63,8 +66,12 @@ if ($post['path-type'] != "") {
     // Check for a path
     if ($path != "") {
         // Clean the path variable
-        $path = trim(urldecode($path), "/");
-        if ($type != "js") {
+        if($type == "null"){
+			  $path = "javascript:void();";
+		  }else{
+			  $path = trim(urldecode($path), "/");
+		  }
+		  if ($type != "js") {
             $path = $path."/";
         }
     } else {

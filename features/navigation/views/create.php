@@ -12,7 +12,7 @@
     <input type="hidden" name="page-type" value="create" />
     <?php
     $cols = array("id", "alias", "text", "path", "weight", "groups", "type", "position", "child_of");
-    $vals = array("", "", "", "", "1", "", "url", "main", "0");
+    $vals = array("", "", "", "", "1", "", "null", "main", "0");
     for ($i=0; $i<count($cols); $i++):
     ?>
     <input type="hidden" name="<?=$cols[$i]?>" value="<?=$vals[$i]?>" />

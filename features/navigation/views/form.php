@@ -4,7 +4,7 @@
 $post = filter_input_array(INPUT_POST);
 
 // Define the types of paths we have to offer
-$paths = array("url", "page", "feature", "js");
+$paths = array("null","url", "page", "feature", "js");
 // Loop through the paths and set their appearance based on the type we need
 foreach ($paths as $path) {
     if ($post['type'] == $path) {
@@ -23,6 +23,10 @@ $post['position'] = urldecode($post['position']);
 
 // Go through the types of links we could have and assign their values appropriately
 switch ($post['type']) {
+    case "null":
+        $null = $post['path'];
+        break;
+
     case "url":
         $url = $post['path'];
         break;
@@ -62,13 +66,25 @@ switch ($post['type']) {
             <div class="admin-formcolumn" style="width: 200px;">
                 <input type="hidden" name="path-type" id="path-type" value="path-<?=$post['type']?>" />
                 <ul class="admin-columnlist">
-                    <li><a href="" name="path" id="path-url">Website URL</a></li>
+                    <li><a href="" name="path" id="path-null">Title Box</a></li>
+                    <li><a href="#" name="path" id="path-url">Website URL</a></li>
                     <li><a href="#" name="path" id="path-page">Theamus Page</a></li>
                     <li><a href="#" name="path" id="path-feature">Theamus Feature</a></li>
                     <li><a href="#" name="path" id="path-js">Javascript</a></li>
                 </ul>
             </div>
             <div class="admin-formcolumn">
+                <div id="path-null-wrapper" style="<?=$show['null']?>">
+                    <div class="admin-formrow">
+                        <div class="admin-forminput">
+                            <input type="hidden" name="null" value='null' />
+                        </div>
+                        <div class="admin-forminfo">
+                            A Title Box will not take any type of action when it is clicked
+                        </div>
+                    </div>
+                </div>
+
                 <div id="path-url-wrapper" style="<?=$show['url']?>">
                     <div class="admin-formrow">
                         <div class="admin-formlabel">URL Path</div>
