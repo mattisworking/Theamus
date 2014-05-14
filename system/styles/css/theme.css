@@ -1054,7 +1054,7 @@ a:hover {
 }
 .nav-inline li {
 	float: left;
-	padding: 15px 15px;
+	padding: 13px 0px 13px 0px;
 	position: relative;
 	transition: background-color ease-in-out .15s;
 }
@@ -1076,6 +1076,8 @@ a:hover {
 }
 .nav-inline li a {
 	color: #333;
+	display: block;
+	padding: 2px 15px 2px 15px;
 	text-decoration: none;
 }
 .nav-inline li:hover > ul {
@@ -1088,7 +1090,7 @@ a:hover {
 	display: none;
 	list-style: none;
 	left: 0;
-	margin: 10px 0 0;
+	margin: 10px 0 0 ;
 	padding: 0;
 	position: absolute;
 }
@@ -1099,7 +1101,7 @@ a:hover {
 	display: block;
 	float: none;
 	margin: 0;
-	padding: 10px 25px 10px 15px;
+	padding: 10px 0px 10px 0px;
 	white-space: nowrap;
 }
 .nav-inline li ul li:hover > ul {
