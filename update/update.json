@@ -6,7 +6,8 @@
         "bugs": [
             "Fixed the issue in the HTACCESS file where periods were causing internal server errors - https://github.com/Eyraahh/Theamus/issues/24",
             "Created a way to be able to connect to custom databases using the Theamus Data class - https://github.com/Eyraahh/Theamus/issues/23",
-            "Create text-only links for nagivation items - https://github.com/Eyraahh/Theamus/issues/21"
+            "Create text-only links for nagivation items - https://github.com/Eyraahh/Theamus/issues/21",
+            "Took prettyprint off of auto-initialize."
         ]
     },
     "authors": [

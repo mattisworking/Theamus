@@ -1066,8 +1066,7 @@ class tCall {
             "<script src='system/js/theme.js'></script>",
             "<script src='system/external/prettify/prettify.js'></script>",
             "<script src='system/external/rangy/rangy.js'></script>",
-            "<script>theamus.info = ".$this->define_javascript_info()."</script>",
-            "<script type='text/javascript'>$(function() { prettyPrint(); });</script>"
+            "<script>theamus.info = ".$this->define_javascript_info()."</script>"
         );
         return implode("\n", $ret);
     }
