@@ -6,8 +6,7 @@
  * Version 1.2
  * @package Theamus
  * @link http://www.theamus.com/
- * @author Matthew Tempinski (Eyraahh) <matt.tempinski@theamus.com>
- * @copyright 2014 Matthew Tempinski
+ * @author Eyrah Temet (Eyraahh) <info@theamus.com>
  */
 
 class tData {
@@ -65,11 +64,11 @@ class tData {
      * @var boolean $show_query_errors
      */
     public $show_query_errors = false;
-    
-    
+
+
     /**
      * Allows a developer to connect to a custom database
-     * 
+     *
      * @var array $connection_parameters
      */
     public $connection_parameters = array();
@@ -137,7 +136,7 @@ class tData {
         if (!isset($this->config['Database'])) {
             return false;
         }
-        
+
         // Check for a custom connection or not
         if (!empty($this->connection_parameters)) {
             if (!isset($this->connection_parameters['Host Address'])) {
@@ -152,12 +151,12 @@ class tData {
             if (!isset($this->connection_parameters['Name'])) {
                 return false;
             }
-            
+
             $connection_parameters = $this->connection_parameters;
         } else {
             $connection_parameters = $this->config['Database'];
         }
-        
+
         if ($pdo == false) {
             $connection = @new mysqli($connection_parameters['Host Address'],
                                       $connection_parameters['Username'],

@@ -6,8 +6,7 @@
  * Version 1.2
  * @package Theamus
  * @link http://www.theamus.com/
- * @author Matthew Tempinski (Eyraahh) <matt.tempinski@theamus.com>
- * @copyright 2014 Matthew Tempinski
+ * @author Eyrah Temet (Eyraahh) <info@theamus.com>
  */
 
 class tUser {
@@ -402,7 +401,7 @@ class tUser {
                 )
             )
         );
-        
+
         // Query the database updating the user session information
         if ($this->tData->update_table_row($this->tData->prefix."_user-sessions", $query_data['data'], $query_data['clause']) != false) {
             $this->set_cookies($user_id, $session_key, $expire);

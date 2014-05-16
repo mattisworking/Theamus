@@ -6,8 +6,7 @@
  * Version 1.2
  * @package Theamus
  * @link http://www.theamus.com/
- * @author Matthew Tempinski (Eyraahh) <matt.tempinski@theamus.com>
- * @copyright 2014 Matthew Tempinski
+ * @author Eyrah Temet (Eyraahh) <info@theamus.com>
  */
 
 class tPages {
