@@ -635,20 +635,20 @@ input[disabled], button[disabled], select[disabled], textarea[disabled] {
 	white-space: nowrap;
 }
 .input-group-btn {
-    background-color: #eee;
-    border: 1px solid #ccc;
     display: table-cell;
     position: relative;
     vertical-align: middle;
     white-space: nowrap;
     width: 1%;
 }
-.input-group-btn:hover {
-    background-color: #ddd;
-}
 .input-group-btn .btn {
-    background: transparent;
-    border: 0;
+    border: 1px solid transparent;
+    border-radius: 0;
+    padding: 8px;
+}
+.input-group-btn .btn:last-child {
+    border-radius: 0 3px 3px 0;
+    margin-left: -4px;
 }
 .input-group-form-control {
 	min-width: 1px;
