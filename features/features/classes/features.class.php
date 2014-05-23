@@ -288,7 +288,7 @@ class Features {
         $remove_tables = array();
         while ($table = $query->fetch_array()) {
             if (strpos($table[0], $prefix) !== false) {
-                $remove_tables[] = $table[0];
+                $remove_tables[] = "`".$table[0]."`";
             }
         }
 
