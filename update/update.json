@@ -8,7 +8,9 @@
             "Created a way to be able to connect to custom databases using the Theamus Data class - https://github.com/Eyraahh/Theamus/issues/23",
             "Create text-only links for nagivation items - https://github.com/Eyraahh/Theamus/issues/21",
             "Took prettyprint off of auto-initialize.",
-            "Added a license"
+            "Added a license",
+            "Fixed an issue where feature tables weren't being dropped when removing a feature",
+            "Added a few meta tags to the 'empty' layout for the default theme"
         ]
     },
     "authors": [
