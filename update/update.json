@@ -10,7 +10,8 @@
             "Took prettyprint off of auto-initialize.",
             "Added a license",
             "Fixed an issue where feature tables weren't being dropped when removing a feature",
-            "Added a few meta tags to the 'empty' layout for the default theme"
+            "Added a few meta tags to the 'empty' layout for the default theme",
+            "Fixed an issue where the editor pop up windows weren't loading any content - https://github.com/Eyraahh/Theamus/issues/32"
         ]
     },
     "authors": [

@@ -1353,8 +1353,13 @@ class tCall {
         $tData->prefix  = $this->tData->prefix;
         $tData->db      = $this->tData->db;
 
+        $pre_slash = "";
+        if (substr(ROOT, 0, 1) == "/") {
+            $pre_slash = "/";
+        }
+
         $desired = filter_input(INPUT_GET, "params");
-        $path = path(trim(ROOT."/system/$desired", "/").".php");
+        $path = path($pre_slash.trim(ROOT."/system/$desired", "/").".php");
 
         if (file_exists($path)) include $path;
         return true;
