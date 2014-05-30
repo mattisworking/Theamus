@@ -4,7 +4,14 @@ try {
     $info = $Features->prelim_install();
 } catch (Exception $ex) {
     $Features->clean_temp_folder();
-    die(notify("admin", "failure", $ex->getMessage()));
+    
+    notify("admin", "failure", $ex->getMessage());
+
+    if ($this->developer_mode() == true) {
+        Pre($Features->developer_message);
+    }
+
+    die();
 }
 
 ?>

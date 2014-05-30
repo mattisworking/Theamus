@@ -1,6 +1,7 @@
 <?php
 
 class Features {
+    public $developer_message = "";
     public $install_sql;
     public $uninstall_sql;
     public function __construct() {
@@ -40,8 +41,12 @@ class Features {
         $path = ROOT."/features/features/temp/";
 
         // Extract the uploaded file
-        if ($this->tFiles->extract_zip(path($path.$f), path(trim($path.$f, ".zip")))) return true;
-        else throw new Exception("There was an issue extracting the theme");
+        if ($this->tFiles->extract_zip(path($path.$f), path(trim($path.$f, ".zip")))) {
+            return true;
+        } else {
+            $this->developer_message = "The uploaded file failed to extract because of a corrupted file or an interruption in the script's run.";
+            throw new Exception("There was an issue extracting the theme");
+        }
     }
 
     private function extract_feature($f, $c) {
@@ -50,8 +55,12 @@ class Features {
         $path = path(ROOT."/features/".$c['alias']);
 
         // Extract the uploaded file
-        if ($this->tFiles->extract_zip($temp_path, $path)) return true;
-        else throw new Exception("There was an issue extracting the theme");
+        if ($this->tFiles->extract_zip($temp_path, $path)) {
+            return true;
+        } else {
+            $this->developer_message = "The uploaded file failed to extract because of a corrupted file or an interruption in the script's run.";
+            throw new Exception("There was an issue extracting the theme");
+        }
     }
 
 
@@ -65,7 +74,10 @@ class Features {
         $temp[] = is_dir(path($path."/views/")) ? true : false;
 
         // React to check, return
-        if (in_array(false, $temp)) throw new Exception("One or more requirements are missing in the feature file/folder structure.");
+        if (in_array(false, $temp)) {
+            $this->developer_message = "Make sure the [feature root]/config.php, [feature root]/files.info.php files exist, along with the [feature root]/views/ directory.  For more information on creating features, <a target='_blank' href='http://theamus.com/wiki/read/creating-features'>check out the documentation</a>.";
+            throw new Exception("One or more requirements are missing in the feature file/folder structure.");
+        }
     }
 
     private function check_config($f) {
@@ -78,7 +90,10 @@ class Features {
         // Include the config file
         if (file_exists(path($path."/config.php"))) {
             include path($path."/config.php");
-        } else throw new Exception("There is no feature configuration file. Aborting the upload.");
+        } else {
+            $this->developer_message = "Make sure the [feature root]/config.php file exists.  For more information on the feature configuration file, <a target='_blank' href='http://theamus.com/wiki/read/feature-configuration-file'>check out the documentation</a>.";
+            throw new Exception("There is no feature configuration file. Aborting the upload.");
+        }
 
         // Check the required variables
         foreach ($required as $item) {
@@ -87,7 +102,10 @@ class Features {
         }
 
         // Check for all valid requirements
-        if (in_array(false, $temp)) throw new Exception("One or more requirements are missing in the feature configuration file.");
+        if (in_array(false, $temp)) {
+            $this->developer_message = "A required variable for the conifguration file is not defined like it should be.  For more information on the feature configuration file, <a target='_blank' href='http://theamus.com/wiki/read/feature-configuration-file'>check out the documentation</a>.";
+            throw new Exception("One or more requirements are missing in the feature configuration file.");
+        }
 
         // Define the feature folder alias for the feature
         $this->feature_folder_alias = $feature['alias'];
@@ -98,7 +116,10 @@ class Features {
 
     private function upload_feature($upload = false) {
         // Check and define the file, the path, and the temp name
-        if (count($_FILES) == 0 && $upload == false) throw new Exception("Please select a file to upload.");
+        if (count($_FILES) == 0 && $upload == false) {
+            $this->developer_message = "Cannot upload nothing.";
+            throw new Exception("Please select a file to upload.");
+        }
         $file = $this->get_upload_file();
         $path = ROOT."/features/features/temp/";
         $temp_name = md5(time()).".zip";
@@ -106,7 +127,10 @@ class Features {
         // Upload the file
         if (move_uploaded_file($file['tmp_name'], path($path.$temp_name))) {
             return $temp_name;
-        } elseif ($file != false) throw new Exception("The file failed to upload.");
+        } elseif ($file != false) {
+            $this->developer_message = "The reason for this is most likely because the upload folder can't be written to.";
+            throw new Exception("The file failed to upload.");
+        }
     }
 
     private function gather_scripts($f, $config, $for = "install") {
@@ -203,7 +227,10 @@ class Features {
 
     private function get_filename() {
         $filename = urldecode(filter_input(INPUT_POST, "filename"));
-        if ($filename == "") throw new Exception("There was an error finding the filename.");
+        if ($filename == "") {
+            $this->developer_message = "The filename from the preliminary upload information wasn't defined properly and sent with the installation request.  Try re-installing the feature.";
+            throw new Exception("There was an error finding the filename.");
+        }
         return $filename;
     }
 
@@ -214,7 +241,10 @@ class Features {
             $query = $this->tData->multi_query(implode("", $this->install_sql));
 
             // Check the query and flush the memory from the multi_query
-            if (!$query) throw new Exception("There was an error running the database queries for this feature.");
+            if (!$query) {
+                $this->developer_message = "Database error information: ".print_r($this->tData->error, true);
+                throw new Exception("There was an error running the database queries for this feature.");
+            }
             while ($this->tData->next_result()) continue;
         }
     }
@@ -226,14 +256,20 @@ class Features {
             $query = $this->tData->multi_query(implode("", $this->uninstall_sql));
 
             // Check the query and flush the memory from the multi_query
-            if (!$query) throw new Exception("There was an error running the database queries for this feature.");
+            if (!$query) {
+                $this->developer_message = "Database error information: ".print_r($this->tData->error, true);
+                throw new Exception("There was an error running the database queries for this feature.");
+            }
             while ($this->tData->next_result()) continue;
         }
     }
 
     private function install_database_feature($config = array()) {
         // Check the config argument
-        if (empty($config) || !is_array($config)) throw new Exception("Cannot install the feature in the database with this information.");
+        if (empty($config) || !is_array($config)) {
+            $this->developer_message = "The data from the configuration file was not attached to the proper variable.  Try re-installing the feature.";
+            throw new Exception("Cannot install the feature in the database with this information.");
+        }
 
         // Define the database friendly information
         $alias = $this->tData->real_escape_string($config['alias']);
@@ -247,7 +283,10 @@ class Features {
                 "('$alias', '$name', '$groups', 0, 1, '$prefix')");
 
         // Check the query
-        if (!$query) throw new Exception("There was an error installing this feature in the database.");
+        if (!$query) {
+            $this->developer_message = "Database error information: ".print_r($this->tData->error, true);
+            throw new Exception("There was an error installing this feature in the database.");
+        }
     }
 
     private function define_post_information($required = array()) {
@@ -269,7 +308,10 @@ class Features {
         $query = $this->tData->query("SELECT * FROM `".$this->tDataClass->prefix."_features` WHERE `id`='$id'");
 
         // Check the query and return
-        if (!$query) throw new Exception("There was an error finding the feature information in the database.");
+        if (!$query) {
+            $this->developer_message = "Database error information: ".print_r($this->tData->error, true);
+            throw new Exception("There was an error finding the feature information in the database.");
+        }
         return $query->fetch_assoc();
     }
 
@@ -281,7 +323,10 @@ class Features {
         $query = $this->tData->query("SHOW TABLES");
 
         // Check the query
-        if (!$query) throw new Exception("There was an error finding all of the related database tables.");
+        if (!$query) {
+            $this->developer_message = "Database error information: ".print_r($this->tData->error, true);
+            throw new Exception("There was an error finding all of the related database tables.");
+        }
         if ($query->num_rows == 0) return;
 
         // Define the tables to remove
@@ -300,16 +345,25 @@ class Features {
 
     private function remove_relevant_data($alias = "") {
         // Check the alias, define a database-friendly variable
-        if ($alias == "") throw new Exception("The alias to remove related database information cannot be blank.");
+        if ($alias == "") {
+            $this->developer_message = "In order to remove information relevant to this feature, the feature's alias must be defined, which means it can't be found in the database.";
+            throw new Exception("The alias to remove related database information cannot be blank.");
+        }
         $alias = $this->tData->real_escape_string($alias);
 
         // Delete the feature from the features table, check it too
         $query = $this->tData->query("DELETE FROM `".$this->tDataClass->prefix."_features` WHERE `alias`='$alias'");
-        if (!$query) throw new Exception("There was an error removing this feature from the database.");
+        if (!$query) {
+            $this->developer_message = "Database error information: ".print_r($this->tData->error, true);
+            throw new Exception("There was an error removing this feature from the database.");
+        }
 
         // Delete the permissions from the database, check it
         $query = $this->tData->query("DELETE FROM `".$this->tDataClass->prefix."_permissions` WHERE `feature`='$alias'");
-        if (!$query) throw new Exception("There was an error removing the permissions associated to this feature from the database.");
+        if (!$query) {
+            $this->developer_message = "Database error information: ".print_r($this->tData->error, true);
+            throw new Exception("There was an error removing the permissions associated to this feature from the database.");
+        }
     }
 
     public function remove_feature_folder() {
@@ -406,7 +460,10 @@ class Features {
         $query = $this->tData->query("UPDATE `".$this->tDataClass->prefix."_features` SET `groups`='$groups', `enabled`='$enabled' WHERE `id`='$id'");
 
         // Check the query and return
-        if (!$query) throw new Exception("There was an error saving this information.");
+        if (!$query) {
+            $this->developer_message = "Database error information: ".print_r($this->tData->error, true);
+            throw new Exception("There was an error saving this information.");
+        }
         notify("admin", "success", "This information has been saved.");
     }
 

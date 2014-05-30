@@ -155,3 +155,7 @@
     transition: bottom .2s ease .7s, left .7s, box-shadow .2s ease .7s, visibility 0s;
     visibility: visible;
 }
+.admin_content-wrapper pre {
+    overflow: auto;
+    white-space: normal;
+}
