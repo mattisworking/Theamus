@@ -365,10 +365,15 @@ var editor = new function() {
                     for (var i = 0, len = sel.rangeCount; i < len; ++i) {
                         container.appendChild(sel.getRangeAt(i).cloneContents());
                     }
-                    var old_html = container.innerHTML.replace(/(<([^>]+)>)/ig, "");
+                    var old_html = container.innerHTML.replace(/<(?!br\s*\/?)[^>]+>/g, "");
                 }
 
                 var parent = sel.getRangeAt(0).commonAncestorContainer;
+
+                if (parent === $(".editor_format-options")[0]) {
+                    return;
+                }
+
                 if (parent.nodeType !== 1 && parent.parentNode !== editor.el) {
                     parent.parentNode.parentNode.removeChild(parent.parentNode);
                 }
@@ -376,12 +381,16 @@ var editor = new function() {
                 var range = sel.getRangeAt(0);
                 range.deleteContents();
                 if (editor.temp_el.value !== "normal") {
-                    var new_fontsize = document.createElement("span");
-                    new_fontsize.style.fontSize = editor.temp_el.value+"px";
+                    var new_fontsize = document.createElement("h"+editor.temp_el.value);
                     new_fontsize.setAttribute("class", "body-header");
                     new_fontsize.innerHTML = old_html;
-                    if (old_html !== "") range.insertNode(new_fontsize);
-                } else range.insertNode(document.createTextNode(old_html));
+                    if (old_html !== "") {
+                        range.insertNode(new_fontsize);
+                    }
+                } else {
+                    node = range.createContextualFragment(old_html);
+                    range.insertNode(node);
+                }
             }
         });
     };

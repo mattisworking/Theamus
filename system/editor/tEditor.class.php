@@ -76,11 +76,11 @@ class tEditor {
         ?>
         <select class="editor_executable" id="editor_font-size" data-exec="fontsize" data-click="false">
             <option value="normal">Normal</option>
-            <option value="20">Heading 1</option>
-            <option value="18">Heading 2</option>
-            <option value="16">Heading 3</option>
-            <option value="14">Heading 4</option>
-            <option value="12">Heading 5</option>
+            <option value="1">Heading 1</option>
+            <option value="2">Heading 2</option>
+            <option value="3">Heading 3</option>
+            <option value="4">Heading 4</option>
+            <option value="5">Heading 5</option>
         </select>
         <span class="editor_separator"></span>
         <a href="#" class="editor_executable editor_bold" data-exec="bold"></a>

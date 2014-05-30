@@ -11,7 +11,9 @@
             "Added a license",
             "Fixed an issue where feature tables weren't being dropped when removing a feature",
             "Added a few meta tags to the 'empty' layout for the default theme",
-            "Fixed an issue where the editor pop up windows weren't loading any content - https://github.com/Eyraahh/Theamus/issues/32"
+            "Fixed an issue where the editor pop up windows weren't loading any content - https://github.com/Eyraahh/Theamus/issues/32",
+            "Fixed a few issues with the editor stylings - now set a max height and other formatting to provide a more consistent experience",
+            "Fixed the editor's headers to be <h#> tags instead of spans, and stop deleting content after changing text to a header/back to normal - https://github.com/Eyraahh/Theamus/issues/33"
         ]
     },
     "authors": [
