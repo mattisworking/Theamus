@@ -9,12 +9,11 @@ $user = $tUser->user;
             <ul>
                 <li>
                     <span class="admin_header-icon admin_header-logo-icon"></span>
-                    <a href="#">theamus</a>
+                    <a href="http://www.theamus.com/">theamus</a>
                     <ul>
-                        <li><a href="#">About Theamus</a></li>
+                        <li><a href="#" onclick="return admin_go('', 'settings/about-theamus/');">About Theamus</a></li>
                         <li class="admin_header-hr"></li>
-                        <li><a href="#">Documentation</a></li>
-                        <li><a href="#">Feedback</a></li>
+                        <li><a href="http://www.theamus.com/wiki/">Documentation</a></li>
                     </ul>
                 </li>
                 <li>

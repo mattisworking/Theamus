@@ -34,6 +34,14 @@ switch ($file) {
         $feature['js']['file'][] = "settings.js";
         break;
 
+    case "about-theamus.php":
+        if ($ajax != "include" || $location != "admin") {
+            go_back();
+        }
+        
+        $feature['css']['file'][] = "about.css";
+        break;
+
     default :
         break;
 }
