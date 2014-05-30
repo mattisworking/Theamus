@@ -24,6 +24,11 @@ if ($query != false && $tData->count_rows($query) == 0) {
     // Grab all feature information
     $feature = $tData->fetch_rows($query);
 
+    $config_path = path(ROOT."/features/".$feature['alias']."/config.php");
+    if (file_exists($config_path)) {
+        include_once $config_path;
+    }
+
     // Define the enabled checkbox
     $enable_check = $feature['enabled'] == 1 ? "checked" : "";
 }
@@ -86,6 +91,34 @@ if ($query != false && $tData->count_rows($query) == 0) {
                 </div>
             </div>
         </div>
+
+        <?php if (isset($feature['version']) || isset($feature['notes'])): ?>
+        <div class="admin-formheader">Feature Version/Notes</div>
+        <?php endif; ?>
+
+        <?php if (isset($feature['version'])): ?>
+        <div class="admin-formrow">
+            <div class="admin-formlabel">Feature Version</div>
+            <div class="admin-formtext"><?php echo $feature['version']; ?></div>
+        </div>
+        <?php endif; ?>
+
+        <?php if (isset($feature['notes'])): ?>
+        <div class="admin-formrow">
+            <div class="admin-formlabel afl-float">Feature Notes</div>
+            <div class="admin-formtext">
+                <?php
+                $notes = array_reverse($feature['notes']);
+
+                echo "<ul>";
+                foreach ($notes as $note) {
+                    echo "<li>".trim($note)."</li>";
+                }
+                echo "</ul>";
+                ?>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <hr />
 

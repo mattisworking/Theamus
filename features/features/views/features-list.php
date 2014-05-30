@@ -8,6 +8,7 @@ $template_header = <<<TEMPLATE
         <ul class="header">
             <li style="width: 175px;">Name</li>
             <li style="text-align:center; width: 200px;">Enabled</li>
+            <li style="text-align:center; width: 200px;">Version</li>
         </ul>
 TEMPLATE;
 
@@ -21,10 +22,11 @@ $template = <<<TEMPLATE
         ::strlen("%name%") >= 20 ? substr("%name%", 0, 20)."..." : "%name%"::
     </li>
     <li style="text-align:center; width: 200px;">::%enabled% == 1 ? "Yes" : "No"::</li>
+    <li style="text-align:center; width: 200px;">%version%</li>
 </ul>
 TEMPLATE;
 
-$query = $tData->select_from_table($tData->prefix."_features", array("id", "name", "permanent", "enabled"), array(
+$query = $tData->select_from_table($tData->prefix."_features", array("id", "alias", "name", "permanent", "enabled"), array(
     "operator"  => "",
     "conditions"=> array("[%]name" => $search."%")
 ), "ORDER BY `name` ASC");
@@ -32,7 +34,24 @@ $query = $tData->select_from_table($tData->prefix."_features", array("id", "name
 if ($query != false) {
     if ($tData->count_rows($query) > 0) {
         $results = $tData->fetch_rows($query);
-        $features = isset($results[0]) ? $results : array($results);
+        $all_features = isset($results[0]) ? $results : array($results);
+        $features = array();
+
+        foreach ($all_features as $item) {
+            $feature = array();
+            $config_file = path(ROOT."/features/".$item['alias']."/config.php");
+            $version = "Unknown";
+
+            if (file_exists($config_file)) {
+                include_once $config_file;
+                if (isset($feature['version'])) {
+                    $version = $feature['version'];
+                }
+            }
+
+            $item['version'] = $version;
+            $features[] = $item;
+        }
 
         $tPages->set_page_data(array(
             "data"              => $features,

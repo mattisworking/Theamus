@@ -17,7 +17,8 @@
             "Added an 'About Theamus' page to say thanks to people helping me develop this system - https://github.com/Eyraahh/Theamus/issues/27",
             "When updating pages, any associated links will have their paths updated as well - https://github.com/Eyraahh/Theamus/issues/25",
             "Shows more detailed information to users with 'developer mode' on when installing/updating/removing features - https://github.com/Eyraahh/Theamus/issues/22",
-            "Updated the permissions on creating/editing users and groups.  You can't create users to groups you don't already belong do and you can't create groups with permissions you don't have - https://github.com/Eyraahh/Theamus/issues/20"
+            "Updated the permissions on creating/editing users and groups.  You can't create users to groups you don't already belong do and you can't create groups with permissions you don't have - https://github.com/Eyraahh/Theamus/issues/20",
+            "Shows the feature version on the feature listing page and the version/notes on the edit page - https://github.com/Eyraahh/Theamus/issues/16"
         ]
     },
     "authors": [
