@@ -219,6 +219,7 @@ if ($query != false) {                              // Check for a successful qu
             </div>
         </div>
 
+        <?php if ($tUser->is_admin() && $tUser->in_group("administrators")): ?>
         <div class="admin-formheader">User Groups</div>
         <div class="admin-formrow">
             <div class="admin-formlabel afl-float">Groups</div>
@@ -234,15 +235,18 @@ if ($query != false) {                              // Check for a successful qu
                 $results = $tData->fetch_rows($query);
                 foreach ($results as $group) {
                     $checked = in_array($group['alias'], $groups) ? "selected" : "";
-                    echo "<option ".$checked." value=\"".$group['alias']."\">"
-                            .$group['name']."</option>";
+                    if ($tUser->in_group($group['alias']) || ($tUser->is_admin() && $tUser->in_group("administrators"))) {
+                        echo "<option ".$checked." value=\"".$group['alias']."\">".$group['name']."</option>";
+                    }
                 }
                 ?>
                 </select>
             </div>
         </div>
+        <?php endif; ?>
 
         <div class="admin-formheader">Admin/Active User</div>
+        <?php if ($tUser->is_admin() && $tUser->in_group("administrators")): ?>
         <div class="admin-formrow">
             <div class="admin-formlabel afl-float">Administrator</div>
             <div class="admin-forminput">
@@ -264,6 +268,8 @@ if ($query != false) {                              // Check for a successful qu
                 regardless of being in the administrator group.
             </div>
         </div>
+        <?php endif; ?>
+
         <div class="admin-formrow">
             <div class="admin-formlabel afl-float">Active User</div>
             <div class="admin-forminput">

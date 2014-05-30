@@ -47,6 +47,13 @@ if ($query != false) {
     if ($tData->count_rows($query) > 0) {
         $results = $tData->fetch_rows($query);
         $groups = isset($results[0]) ? $results : array($results);
+        $editable_groups = array();
+
+        foreach ($groups as $group) {
+            if ($tUser->in_group($group['alias']) || ($tUser->is_admin() && $tUser->in_group("administrators"))) {
+                $editable_groups[] = $group;
+            }
+        }
 
         $tPages->set_page_data(array(
             "data"              => $groups,

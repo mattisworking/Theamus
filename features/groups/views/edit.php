@@ -33,6 +33,10 @@ if ($query_group != false) {                                // Check for a succe
         $permanent = $group['permanent'] == "1" ? true : false;
         $permissions = explode(",", $group['permissions']);
 
+        if ((!$tUser->in_group("administrators") || !$tUser->is_admin()) && $group['alias'] == "everyone" || !$tUser->in_group($group['alias'])) {
+            $error[] = "You don't have permission to edit this group.";
+        }
+
         if ($group['home_override'] != "false") {
             $homeType = $tData->t_decode($group['home_override']);
         } else {
@@ -84,8 +88,8 @@ if ($query_group != false) {                                // Check for a succe
             </div>
         </div>
 
+        <?php if ($tUser->is_admin() && $tUser->in_group("administrators")): ?>
         <hr />
-
         <div class="admin-formrow">
             <div class="admin-formlabel afl-float">Permissions</div>
             <div class="admin-forminput">
@@ -115,6 +119,8 @@ if ($query_group != false) {                                // Check for a succe
                     user in this group.</span>
             </div>
         </div>
+        <?php endif; ?>
+
         <hr />
         <div class='admin-formheader'>Group Home Page</div>
         <div>

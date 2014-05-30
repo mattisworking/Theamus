@@ -149,15 +149,17 @@
                 $results = $tData->fetch_rows($query);
                 foreach ($results as $group) {
                     $selected = $group['alias'] == "everyone" ? "selected" : "";
-                    echo "<option ".$selected." value=\"".$group['alias']."\">"
-                            .$group['name']."</option>";
+                    if ($tUser->in_group($group['alias']) || ($tUser->is_admin() && $tUser->in_group("administrators"))) {
+                        echo "<option ".$selected." value=\"".$group['alias']."\">".$group['name']."</option>";
+                    }
                 }
                 ?>
                 </select>
             </div>
         </div>
 
-        <div class="admin-formheader">Admin/Active User</div>
+        <?php if ($tUser->is_admin() && $tUser->in_group("administrators")): ?>
+        <div class="admin-formheader">Admin User</div>
         <div class="admin-formrow">
             <div class="admin-formlabel afl-float">Administrator</div>
             <div class="admin-forminput">
@@ -175,6 +177,7 @@
                 regardless of being in the administrator group.
             </div>
         </div>
+        <?php endif; ?>
 
         <hr />
 

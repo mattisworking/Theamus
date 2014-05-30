@@ -38,11 +38,13 @@
                     $results = $tData->fetch_rows($query);
                     foreach ($results as $permission) {
                         // Clean up the text
-                        $permission_feature    = ucwords(str_replace("_", " ", $permission['permission']));
-                        $permission_feature = ucwords(str_replace("_", " ", $permission['feature']));
+                        $permission_permission  = ucwords(str_replace("_", " ", $permission['permission']));
+                        $permission_feature     = ucwords(str_replace("_", " ", $permission['feature']));
 
                         // Show options
-                        echo "<option value='".$permission['permission']."'>$permission_feature - $permission_feature</option>";
+                        if ($tUser->has_permission($permission['permission']) || ($tUser->is_admin() && $tUser->in_group("administrators"))) {
+                            echo "<option value='".$permission['permission']."'>$permission_feature - $permission_permission</option>";
+                        }
                     }
                     ?>
                 </select>
