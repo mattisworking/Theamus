@@ -52,6 +52,14 @@ if (isset($post['title'])) {
     }
 }
 
+// Find the a page link with the old alias in the links database
+$link_query = $tData->select_from_table($tData->prefix."_links", array("id"), array("operator" => "", "conditions" => array("[%]path" => $page['alias']."%")));
+if ($link_query == false) {
+    echo notify("admin", "failure", "There was an querying the link database.");
+    die();
+}
+
+
 // Get the page content
 if (isset($post['content'])) {
     $content = urldecode($post['content']);
@@ -98,6 +106,21 @@ if (!empty($error)) {
     $query = $tData->update_table_row($query_data['table'], $query_data['data'], $query_data['clause']);
 
     if ($query != false) {
+        if ($tData->count_rows($link_query) > 0) {
+            $link = $tData->fetch_rows($link_query);
+            $tData->show_query_errors = true;
+            $update_link = $tData->update_table_row($tData->prefix."_links", array("path" => $alias), array(
+                "operator"      => "",
+                "conditions"    => array("id" => $link['id'])
+            ));
+
+            if ($update_link == false) {
+                notify("admin", "failure", "The links related to this page could not be updated.");
+            } else {
+                notify("admin", "success", "Links related to this page have been updated.");
+            }
+        }
+
         notify("admin", "success", "The changes to this page have been saved.");
     } else {
         notify("admin", "failure", "There was an issue saving this information.");

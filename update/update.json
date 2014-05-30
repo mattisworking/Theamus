@@ -14,7 +14,8 @@
             "Fixed an issue where the editor pop up windows weren't loading any content - https://github.com/Eyraahh/Theamus/issues/32",
             "Fixed a few issues with the editor stylings - now set a max height and other formatting to provide a more consistent experience",
             "Fixed the editor's headers to be <h#> tags instead of spans, and stop deleting content after changing text to a header/back to normal - https://github.com/Eyraahh/Theamus/issues/33",
-            "Added an 'About Theamus' page to say thanks to people helping me develop this system - https://github.com/Eyraahh/Theamus/issues/27"
+            "Added an 'About Theamus' page to say thanks to people helping me develop this system - https://github.com/Eyraahh/Theamus/issues/27",
+            "When updating pages, any associated links will have their paths updated as well - https://github.com/Eyraahh/Theamus/issues/25"
         ]
     },
     "authors": [
