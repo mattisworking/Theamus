@@ -41,9 +41,9 @@ for ($i = 1; $i <= 2; $i++) {
                     $x++;
     ?>
         <li id="<?=$app['path']?>=<?=$x?>">
-            <div class="admin_container" draggable="true">
-                <div class="admin_container-header handle"><?=$homeapp['block_title']?></div>
-                <div class="admin_container-content">
+            <div class="app_container" draggable="true">
+                <div class="app_container-header handle"><?=$homeapp['block_title']?></div>
+                <div class="app_container-content">
                     <?=$this->include_file($path."/main", false, true)?>
                 </div>
             </div>

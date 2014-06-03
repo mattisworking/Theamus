@@ -17,8 +17,6 @@ function close_home_prefs() {
 }
 
 function save_home() {
-    $("#home-result").html(working());
-
     var apps = $("[name='homeapp']");
     var homeapps = new Array();
     for (var i = 0; i < apps.length; i++) {
@@ -30,8 +28,8 @@ function save_home() {
     theamus.ajax.run({
         url: "default/admin/save-home/?apps=" + homeapps,
         result: "home-result",
-        after: {
-            do_function: "refresh"
+        after: function() {
+            update_admin_window_content('theamus-dashboard', 'default/adminHome/');
         }
     });
 
@@ -106,11 +104,10 @@ function save_home_layout() {
     update_order("column2");
     var url_info = set_url_positions(["column1", "column2"]);
 
-    $("#adminhome-result").html(working());
     theamus.ajax.run({
         url: "default/admin/save-positions/&" + url_info,
-        result: "adminhome-result",
-        //hide_result: 3
+        result: "home-result",
+        hide_result: 3
     });
 
     return false;
@@ -134,7 +131,7 @@ function enable_sort() {
 function update_apps() {
     theamus.ajax.run({
         url: "default/admin/update-apps",
-        result: "notify"
+        result: "home-result"
     });
 
     return false;

@@ -25,7 +25,7 @@ if ($user != false) {
 
     // Show errors
     if (!empty($error)) {
-        notify("admin", "failure", $error[0]);
+        alert_notify("danger", $error[0]);
     } else {
         // Save the apps
         foreach ($apps as $key => $val) {
@@ -38,9 +38,9 @@ if ($user != false) {
 
         // Notify the user and get out
         if ($tData->update_table_row($query_data['table_name'], $query_data['data'], $query_data['clause'])) {
-            notify("admin", "success", "Your apps have been saved.<br />".js_countdown());
+            alert_notify("success", "Your apps have been saved.");
         } else {
-            notify("admin", "failure", "There was an error saving the apps.");
+            alert_notify("danger", "There was an error saving the apps.");
         }
     }
 }

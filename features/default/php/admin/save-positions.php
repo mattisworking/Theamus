@@ -52,8 +52,8 @@ if ($user != false) {
     }
 
     if ($tData->update_table_row("dflt_home-apps", $query_data['data'], $query_data['clause'])) {
-        notify("admin", "success", "Your home page has been saved.");
+        alert_notify('success', "Your home page has been saved.");
     } else {
-        notify("admin", "failure", "There was an error saving the home page.");
+        alert_notify('danger', "There was an error saving the home page.");
     }
 }

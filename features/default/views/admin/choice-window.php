@@ -1,49 +1,45 @@
-<div class="window-header">Home Page Preferences</div>
-<div class="window-content">
-    <div id="home-result"></div>
-    <form class="admin-form" id="home-form" onsubmit="return save_home();">
-    <?php
-    $apps = true;
-    $query = $tData->select_from_table("dflt_home-apps", array("active", "path", "name"));
+<ul class='admin-tabs'>
+    <li><a href='#' name='dashboard-home-link'>View Dashboard Apps</a></li>
+    <li class='current'><a href='#'>Manage Dashboard Apps</a></li>
+</ul>
 
-    if ($query != false) {
-        if ($tData->count_rows($query) > 0) {
-        ?>
-        <ul>
-        <?php
+<div id="home-result"></div>
+<form id="home-form" onsubmit="return save_home();">
+<?php
+$apps = true;
+$query = $tData->select_from_table("dflt_home-apps", array("active", "path", "name"));
+
+if ($query != false) {
+    if ($tData->count_rows($query) > 0) {
         $results = $tData->fetch_rows($query);
         foreach ($results as $app):
             $checked = $app['active'] == 1 ? "checked" : "";
         ?>
-            <li>
-                <div class="admin-cboxwrapper">
-                    <input type="checkbox" class="admin-switchcbox" name="homeapp"
-                      id="<?=$app['path']?>" <?=$checked?>>
-                    <label class="admin-switchlabel of" for="<?=$app['path']?>">
-                      <span class="admin-switchinner"></span>
-                      <span class="admin-switchswitch"></span>
-                    </label>
-                </div>
-                <span><?=$app['name']?></span>
-                <div class="clearfix"></div>
-            </li>
-        <?php endforeach; ?>
-        </ul>
+        <label class='checkbox'>
+            <input type='checkbox' <?php echo $checked; ?> name='homeapp' id='<?php echo $app['path']; ?>'>
+            <?php echo $app['name']; ?>
+        </label>
         <?php
-        } else {
-            $apps = false;
-            alert_notify("info", "You have no home apps!");
-        }
+        endforeach;
     } else {
         $apps = false;
-        alert_notify("info", "There was an error querying the database.");
+        alert_notify("info", "You have no home apps!");
     }
-    ?>
-        <div class="options-row">
-            <?php if ($apps === true): ?>
-            <input type="submit" value="Save" class="admin-greenbtn">
-            <?php endif; ?>
-            <input type="button" value="Cancel" onclick="close_home_prefs();" class="admin-redbtn">
-        </div>
-    </form>
-</div>
+} else {
+    $apps = false;
+    alert_notify("info", "There was an error querying the database.");
+}
+
+    if ($apps === true): ?>
+    <div class="form-button-group">
+        <button type="submit" class="btn btn-success">Save Dashboard Apps</button>
+    </div>
+    <?php endif; ?>
+</form>
+
+<script>
+    $('[name="dashboard-home-link"]').click(function(e) {
+        e.preventDefault();
+        update_admin_window_content('theamus-dashboard', 'default/adminHome/');
+    });
+</script>

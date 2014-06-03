@@ -1,3 +1,33 @@
+.dashboard-apps {
+    min-width: 455px;
+    margin: 10px;
+    width: 950px;
+}
+
+.app_container {
+    border: 1px solid #CCC;
+    border-bottom: 3px solid #CCC;
+}
+.app_container:not(:first-child) {
+    margin-top: 25px;
+}
+.app_container-nopad {
+    margin-top: 0 !important;
+}
+.app_container-header {
+    border-bottom: 1px solid #EEE;
+    font-family: Raleway, sans-serif;
+    font-size: 12pt;
+    padding: 5px 10px;
+}
+.app_container-content {
+    padding: 10px 15px;
+}
+
+#home-result {
+    margin-top: 10px;
+}
+
 #choice-window {
     background-color: #FFF;
     border: 1px solid #CCC;
