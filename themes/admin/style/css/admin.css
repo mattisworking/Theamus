@@ -1,0 +1,391 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('../fonts/roboto/roboto.eot');
+    src: url('../fonts/roboto/roboto.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/roboto/roboto.woff') format('woff'),
+         url('../fonts/roboto/roboto.ttf') format('truetype'),
+         url('../fonts/roboto/roboto.svg#roboto') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+.admin {
+    left: 0;
+    opacity: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    transition: opacity .3s ease-in-out;
+    -webkit-transition: opacity .3s ease-in-out;
+    -moz-transition: opacity .3s ease-in-out;
+    -ms-transition: opacity .3s ease-in-out;
+    z-index: 99999;
+}
+.admin-on {
+    opacity: 1;
+}
+.admin-panel-open {
+    height: 100%;
+    overflow: auto;
+}
+.admin-mobile {
+    position: absolute;
+}
+.admin-header {
+    border-bottom: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-radius: 0 0 5px 0;
+    left: 0;
+    opacity: 0.9;
+    position: absolute;
+    top: 0;
+    transition: opacity .3s ease-in-out, box-shadow .3s ease-in-out;
+    -webkit-transition: opacity .3s ease-in-out, box-shadow .3s ease-in-out;
+    -moz-transition: opacity .3s ease-in-out, box-shadow .3s ease-in-out;
+    -ms-transition: opacity .3s ease-in-out, box-shadow .3s ease-in-out;
+    z-index: 10;
+}
+.admin-header:hover {
+    box-shadow: 0 0 5px #333;
+    opacity: 1;
+}
+.admin-header-on:hover {
+    box-shadow: 0 0 0 transparent;
+}
+.admin-header-on {
+    opacity: 1;
+}
+.admin-header > .nav-inline {
+    background-color: rgba(250, 250, 250, 0.95);
+    border: 0;
+    border-radius: 0 0 3px 0;
+    display: block !important;
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.admin-header-on > .nav-inline {
+    background-color: rgb(250, 250, 250);
+}
+.admin-header > .nav-inline li.nav-split {
+    border-top: 2px solid #eee;
+    margin: 5px 0;
+    padding: 0;
+}
+.admin-header > .nav-inline li.nav-split:hover {
+    background-color: transparent;
+}
+.admin-header > .nav-inline li {
+    border-radius: 0;
+    display: initial !important;
+    padding: 5px 0px;
+    width: auto;
+}
+.admin-header > .nav-inline li:hover {
+    background-color: #ddd;
+}
+.admin-header > .nav-inline li:not(:first-child) {
+    border-left: 1px solid #ccc;
+}
+.admin-header > .nav-inline li:not(:last-child) {
+    border-right: 1px solid #fff;
+}
+.admin-header > .nav-inline .admin-logo {
+    background-color: rgba(100, 100, 100, 0.3);
+    border-right: 1px solid #888;
+    text-align: center;
+}
+.admin-header > .nav-inline .admin-logo img {
+    border: 0;
+    -webkit-filter: drop-shadow(0px 0px 1px #aaa);
+    -ms-filter: drop-shadow(0px 0px 1px #aaa);
+    -moz-filter: drop-shadow(0px 0px 1px #aaa);
+    filter: drop-shadow(0px 0px 1px #aaa);
+    height: 23px;
+    outline: none;
+}
+.admin-header > .nav-inline .glyphicon {
+    color: #666;
+    font-size: 1.8em;
+}
+.admin-header > .nav-inline li a {
+    color: #333;
+    display: block;
+    padding: 2px 15px 2px 15px;
+    text-decoration: none;
+}
+.admin-header > .nav-inline li ul {
+    background-color: #fff;
+    border: 0px;
+    border-radius: 5px;
+    -webkit-filter: drop-shadow(1px 1px 5px #aaa);
+    -ms-filter: drop-shadow(1px 1px 5px #aaa);
+    -moz-filter: drop-shadow(1px 1px 5px #aaa);
+    filter: drop-shadow(1px 1px 5px #aaa);
+    margin: 10px 0 0 3px;
+    padding: 5px 0;
+    width: auto !important;
+}
+.admin-header > .nav-inline li ul:before {
+    border-bottom: 10px solid #fff;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid transparent;
+    content: "";
+    left: 10px;
+    position: absolute;
+    top: -20px;
+}
+.admin-header > .nav-inline li ul:after {
+    content: "";
+    height: 20px;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: -20px;
+}
+.admin-header > .nav-inline li ul li {
+    display: block !important;
+    font-size: 1em;
+    padding: 2px 7px 2px 0;
+}
+.admin-header > .nav-inline li ul li:hover {
+    background-color: #DFE1F5;
+}
+
+.admin-navigation {
+    border: 1px solid #ccc;
+    border-left: 0;
+    border-radius: 0 5px 5px 0;
+    left: -180px;
+    position: absolute;
+    top: 41px;
+    transition: box-shadow .3s ease-in-out, left .3s ease-in-out;
+    -webkit-transition: box-shadow .3s ease-in-out, left .3s ease-in-out;
+    -moz-transition: box-shadow .3s ease-in-out, left .3s ease-in-out;
+    -ms-transition: box-shadow .3s ease-in-out, left .3s ease-in-out;
+    width: 175px;
+    z-index: 5;
+}
+.admin-navigation-open {
+    left: 0;
+}
+.admin-navigation:hover {
+    box-shadow: 2px 2px 5px #aaa;
+}
+.admin-navigation .nav-vertical {
+    background-color: rgb(250, 250, 250);
+    border: 0;
+    border-radius: 0 3px 3px 0;
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.admin-navigation .nav-vertical li {
+    background-color: transparent;
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    transition: background-color .3s ease-in-out, border-bottom .3s ease-in-out, border-top .3s ease-in-out;
+    -webkit-transition: background-color .3s ease-in-out, border-bottom .3s ease-in-out, border-top .3s ease-in-out;
+    -moz-transition: background-color .3s ease-in-out, border-bottom .3s ease-in-out, border-top .3s ease-in-out;
+    -ms-transition: background-color .3s ease-in-out, border-bottom .3s ease-in-out, border-top .3s ease-in-out;
+}
+.admin-navigation .nav-vertical li:first-child {
+    border-radius: 0 3px 0 0;
+}
+.admin-navigation .nav-vertical li:last-child {
+    border-radius: 0 0 3px 0;
+}
+.admin-navigation .nav-vertical li:hover {
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+.admin-navigation .nav-vertical li a:before,
+.admin-navigation .nav-vertical li a:after {
+    content: "";
+    display: table;
+}
+.admin-navigation .nav-vertical li a:after {
+    clear: both;
+}
+.admin-navigation .nav-vertical li .glyphicon {
+    color: #666;
+    display: block;
+    float: left;
+    font-size: 1.4em;
+    margin: 1px 15px 0 0;
+}
+.admin-navigation .nav-vertical li .text {
+    display: inline-block;
+    margin-top: 3px;
+}
+.admin-navigation .nav-vertical li:last-child {
+    border-radius: 0 0 3px 0;
+}
+
+
+.admin-window {
+    box-shadow: 0 0 5px #666;
+    left: -5000px;
+    min-width: 300px;
+    max-width: 85%;
+    opacity: 0;
+    position: absolute;
+    top: 10px;
+    transition: opacity .2s ease-in-out;
+    -webkit-transition: opacity .2s ease-in-out;
+    -moz-transition: opacity .2s ease-in-out;
+    -ms-transition: opacity .2s ease-in-out;
+}
+.admin-window-open {
+    left: 200px;
+    opacity: 1;
+}
+.admin-window-mobile {
+    left: 10px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    position: relative;
+    top: 50px;
+}
+.admin-window-maxheight {
+    height: 90%;
+    padding-bottom: 45px;
+}
+.admin-window-closing {
+    opacity: 0;
+}
+.admin-window .window-chrome {
+    background-color: rgba(250, 250, 250, 0.95);
+    border-bottom: 1px solid #ddd;
+    font-family: "Roboto", sans-serif;
+}
+.admin-window .window-chrome .title {
+    color: #000;
+    cursor: default;
+    display: inline-block;
+    font-size: 1.5em;
+    max-width: 90%;
+    overflow: hidden;
+    padding: 5px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.admin-window .window-chrome .close,
+.admin-window .window-chrome .refresh {
+    float: right;
+    margin: 12px 15px 0 0;
+    font-size: .8em;
+}
+.admin-window .window-chrome .refresh {
+    font-size: .9em;
+}
+.admin-window .window-chrome .close a,
+.admin-window .window-chrome .close a:hover,
+.admin-window .window-chrome .refresh a,
+.admin-window .window-chrome .refresh a:hover {
+    color: #666;
+    text-decoration: none;
+}
+.admin-window .window-content {
+    background-color: #fff;
+    height: 100%;
+    overflow: auto;
+    padding: 5px;
+}
+.admin-window-maxheight .window-content {
+    padding: 5px 20px 5px 5px;
+}
+.admin-window-spinner {
+    height: 50px;
+    margin: 45px auto;
+    width: 50px;
+}
+
+.admin-tabs {
+    border-bottom: 1px solid #ccc;
+    margin: 0;
+    padding: 0;
+}
+.admin-tabs ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.admin-tabs li {
+    display: inline-block;
+    padding: 5px 10px;
+}
+.admin-tabs li a {
+    color: #444;
+    text-decoration: none;
+    transition: color .3s ease-in-out;
+    -webkit-transition: color .3s ease-in-out;
+    -moz-transition: color .3s ease-in-out;
+    -ms-transition: color .3s ease-in-out;
+}
+.admin-tabs li.current {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    border-bottom: 0;
+}
+.admin-tabs li.current a {
+    color: #666;
+    font-size: .9em;
+    font-weight: bold;
+}
+.admin-tabs li.right {
+    float: right;
+}
+.admin-tabs li:hover a {
+    color: #000;
+}
+
+.admin-pagination {
+    padding: 10px;
+}
+.admin-pagination a {
+    background-color: #666;
+    color: #fff;
+    display: inline-block;
+    font-size: .7em;
+    padding: 5px 12px;
+    text-decoration: none;
+    transition: background-color .3s ease-in-out;
+    -webkit-transition: background-color .3s ease-in-out;
+    -moz-transition: background-color .3s ease-in-out;
+    -ms-transition: background-color .3s ease-in-out;
+}
+.admin-pagination a.current {
+    background-color: #444;
+}
+.admin-pagination a:hover {
+    background-color: #888;
+}
+.admin-pagination a.current:hover {
+    background-color: #666;
+}
+
+.admin-window .window-content .form-header {
+    font-family: 'Roboto', sans-serif;
+    font-weight: normal;
+    padding: 10px;
+}
+.admin-window .window-content .form-header:first-child {
+    padding-top: 0px;
+}
+.admin-window .window-content .form-horizontal .form-group {
+    margin-left: 0;
+    margin-right: 0;
+}
+.admin-window .window-content .form-horizontal .form-group .control-label {
+    font-size: .8em;
+}
+.admin-window .window-content .form-button-group {
+    text-align: right;
+}
+.admin-window .window-content .form-group .checkbox {
+    margin: 0 20px;
+}

@@ -12,7 +12,7 @@
     </head>
     <body>
         <?php $tTheme->get_page_area("admin"); ?>
-        <div id="site-wrapper" class="site-wrapper site-wrapper-full" <?php if ($tTheme->get_page_variable("has_admin") == true) echo "style='margin-top:32px;'"; ?>>
+        <div id="site-wrapper" class="site-wrapper site-wrapper-full">
             <?php $tTheme->get_page_area("header"); ?>
             <div class="content-wrapper">
                 <?php $tTheme->get_page_area("body"); ?>

@@ -38,7 +38,7 @@ switch ($file) {
         if ($ajax != "include" || $location != "admin") {
             go_back();
         }
-        
+
         $feature['css']['file'][] = "about.css";
         break;
 

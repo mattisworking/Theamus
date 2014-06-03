@@ -262,8 +262,7 @@ var ajax = new function() {
     };
 
     this.get_location = function(form_data) {
-        var admin_content = document.getElementById("admin-content");
-        if (admin_content === null || !admin_content.classList.contains("admin_content-wrapper-open")) {
+        if ($('.admin').length === 0 || !$('.admin').hasClass("admin-panel-open")) {
             form_data = this.form_data_append(form_data, "location", "site");
         } else {
             form_data = this.form_data_append(form_data, "location", "admin");
