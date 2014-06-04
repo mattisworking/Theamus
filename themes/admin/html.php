@@ -138,12 +138,14 @@
                 type:       "include",
                 result:     window_id,
                 after:      function() {
-                    for (var i = 0; i < $('.admin-window').length; i++) {
-                        var ad_window = $('.admin-window')[i];
-                        if ($(ad_window).height() > $(window).height() && theamus.mobile === false) {
-                            $(ad_window).addClass('admin-window-maxheight');
+                    setTimeout(function() {
+                        for (var i = 0; i < $('.admin-window').length; i++) {
+                            var ad_window = $('.admin-window')[i];
+                            if ($(ad_window).height() > $(window).height() && theamus.mobile === false) {
+                                $(ad_window).addClass('admin-window-maxheight');
+                            }
                         }
-                    }
+                    }, 500);
                 }
             });
         }, 500);
