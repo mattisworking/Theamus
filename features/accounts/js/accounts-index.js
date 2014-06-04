@@ -65,5 +65,5 @@ function next_page(page) {
 }
 
 $(document).ready(function() {
-    load_users();
+    //load_users();
 });

@@ -1,9 +1,10 @@
 <?php
 
 // Define custom feature folders
-$feature['js']['folder'] = "js";
-$feature['css']['folder'] = "css";
-$feature['scripts']['folder'] = "php";
+$feature['js']['folder']        = 'js';
+$feature['css']['folder']       = 'css';
+$feature['scripts']['folder']   = 'php';
+$feature['class']['folder']     = 'php';
 
 // Custom function file to load beforehand
 //$feature['functions']['file'] = "php/functions.php";

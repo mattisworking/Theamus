@@ -112,8 +112,18 @@ class tUser {
     private function get_user_info() {
         if ($this->check_login()) {
             // Get the user's information from the database
-            $query = $this->tData->select_from_table($this->tData->prefix."_users", array(), array("operator" => "", "conditions" => array("id" => $this->cookies['userid'])));
-            $this->user = $query == false ? false : $this->tData->fetch_rows($query);
+            $query = $this->tData->select_from_table($this->tData->prefix."_users", array(), array("operator" => "", "conditions" => array("selector" => $this->cookies['userid'])));
+            if ($query == false) {
+                $this->user = false;
+                return false;
+            }
+
+            $results = $this->tData->fetch_rows($query);
+            $user_data = isset($results[0]) ? $results : array($results);
+
+            foreach ($user_data as $item) {
+                $this->user[$item['key']] = $item['value'];
+            }
 
             // Get the user's session and IP address
             $user_sessions = $this->get_user_sessions(false, $this->user['id']);
@@ -138,7 +148,7 @@ class tUser {
      * @return boolean|array
      */
     public function get_specific_user($id = 0) {
-        $q = $this->tData->select_from_table($this->tData->prefix."_users", array(), array("operator" => "", "conditions" => array("id" => $id)));
+        $q = $this->tData->select_from_table($this->tData->prefix."_users", array(), array("operator" => "", "conditions" => array("selector" => $id)));
         if ($this->tData->count_rows($q) > 0) return $this->tData->fetch_rows($q);
         return false;
     }

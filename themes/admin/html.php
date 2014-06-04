@@ -31,7 +31,7 @@
                 </a>
             </li>
             <li>
-                <a href='' name='admin-nav-item' data-id='theamus-accounts' data-title='Theamus Accounts' data-url='accounts/'>
+                <a href='' name='admin-nav-item' data-id='theamus-accounts' data-title='Theamus Accounts' data-url='accounts/admin/'>
                     <span class='glyphicon ion-person-stalker'></span>
                     <span class='text'>Accounts</span>
                 </a>
@@ -85,6 +85,31 @@
 </div>
 
 <script>
+    function admin_add_extras() {
+        var scripts = $('[name="addscript"]'),
+            styles = $('[name="addstyle"]');
+
+        for (var i = 0; i < scripts.length; i++) {
+            add_js_file(scripts[i].value);
+            $(scripts[i]).remove();
+        }
+
+        for (var i = 0; i < styles.length; i++) {
+            add_css(styles[i].value);
+            $(styles[i]).remove();
+        }
+    }
+
+    function admin_window_run_on_load(func) {
+        if (typeof(window[func]) === 'function') {
+            return window[func]();
+        } else {
+            setTimeout(function() {
+                admin_window_run_on_load(func);
+            }, 100);
+        }
+    }
+
     function create_admin_window(window_id, window_title, window_url) {
         if ($('#'+window_id).length > 0) {
             bring_admin_window_to_front($('#'+window_id).parentsUntil('.admin-windows'));
@@ -128,6 +153,7 @@
 
     function update_admin_window_content(window_id, url) {
         $('.admin').addClass('admin-panel-open');
+        $('#'+window_id).parentsUntil('.admin-windows').removeClass('admin-window-maxheight');
 
         bring_admin_window_to_front($('#'+window_id).parentsUntil('.admin-windows'));
         admin_window_loading(window_id);
@@ -138,6 +164,8 @@
                 type:       "include",
                 result:     window_id,
                 after:      function() {
+                    admin_add_extras();
+
                     setTimeout(function() {
                         for (var i = 0; i < $('.admin-window').length; i++) {
                             var ad_window = $('.admin-window')[i];

@@ -355,9 +355,9 @@ class tPages {
      * @param string $function
      * @return boolean
      */
-    public function print_pagination($function="next_page", $return = false) {
+    public function print_pagination($function="next_page", $class = 'pagination', $return = false) {
         $end = $this->get_pagination_stop();
-        $links = "<div class='pagination'>";
+        $links = "<div class='$class'>";
         $links .= $this->print_current();
         for ($i = 1; $i <= $end; $i++) $links .= $this->make_pagination($i, $function);
         $links .= "</div>";

@@ -4,6 +4,8 @@ class Accounts {
     protected $tData;
     protected $tUser;
 
+    public $file;
+
     public function __construct() {
         $this->initialize_variables();
     }
@@ -17,6 +19,7 @@ class Accounts {
         $this->tData->db        = $this->tData->connect(true);
         $this->tData->prefix    = $this->tData->get_system_prefix();
         $this->tUser            = new tUser();
+        $this->tPages           = new tPages();
     }
 
     /**
@@ -317,5 +320,90 @@ class Accounts {
         }
 
         return $string;
+    }
+
+    public function accounts_tabs($file = '') {
+        $tabs = array(
+            'List of Users'     => 'admin/index.php',
+            'Search Users'      => 'admin/search-accounts.php',
+            'Create a New User' => 'admin/create-new-account.php'
+        );
+
+        $return_tabs = array();
+
+        foreach ($tabs as $key => $value) {
+            $class = $value == $file ? 'class=\'current\'' : '';
+            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'accounts-tab\' data-file=\'accounts/'.trim($value, '.php').'/\'>'.$key.'</a></li>';
+        }
+
+        return '<ul>'.implode('', $return_tabs).'</ul>';
+    }
+
+    protected function get_accounts($start = 0, $end = 0) {
+        $query_data = array(
+            "table_name"    => $this->tData->prefix."_users",
+            "clause"        => array(
+                "operator"      => "",
+                "conditions"    => array()
+            ));
+
+        $query = $this->tData->select_from_table($query_data['table_name'], array(), array());
+        $user_results = $this->tData->fetch_rows($query);
+
+        $user_data = array();
+        foreach ($user_results as $user) {
+            $user_data[$user['selector']][$user['key']] = $user['value'];
+        }
+
+        return $user_data;
+    }
+
+    public function switch_user_table() {
+        $old_table_name = $this->tData->prefix.'_users';
+        $temp_table_name = $this->tData->prefix.'_users-new';
+
+        $this->tData->db->beginTransaction();
+
+        //$create_table = $this->tData->custom_query('CREATE TABLE IF NOT EXISTS `'.$temp_table_name.'` (`id` int(11) NOT NULL AUTO_INCREMENT, `key` varchar(100) NOT NULL, `value` TEXT NOT NULL, `selector` int(11) NOT NULL, PRIMARY KEY (`id`)) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;');
+        $create_table = false;
+        if ($create_table === false) {
+            $this->tData->db->rollBack();
+            return 'There was an error creating the table \''.$temp_table_name.'\'.';
+        }
+
+        $all_accounts = $this->get_accounts();
+        $existing_accounts = isset($all_accounts[0]) ? $all_accounts : array($all_accounts);
+
+        $query_data = array();
+
+        foreach ($existing_accounts as $ea) {
+            foreach ($ea as $key => $value) {
+                $query_data[] = array("key" => $key, "value" => $value, "selector" => $ea['id']);
+            }
+        }
+
+        $add_new_data = $this->tData->insert_table_row($temp_table_name, $query_data);
+
+        if ($add_new_data == false) {
+            $this->tData->db->rollBack();
+            return 'There was an error adding the new data to the temporary database.';
+        }
+
+        $remove_old_table = $this->tData->custom_query('DROP TABLE `'.$old_table_name.'`');
+
+        if ($remove_old_table == false) {
+            $this->tData->db->rollBack();
+            return 'There was an error dropping the old table \''.$old_table_name.'\'';
+        }
+
+        $rename_temp_table = $this->tData->custom_query('RENAME TABLE `'.$temp_table_name.'` TO `'.$old_table_name.'`');
+
+        if ($rename_temp_table == false) {
+            $this->tData->db->rollBack();
+            return 'There was an error renaming the temporary table.';
+        }
+
+        $this->tData->db->commit();
+        return 'The new users table has been successfully created and all information was transferred.';
     }
 }

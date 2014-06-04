@@ -1,112 +1,95 @@
 <?php
 
-// Define a default for the javascript and css files
-$feature['js']['file'] = array();
-$feature['css']['file'] = array();
-
-// Files to deny basic users
-$admin_files = array(
-    // Script files
-    "create.php",
-    "remove.php",
-    "save.php",
-    "users-list.php",
-
-    // View files
-    "add.php",
-    "edit.php",
-    "form.php",
-    "index.php"
-    );
-// Deny bad users
-if ($ajax != "api") $tUser->deny_non_admins($file, $admin_files);
-
-$admin_files = array("index.php", "add.php", "edit.php", "remove-user.php", "users-list.php", "remove.php", "save.php",
-    "check_username.php", "check_password.php", "check_email.php", "register_user.php");
-if (in_array($file, $admin_files) && $ajax != "api") {
-    if ($location != "admin") back_up();
-    if ($location != "admin" && $ajax != "include") die("Error");
+if ($folders[0] == 'admin' && $ajax != 'api' && $ajax != 'include' && $tUser->is_admin() == false) {
+    if ($location != 'admin') back_up();
+    if ($location != 'admin' && $ajax != 'include') die('You don\'t have permission to this file.');
 }
+
+$feature['class']['file'] = 'accounts.class.php';
+$feature['class']['init'] = 'Accounts';
+
+define('FILE', $file);
 
 // Customize files
 switch ($file) {
-    case "index.php":
-        $feature['css']['file'][] = "main.css";
-        $feature['js']['file'][] = "accounts-index.js";
+    case 'admin/index.php':
+    case 'admin/search-accounts.php':
+        $feature['css']['file'][]   = 'accounts.css';
+        $feature['js']['file'][]    = 'accounts.js';
         break;
 
-    case "add.php":
-        $tUser->check_permissions("add_users");
-        $feature['js']['file'][] = "edit_user.js";
+    case 'add.php':
+        $tUser->check_permissions('add_users');
+        $feature['js']['file'][] = 'edit_user.js';
         break;
 
-    case "edit.php":
-        $tUser->check_permissions("edit_users");
-        $feature['js']['file'][] = "edit_user.js";
+    case 'edit.php':
+        $tUser->check_permissions('edit_users');
+        $feature['js']['file'][] = 'edit_user.js';
         break;
 
-    case "login.php" :
+    case 'login.php' :
         if ($tUser->user) back_up();
-        $feature['title'] = "Login";
-        $feature['header'] = "Log In";
-        $feature['js']['file'][] = "sessions.js";
-        $feature['theme'] = "login";
+        $feature['title'] = 'Login';
+        $feature['header'] = 'Log In';
+        $feature['js']['file'][] = 'sessions.js';
+        $feature['theme'] = 'login';
         break;
 
-    case "register.php":
+    case 'register.php':
         if ($tUser->user) back_up();
-        $feature['title'] = "Register";
-        $feature['header'] = "Register";
-        $feature['js']['file'][] = "sessions.js";
-        $feature['theme'] = "register";
+        $feature['title'] = 'Register';
+        $feature['header'] = 'Register';
+        $feature['js']['file'][] = 'sessions.js';
+        $feature['theme'] = 'register';
         break;
 
-    case "user/index.php":
+    case 'user/index.php':
         back_up();
         break;
 
-    case "remove.php":
-        $tUser->check_permissions("remove_users");
+    case 'remove.php':
+        $tUser->check_permissions('remove_users');
         break;
 
-    case "activate.php":
-        $feature['title'] = "Activate Your Account";
-        $feature['header'] = "Activate Your Account";
+    case 'activate.php':
+        $feature['title'] = 'Activate Your Account';
+        $feature['header'] = 'Activate Your Account';
         break;
 
-    case "user/edit-account.php":
-    case "user/edit-personal.php":
-    case "user/edit-contact.php":
-    case "user/other-information.php":
+    case 'user/edit-account.php':
+    case 'user/edit-personal.php':
+    case 'user/edit-contact.php':
+    case 'user/other-information.php':
         if (!$tUser->user) { back_up(); }
-        $feature['title'] = $feature['header'] = "Edit Your Account";
+        $feature['title'] = $feature['header'] = 'Edit Your Account';
         switch ($file) {
-            case "user/edit-account.php":
-                $feature['title'] .= " - Account Information";
-                $feature['header'] .= " - Account Information";
+            case 'user/edit-account.php':
+                $feature['title'] .= ' - Account Information';
+                $feature['header'] .= ' - Account Information';
                 break;
-            case "user/edit-personal.php":
-                $feature['title'] .= " - Personal Information";
-                $feature['header'] .= " - Personal Information";
+            case 'user/edit-personal.php':
+                $feature['title'] .= ' - Personal Information';
+                $feature['header'] .= ' - Personal Information';
                 break;
-            case "user/edit-contact.php":
-                $feature['title'] .= " - Contact Information";
-                $feature['header'] .= " - Contact Information";
+            case 'user/edit-contact.php':
+                $feature['title'] .= ' - Contact Information';
+                $feature['header'] .= ' - Contact Information';
                 break;
-            case "user/other-information.php":
-                $feature['title'] = $feature['header'] = "Other Account Information";
+            case 'user/other-information.php':
+                $feature['title'] = $feature['header'] = 'Other Account Information';
                 break;
             default:
-                $feature['title'] = "Edit Your Account";
-                $feature['header'] = "Edit Your Account";
+                $feature['title'] = 'Edit Your Account';
+                $feature['header'] = 'Edit Your Account';
                 break;
         }
-        $feature['js']['file'][] = "edit_user.js";
+        $feature['js']['file'][] = 'edit_user.js';
         $feature['nav'] = array(
-            "Account Information" => "accounts/user/edit-account",
-            "Personal Information" => "accounts/user/edit-personal",
-            "Contact Information" => "accounts/user/edit-contact",
-            "Other Information" => "accounts/user/other-information"
+            'Account Information' => 'accounts/user/edit-account',
+            'Personal Information' => 'accounts/user/edit-personal',
+            'Contact Information' => 'accounts/user/edit-contact',
+            'Other Information' => 'accounts/user/other-information'
         );
 
     default :

@@ -20,7 +20,9 @@
             "Updated the permissions on creating/editing users and groups.  You can't create users to groups you don't already belong do and you can't create groups with permissions you don't have - https://github.com/Eyraahh/Theamus/issues/20",
             "Shows the feature version on the feature listing page and the version/notes on the edit page - https://github.com/Eyraahh/Theamus/issues/16",
             "Error page 'go back to the site' link goes to the home page of the site - https://github.com/Eyraahh/Theamus/issues/36",
-            "Major overhaul to the Administration panel - https://github.com/Eyraahh/Theamus/issues/39"
+            "Major overhaul to the Administration panel - https://github.com/Eyraahh/Theamus/issues/39",
+            "Fixed a few issues with the Pagination class",
+            "Updated the Theamus theme.css style"
         ]
     },
     "authors": [

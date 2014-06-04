@@ -351,6 +351,7 @@
     color: #fff;
     display: inline-block;
     font-size: .7em;
+    margin: 0 2px;
     padding: 5px 12px;
     text-decoration: none;
     transition: background-color .3s ease-in-out;

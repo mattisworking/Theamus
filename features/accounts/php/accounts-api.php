@@ -39,18 +39,31 @@ class AccountsApi extends Accounts {
 
 
         // Query the database for an existing user
-        $fetch_query = $this->tData->select_from_table($this->tData->prefix."_users", array("active", "id"),
-            array("operator" => "AND", "conditions" => array("username" => $username, "password" => $password)));
+        $fetch_query = $this->tData->select_from_table($this->tData->prefix."_users", array('selector'),
+            array("operator" => "AND", "conditions" => array("key" => "username", "value" => $username)));
         if ($this->tData->count_rows($fetch_query) == 0) {
             $this->api_error("Invalid credentials.");
             return $this->api_return;
         }
 
         // Define the user information
-        $row = $this->tData->fetch_rows($fetch_query);
+        $user_selector = $this->tData->fetch_rows($fetch_query);
+
+        $user_query = $this->tData->select_from_table($this->tData->prefix.'_users', array(), array(
+            'operator'      => '',
+            'conditions'    => array('selector' => $user_selector['selector'])
+        ));
+        $user_results = $this->tData->fetch_rows($user_query);
+        foreach ($user_results as $user_row) {
+            $user[$user_row['key']] = $user_row['value'];
+        }
+
+        if ($user['password'] != $password) {
+            $this->api_error('Invalid credentials');
+        }
 
         // Check for an active user
-        if ($row['active'] == 0) {
+        if ($user['active'] == 0) {
             $this->api_error("Your account is not active.");
             return $this->api_return;
         }
@@ -67,7 +80,7 @@ class AccountsApi extends Accounts {
         }
 
         // Update the user's session in the database
-        if ($this->tUser->add_user_session($row['id'], $session, $expire)) {
+        if ($this->tUser->add_user_session($user['id'], $session, $expire)) {
             return true;
         } else {
             $this->api_error("There was an error updating/creating the session.");
@@ -134,5 +147,30 @@ class AccountsApi extends Accounts {
 
         // Activate the user
         return parent::activate_a_user($email, $code);
+    }
+
+    public function get_user_accounts_list($args) {
+        $user_accounts = parent::get_accounts();
+
+        $user_template = array(
+            '<li>',
+            '<ul class=\'user-options\'>',
+            '<li><a href=\'\'><span class=\'glyphicon ion-edit\'></span></a></li>',
+            '<li><a href=\'\'><span class=\'glyphicon ion-close\'></span></a></li>',
+            '</ul>',
+            '<span class=\'full-name\'>::stripslashes(trim(urldecode(\'%firstname% %lastname%\')))::</span>',
+            '<span class=\'username\'>%username%</span>',
+            '</li>'
+        );
+
+        $this->tPages->set_page_data(array(
+            'data'              => $user_accounts,
+            'per_page'      	=> 25,
+            'current'       	=> $args['page'],
+            'list_template' 	=> implode('', $user_template)
+        ));
+
+
+        return '<ul class=\'accounts\'>'.$this->tPages->print_list(true).'</ul>'.$this->tPages->print_pagination('accounts_next_page', 'admin-pagination', true);
     }
 }
