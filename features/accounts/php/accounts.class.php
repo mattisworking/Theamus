@@ -406,4 +406,68 @@ class Accounts {
         $this->tData->db->commit();
         return 'The new users table has been successfully created and all information was transferred.';
     }
+    
+    protected function search_for_accounts($search_query = '') {
+        if ($search_query == '') {
+            return '';
+        }
+        
+        $query_data = array(
+            'table'     => $this->tData->prefix.'_users',
+            'clause'    => array(
+                'operator'      => 'OR',
+                'conditions'    => array(
+                    array(
+                        'operator'      => 'AND',
+                        'conditions'    => array('key' => 'username', '[%]value' => $search_query.'%')
+                    ),
+                    array(
+                        'operator'      => 'AND',
+                        'conditions'    => array('key' => 'firstname', '[%]value' => $search_query.'%')
+                    ),
+                    array(
+                        'operator'      => 'AND',
+                        'conditions'    => array('key' => 'lastname', '[%]value' => $search_query.'%')
+                    )
+                )
+            )
+        );
+        
+        $selector_query = $this->tData->select_from_table($query_data['table'], array('selector'), $query_data['clause']);
+        
+        if ($selector_query == false || $this->tData->count_rows($selector_query) == 0) {
+            return alert_notify('info', 'No accounts were found.', '', true);
+        }
+ 
+        $selectors = $this->tData->fetch_rows($selector_query);
+        
+        $used_selectors = array();
+        
+        $users = array();
+        
+        $desired_keys = array('id', 'username', 'firstname', 'lastname', 'permanent');
+        
+        foreach ($selectors as $selector) {
+            if (in_array($selector, $used_selectors)) {
+                continue;
+            }
+            
+            $user_query = $this->tData->select_from_table($query_data['table'], array('key', 'value'), array(
+                'operator'      => '',
+                'conditions'    => array('selector' => $selector)
+            ));
+            
+            if ($user_query != false) {
+                $used_selectors[] = $selector;
+                
+                foreach ($this->tData->fetch_rows($user_query) as $user_data) {
+                    if (in_array($user_data['key'], $desired_keys)) {
+                        $users[$selector][$user_data['key']] = $user_data['value'];
+                    }
+                }
+            }
+        }
+        
+        return $users;
+    }
 }

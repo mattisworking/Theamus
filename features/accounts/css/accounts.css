@@ -1,21 +1,28 @@
-#accounts-list {
+.accounts-list {
     margin: 10px 0;
     width: 600px;
 }
-#accounts-list > ul.accounts,
-#accounts-list > ul.accounts li ul {
+.accounts-list > ul.accounts,
+.accounts-list > ul.accounts li ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
-#accounts-list > ul.accounts li {
+.accounts-list > ul.accounts li {
     display: block;
     padding: 10px;
+    transition: background-color .3s ease-in-out;
+    -webkit-transition: background-color .3s ease-in-out;
+    -moz-transition: background-color .3s ease-in-out;
+    -ms-transition: background-color .3s ease-in-out;
 }
-#accounts-list > ul.accounts > li:nth-child(even) {
+.accounts-list > ul.accounts li:hover {
+    background-color: #ddd;
+}
+.accounts-list > ul.accounts > li:nth-child(even) {
     background-color: #eee;
 }
-#accounts-list > ul.accounts li .full-name {
+.accounts-list > ul.accounts li .full-name {
     display: inline-block;
     margin: 0 10px;
     overflow: hidden;
@@ -23,7 +30,7 @@
     white-space: nowrap;
     width: 200px;
 }
-#accounts-list > ul.accounts li .username {
+.accounts-list > ul.accounts li .username {
     display: inline-block;
     margin: 0 10px;
     overflow: hidden;
@@ -31,18 +38,19 @@
     white-space: nowrap;
     width: 150px;
 }
-#accounts-list > ul.accounts li ul {
+.accounts-list > ul.accounts li ul {
     float: right;
     margin-top: -9px;
 }
-#accounts-list > ul.accounts li ul li {
+.accounts-list > ul.accounts li ul li {
     display: inline-block;
 }
-#accounts-list > ul.accounts li ul li a {
+.accounts-list > ul.accounts li ul li a {
     color: #222;
 }
 
-.search-form {
+.search-form,
+.new-account-form {
     margin: 10px;
     width: 500px;
 }

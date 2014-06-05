@@ -14,13 +14,9 @@ define('FILE', $file);
 switch ($file) {
     case 'admin/index.php':
     case 'admin/search-accounts.php':
+    case 'admin/create-new-accout.php':
         $feature['css']['file'][]   = 'accounts.css';
         $feature['js']['file'][]    = 'accounts.js';
-        break;
-
-    case 'add.php':
-        $tUser->check_permissions('add_users');
-        $feature['js']['file'][] = 'edit_user.js';
         break;
 
     case 'edit.php':

@@ -2,7 +2,7 @@
 <div class='admin-tabs'><?php echo $Accounts->accounts_tabs(FILE); ?></div>
 
 <!-- Accounts Listing -->
-<div id='accounts-list'></div>
+<div id='accounts-list' class='accounts-list'></div>
 
 <script>
     $(document).ready(function() {
