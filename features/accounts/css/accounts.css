@@ -1,3 +1,7 @@
+.admin-pagination {
+    border-top: 1px solid #eee;
+}
+
 .accounts-list {
     margin: 10px 0;
     width: 600px;
@@ -50,7 +54,15 @@
 }
 
 .search-form,
-.new-account-form {
+.new-account-form,
+.edit-account-form,
+.remove-account-form {
     margin: 10px;
     width: 500px;
+}
+
+#create-account-result,
+#edit-account-result,
+#remove-account-result {
+    margin: 15px 0 20px;
 }

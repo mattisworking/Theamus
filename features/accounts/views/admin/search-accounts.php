@@ -18,12 +18,10 @@
 <script>
     $(document).ready(function() {
         admin_window_run_on_load('change_accounts_tab');
-        
+
         $('.search-form').submit(function(e) {
             e.preventDefault();
-            
-            console.log('hi');
-            
+
             theamus.ajax.api({
                 type:       'get',
                 url:        theamus.base_url+'accounts/admin/search-for-accounts/',
@@ -32,6 +30,7 @@
                 success:    function(data) {
                     if (typeof(data) === 'object') {
                         $('#account-search-results').html(data.response.data);
+                        admin_window_run_on_load('add_account_listeners');
                     } else {
                         $('#account-search-results').html(alert_notify('danger', 'Something went wrong when searching for users.'));
                     }

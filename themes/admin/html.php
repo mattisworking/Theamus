@@ -164,19 +164,25 @@
                 type:       "include",
                 result:     window_id,
                 after:      function() {
+                    $('.refresh').attr('data-url', url);
                     admin_add_extras();
-
-                    setTimeout(function() {
-                        for (var i = 0; i < $('.admin-window').length; i++) {
-                            var ad_window = $('.admin-window')[i];
-                            if ($(ad_window).height() > $(window).height() && theamus.mobile === false) {
-                                $(ad_window).addClass('admin-window-maxheight');
-                            }
-                        }
-                    }, 500);
+                    resize_admin_window();
+                    if (resize !== null) {
+                        resize = setInterval(resize_admin_window, 500);
+                        setTimeout(function() { clearInterval(resize); resize = null; }, 10000);
+                    }
                 }
             });
         }, 500);
+    }
+
+    function resize_admin_window() {
+        for (var i = 0; i < $('.admin-window').length; i++) {
+            var ad_window = $('.admin-window')[i];
+            if ($(ad_window).height() > $(window).height() && theamus.mobile === false) {
+                $(ad_window).addClass('admin-window-maxheight');
+            }
+        }
     }
 
     function change_admin_window_title(window_id, title) {
@@ -230,6 +236,8 @@
     }
 
     $(document).ready(function() {
+        resize = null;
+
         add_css('themes/admin/style/css/admin.css');
 
         if (theamus.mobile === true) {

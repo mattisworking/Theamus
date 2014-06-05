@@ -1303,6 +1303,8 @@ class tCall {
             ${$init_class} = new $init_class;
         }
 
+        $url_params = $this->parameters;
+
         include $this->complete_file_path;
 
         return true;
@@ -1328,6 +1330,8 @@ class tCall {
             $init_class = $this->init_class;
             ${$init_class} = new $init_class;
         }
+        
+        $url_params = $this->parameters;
 
         echo $this->get_javascript(true);
         echo $this->get_css(true);

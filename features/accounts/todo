@@ -1,0 +1,12 @@
+[x] Create the 'edit' styling and access for user accounts
+[x] Create the 'remove' styling and access for user accounts
+[x] Add functionality for editing/saving user information
+[x] Add functionality for removing users
+[] Add functionality for registering users
+[] Comment and clean up the API classes
+[] Comment the JavaScript in all of the view files
+[] Update the user editing view files
+[] Add API functionality for the user editing files
+[] Comment the API classes
+[] Update the feature configuration file to reflect the changes
+[] Try to hack into all of the files via XSS and SSS, make changes to security

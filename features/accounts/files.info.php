@@ -10,25 +10,12 @@ $feature['class']['init'] = 'Accounts';
 
 define('FILE', $file);
 
-// Customize files
 switch ($file) {
-    case 'admin/index.php':
-    case 'admin/search-accounts.php':
-    case 'admin/create-new-accout.php':
-        $feature['css']['file'][]   = 'accounts.css';
-        $feature['js']['file'][]    = 'accounts.js';
-        break;
-
-    case 'edit.php':
-        $tUser->check_permissions('edit_users');
-        $feature['js']['file'][] = 'edit_user.js';
-        break;
-
+    // Public files
     case 'login.php' :
         if ($tUser->user) back_up();
-        $feature['title'] = 'Login';
+        $feature['title'] = 'Log In';
         $feature['header'] = 'Log In';
-        $feature['js']['file'][] = 'sessions.js';
         $feature['theme'] = 'login';
         break;
 
@@ -36,21 +23,18 @@ switch ($file) {
         if ($tUser->user) back_up();
         $feature['title'] = 'Register';
         $feature['header'] = 'Register';
-        $feature['js']['file'][] = 'sessions.js';
         $feature['theme'] = 'register';
         break;
 
-    case 'user/index.php':
-        back_up();
-        break;
-
-    case 'remove.php':
-        $tUser->check_permissions('remove_users');
-        break;
-
     case 'activate.php':
+        if ($tUser->user) back_up();
         $feature['title'] = 'Activate Your Account';
         $feature['header'] = 'Activate Your Account';
+        break;
+
+    // User files
+    case 'user/index.php':
+        back_up();
         break;
 
     case 'user/edit-account.php':
@@ -87,6 +71,16 @@ switch ($file) {
             'Contact Information' => 'accounts/user/edit-contact',
             'Other Information' => 'accounts/user/other-information'
         );
+
+    // Administrator files
+    case 'admin/index.php':
+    case 'admin/search-accounts.php':
+    case 'admin/create-account.php':
+    case 'admin/edit-account.php':
+    case 'admin/remove-account.php':
+        $feature['css']['file'][]   = 'accounts.css';
+        $feature['js']['file'][]    = 'accounts.js';
+        break;
 
     default :
         break;

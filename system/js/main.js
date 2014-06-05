@@ -176,15 +176,11 @@ function reload(timer) {
 }
 
 function user_logout() {
-    theamus.ajax.run({
-        url: "accounts/logout/",
-        result: "result",
-        after: {
-            do_function: "go_to",
-            arguments: {
-                loc: "base"
-            }
-        }
+    theamus.ajax.api({
+        type:       'post',
+        url:        theamus.base_url+'accounts/logout/',
+        method:     ['AccountsApi', 'logout'],
+        success:    go_to
     });
 
     return false;

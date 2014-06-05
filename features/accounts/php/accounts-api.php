@@ -7,6 +7,14 @@ class AccountsApi extends Accounts {
         $this->api_return['error'] = array("status"=>1,"message"=>$message);
     }
 
+    public function logout() {
+        session_destroy();
+        setcookie("session", "", 30, "/");
+        setcookie("userid", "", 30, "/");
+
+        return true;
+    }
+
     public function login($args) {
         // Define the salts
         $session_salt = $this->tData->get_config_salt("session");
@@ -60,6 +68,7 @@ class AccountsApi extends Accounts {
 
         if ($user['password'] != $password) {
             $this->api_error('Invalid credentials');
+            return $this->api_return;
         }
 
         // Check for an active user
@@ -153,15 +162,15 @@ class AccountsApi extends Accounts {
         return implode('', array(
             '<li>',
             '<ul class=\'user-options\'>',
-            '<li><a href=\'\'><span class=\'glyphicon ion-edit\'></span></a></li>',
-            '<li><a href=\'\'><span class=\'glyphicon ion-close\'></span></a></li>',
+            $this->tUser->has_permission('edit_users') ? '<li><a href=\'#\' name=\'edit-account-link\' data-id=\'%id%\'><span class=\'glyphicon ion-edit\'></span></a></li>' : '',
+            $this->tUser->has_permission('remove_users') ? '::%permanent% == 0 ? "<li><a href=\'#\' name=\'remove-account-link\' data-id=\'%id%\'><span class=\'glyphicon ion-close\'></span></a></li>" : ""::' : '',
             '</ul>',
             '<span class=\'full-name\'>::stripslashes(trim(urldecode(\'%firstname% %lastname%\')))::</span>',
             '<span class=\'username\'>%username%</span>',
             '</li>'
         ));
     }
-    
+
     public function get_user_accounts_list($args) {
         $user_accounts = parent::get_accounts();
 
@@ -175,18 +184,18 @@ class AccountsApi extends Accounts {
 
         return '<ul class=\'accounts\'>'.$this->tPages->print_list(true).'</ul>'.$this->tPages->print_pagination('accounts_next_page', 'admin-pagination', true);
     }
-    
+
     public function search_accounts($args) {
         if (!isset($args['search_query'])) {
             return alert_notify('danger', 'The search query was not found.', '', true);
         }
-        
+
         if (!isset($args['page']) || !is_numeric($args['page'])) {
             $args['page'] = 1;
         }
-        
+
         $searched_accounts = parent::search_for_accounts($args['search_query']);
-        
+
         if (!is_array($searched_accounts)) {
             return $searched_accounts;
         }
@@ -197,7 +206,49 @@ class AccountsApi extends Accounts {
             'current'       	=> $args['page'],
             'list_template' 	=> $this->user_template()
         ));
-        
+
         return '<ul class=\'accounts\'>'.$this->tPages->print_list(true).'</ul>'.$this->tPages->print_pagination('accounts_next_page', 'admin-pagination', true);
+    }
+
+    public function create_account($args) {
+        if ($this->tUser->has_permission('add_users') == false) {
+            return 'You do not have permission to create accounts.';
+        }
+
+        $data = Accounts::check_account_parameters($args);
+
+        if (!is_bool($data) && !is_array($data)) {
+            return $data;
+        }
+
+        $data['change_password'] = true;
+
+        return Accounts::create_account($data);
+    }
+
+    public function save_account_information($args) {
+        if ($this->tUser->has_permission('edit_users') == false) {
+            return 'You do not have permission to edit accounts.';
+        }
+
+        $data = Accounts::check_account_parameters($args, true);
+
+        if (!is_bool($data) && !is_array($data)) {
+            return $data;
+        }
+
+        return Accounts::save_account($data);
+    }
+
+    public function remove_account($args) {
+        if ($this->tUser->has_permission('remove_users') == false) {
+            return 'You do not have permission to remove accounts.';
+        }
+
+        if (!isset($args['id']) || $args['id'] == '') {
+            return 'Invalid account ID provided (or not?)';
+        }
+
+        return Accounts::remove_account($args['id']);
     }
 }

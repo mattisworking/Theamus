@@ -54,10 +54,28 @@ class Accounts {
      */
     protected function check_unused_username($username) {
         // Make the string sql safe and query the database for the username
-        $query = $this->tData->select_from_table($this->tData->prefix."_users", array(), array("operator" => "", "conditions" => array("username" => $username)));
+        $query = $this->tData->select_from_table($this->tData->prefix."_users", array(), array("operator" => "AND", "conditions" => array('key' => 'username', 'value' => $username)));
 
         // Check for results and return
         return $this->tData->count_rows($query) == 0 ? true : false;
+    }
+
+    protected function check_phone($number = '') {
+        $phone = '';
+
+        if ($number != '') {
+            $phone = urldecode($number);
+            $numbers = preg_replace('/[^0-9]/', '', $phone);        // Get rid of anything that isn't a number
+            if (strlen($numbers) >= 10 && strlen($numbers) <= 11) { // If there's a leading 1
+                $numbers = preg_replace('/^1/', '',$numbers);       // Remove the leading 1
+            }
+
+            if (strlen($numbers) == 10 && is_numeric($numbers)) {   // If the phone number is 10 integers
+                $phone = $numbers;
+            }
+        }
+
+        return $phone;
     }
 
 
@@ -67,7 +85,7 @@ class Accounts {
      * @param string $password
      * @return string
      */
-    protected function define_password($password) {
+    protected function define_password($password = '') {
         // Check the password length
         if (strlen($password) < 4) {
             return "short";
@@ -94,48 +112,6 @@ class Accounts {
 
 
     /**
-     * Checks a given array against required key/values
-     *
-     * @param array $variables
-     * @param array $required
-     * @return boolean|array $return_variables
-     */
-    private function check_variables($variables, $required) {
-        // Define the temporary and return variables
-        $required_bool = true;
-        $temp = $return_variables = array();
-
-        // Loop through all of the variables
-        foreach ($variables as $key => $value) {
-            if (in_array($key, $required) && $value == "") {
-                $required_bool = false;
-                $temp[] = $key;
-            } else {
-                $return_variables[$key] = urldecode($value);
-            }
-        }
-
-        // Check the temp array, return relevant
-        if ($required_bool == false) {
-            return $temp;
-        } else {
-            return $return_variables;
-        }
-    }
-
-
-    /**
-     * Defines the error result for the registration API call
-     *
-     * @param string $message
-     * @return array
-     */
-    private function register_error($message = "") {
-        return array("error"=>true,"response"=>alert_notify("danger", $message, "", true));
-    }
-
-
-    /**
      * Emails a newly created user their activation link
      *
      * @param strings $email
@@ -156,110 +132,6 @@ class Accounts {
 
         // Send the mail
         return tMail($email, "Activate Your Account", $message);
-    }
-
-
-    /**
-     * Registers a user to the website
-     *
-     * @param array $args
-     * @return array
-     */
-    protected function create_registered_user($args) {
-        $required = array("username", "password", "password-repeat", "email", "first-name", "last-name");
-        $user_variables = $this->check_variables($args, $required);
-
-        // Check the user variables
-        if ($this->tData->array_is_associative($user_variables) == false) {
-            return array("error"=>true,"response"=>$user_variables);
-        }
-
-        // Check and define the username
-        if ($this->define_username($user_variables['username']) !== true) {
-            return $this->register_error("The username you've provided is ".$this->define_username($user_variables['username']).".");
-        } elseif ($this->check_unused_username($user_variables['username']) != true) {
-            return $this->register_error("That username has already been taken, try another.");
-        } else {
-            $user_variables['username'] = $user_variables['username'];
-        }
-
-        // Check and define the password
-        if ($this->define_password($user_variables['password']) != true) {
-            return $this->register_error("The password you've provided is too short.");
-        } else {
-            if ($user_variables['password'] != $user_variables['password-repeat']) {
-                return $this->register_error("The passwords you've provided do not match.");
-            } else {
-                $salt = $this->tData->get_config_salt("password");
-                $user_variables['password'] = hash('SHA256', $user_variables['password'].$salt);
-            }
-        }
-
-        // Check and define the email address
-        if ($this->define_email($user_variables['email']) != true) {
-            return $this->register_error("The email address you've provided is not valid.");
-        } else {
-            $user_variables['email'] = $user_variables['email'];
-        }
-
-        // Check and define the first name
-        if (strlen($user_variables['first-name']) > 50) {
-            return $this->register_error("The first name is too long.  Use a nick name.");
-        } else {
-            $user_variables['first-name'] = $user_variables['first-name'];
-        }
-
-        // Check and define the last name
-        if (strlen($user_variables['last-name']) > 125) {
-            return $this->register_error("The last name is too long.");
-        } else {
-            $user_variables['last-name'] = $user_variables['last-name'];
-        }
-
-        // Define all other user registration information
-        $user_variables['phone'] = "";
-        $user_variables['birthday'] = date("Y-m-d");
-        $user_variables['gender'] = "m";
-        $user_variables['groups'] = "everyone";
-        $user_variables['admin'] = "0";
-        $user_variables['activation-code'] = md5(time());
-
-        // Register the user
-        $this->tData->use_pdo == false ? $this->tData->db->autocommit(false) : $this->tData->db->beginTransaction();
-        $query = $this->tData->insert_table_row($this->tData->prefix."_users", array(
-            "username"          => $user_variables['username'],
-            "password"          => $user_variables['password'],
-            "email"             => $user_variables['email'],
-            "firstname"         => $user_variables['first-name'],
-            "lastname"          => $user_variables['last-name'],
-            "birthday"          => $user_variables['birthday'],
-            "gender"            => $user_variables['gender'],
-            "admin"             => $user_variables['admin'],
-            "groups"            => $user_variables['groups'],
-            "permanent"         => 0,
-            "phone"             => $user_variables['phone'],
-            "picture"           => "default-user-picture.png",
-            "created"           => date("Y-m-d H:i:s"),
-            "active"            => 0,
-            "activation_code"   => $user_variables['activation-code']
-        ));
-
-        // Check the query and continue
-        if (!$query) {
-            return $this->register_error("There was an error registering you in the database. Please try again later.");
-        } else {
-            // Email the user
-            if (!$this->email_registered_user($user_variables['email'], $user_variables['activation-code'])) {
-                // Revert the database registration and notify the user
-                $this->tData->use_pdo == false ? $this->tData->db->rollback() : $this->tData->db->rollBack();
-
-                return $this->register_error("The activation email failed to send.  Try again later.");
-            } else {
-                 // Commit the registration to the database and notify the user
-                $this->tData->db->commit();
-                return array("error"=>false,"response"=>alert_notify("success", "You have been registered.  Check your email to activate your account!", "", true));
-            }
-        }
     }
 
 
@@ -312,28 +184,18 @@ class Accounts {
         }
     }
 
-
-    protected function encode_string($string, $decode = false) {
-        $replacements = array("." => "{p}", "-" => "{d}");
-        foreach ($replacements as $key => $value) {
-            $string = $decode == false ? str_replace($key, $value, $string) : str_replace($value, $key, $string);
-        }
-
-        return $string;
-    }
-
     public function accounts_tabs($file = '') {
         $tabs = array(
-            'List of Users'     => 'admin/index.php',
-            'Search Users'      => 'admin/search-accounts.php',
-            'Create a New User' => 'admin/create-new-account.php'
+            array('List of Users', 'admin/index.php', 'Theamus Accounts'),
+            array('Search Users', 'admin/search-accounts.php', 'Search Accounts'),
+            array('Create a New User', 'admin/create-account.php', 'Create a New Account')
         );
 
         $return_tabs = array();
 
-        foreach ($tabs as $key => $value) {
-            $class = $value == $file ? 'class=\'current\'' : '';
-            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'accounts-tab\' data-file=\'accounts/'.trim($value, '.php').'/\'>'.$key.'</a></li>';
+        foreach ($tabs as $tab) {
+            $class = $tab[1] == $file ? 'class=\'current\'' : '';
+            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'accounts-tab\' data-file=\'accounts/'.trim($tab[1], '.php').'/\' data-title=\''.$tab[2].'\'>'.$tab[0].'</a></li>';
         }
 
         return '<ul>'.implode('', $return_tabs).'</ul>';
@@ -347,7 +209,7 @@ class Accounts {
                 "conditions"    => array()
             ));
 
-        $query = $this->tData->select_from_table($query_data['table_name'], array(), array());
+        $query = $this->tData->select_from_table($query_data['table_name'], array(), array(), 'ORDER BY `selector`');
         $user_results = $this->tData->fetch_rows($query);
 
         $user_data = array();
@@ -358,60 +220,11 @@ class Accounts {
         return $user_data;
     }
 
-    public function switch_user_table() {
-        $old_table_name = $this->tData->prefix.'_users';
-        $temp_table_name = $this->tData->prefix.'_users-new';
-
-        $this->tData->db->beginTransaction();
-
-        //$create_table = $this->tData->custom_query('CREATE TABLE IF NOT EXISTS `'.$temp_table_name.'` (`id` int(11) NOT NULL AUTO_INCREMENT, `key` varchar(100) NOT NULL, `value` TEXT NOT NULL, `selector` int(11) NOT NULL, PRIMARY KEY (`id`)) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;');
-        $create_table = false;
-        if ($create_table === false) {
-            $this->tData->db->rollBack();
-            return 'There was an error creating the table \''.$temp_table_name.'\'.';
-        }
-
-        $all_accounts = $this->get_accounts();
-        $existing_accounts = isset($all_accounts[0]) ? $all_accounts : array($all_accounts);
-
-        $query_data = array();
-
-        foreach ($existing_accounts as $ea) {
-            foreach ($ea as $key => $value) {
-                $query_data[] = array("key" => $key, "value" => $value, "selector" => $ea['id']);
-            }
-        }
-
-        $add_new_data = $this->tData->insert_table_row($temp_table_name, $query_data);
-
-        if ($add_new_data == false) {
-            $this->tData->db->rollBack();
-            return 'There was an error adding the new data to the temporary database.';
-        }
-
-        $remove_old_table = $this->tData->custom_query('DROP TABLE `'.$old_table_name.'`');
-
-        if ($remove_old_table == false) {
-            $this->tData->db->rollBack();
-            return 'There was an error dropping the old table \''.$old_table_name.'\'';
-        }
-
-        $rename_temp_table = $this->tData->custom_query('RENAME TABLE `'.$temp_table_name.'` TO `'.$old_table_name.'`');
-
-        if ($rename_temp_table == false) {
-            $this->tData->db->rollBack();
-            return 'There was an error renaming the temporary table.';
-        }
-
-        $this->tData->db->commit();
-        return 'The new users table has been successfully created and all information was transferred.';
-    }
-    
     protected function search_for_accounts($search_query = '') {
         if ($search_query == '') {
             return '';
         }
-        
+
         $query_data = array(
             'table'     => $this->tData->prefix.'_users',
             'clause'    => array(
@@ -432,34 +245,34 @@ class Accounts {
                 )
             )
         );
-        
+
         $selector_query = $this->tData->select_from_table($query_data['table'], array('selector'), $query_data['clause']);
-        
+
         if ($selector_query == false || $this->tData->count_rows($selector_query) == 0) {
             return alert_notify('info', 'No accounts were found.', '', true);
         }
- 
+
         $selectors = $this->tData->fetch_rows($selector_query);
-        
+
         $used_selectors = array();
-        
+
         $users = array();
-        
+
         $desired_keys = array('id', 'username', 'firstname', 'lastname', 'permanent');
-        
+
         foreach ($selectors as $selector) {
             if (in_array($selector, $used_selectors)) {
                 continue;
             }
-            
+
             $user_query = $this->tData->select_from_table($query_data['table'], array('key', 'value'), array(
                 'operator'      => '',
                 'conditions'    => array('selector' => $selector)
             ));
-            
+
             if ($user_query != false) {
                 $used_selectors[] = $selector;
-                
+
                 foreach ($this->tData->fetch_rows($user_query) as $user_data) {
                     if (in_array($user_data['key'], $desired_keys)) {
                         $users[$selector][$user_data['key']] = $user_data['value'];
@@ -467,7 +280,218 @@ class Accounts {
                 }
             }
         }
-        
+
         return $users;
+    }
+
+    protected function check_account_parameters($args, $edit = false) {
+        $required = array(
+            array('First Name', 'firstname'),
+            array('Last Name', 'lastname'),
+            array('Gender', 'gender'),
+            array('Birthday Month', 'bday_month'),
+            array('Birthday Day', 'bday_day'),
+            array('Birthday Year', 'bday_year'),
+            array('Email', 'email'),
+            array('Phone', 'phone'),
+            array('Groups', 'groups'),
+            array('Administrator', 'is_admin')
+        );
+
+        if ($edit == true) {
+            $required[] = array('Change Password', 'change_password');
+        } else {
+            $required[] = array('Username', 'username');
+        }
+
+        foreach ($required as $parameter) {
+            if (!isset($args[$parameter[1]]) || $args[$parameter[1]] == '') {
+                return alert_notify('danger', 'Please fill out the \''.$parameter[0].'\' field.', '', true);
+            }
+        }
+
+        return $args;
+    }
+
+    protected function decode($str) {
+        $decoded = "";
+        for($i = 0; $i < strlen($str); $i++) {
+            $b = ord($str[$i]);
+            $a = $b ^ 123;
+            $decoded .= chr($a);
+        }
+
+        return $decoded;
+    }
+
+    protected function sanitize_account_variables($data, $edit = false) {
+        if ($edit == true) {
+            if (!isset($data['id']) || $data['id'] == '') {
+                return alert_notify('danger', 'Invalid account ID provided (or not?)', '', true);
+            }
+            $user_variables['id'] = Accounts::decode($data['id']);
+        }
+
+        if ($edit == false) {
+            $defined_username = $this->define_username($data['username']);
+            if ($defined_username !== true) {
+                return alert_notify('danger', 'The username you\'ve provided is '.$defined_username.'.', '', true);
+            } else {
+                $user_variables['username'] = $data['username'];
+            }
+
+            $user_variables['activation-code'] = md5(time());
+        }
+
+        // Check and define the password
+        if (is_bool($data['change_password'])) {
+            if ($data['password'] == '') {
+                return alert_notify('danger', 'Please fill out the \'Password\' field.');
+            }
+
+            if ($data['password_again'] == '') {
+                return alert_notify('danger', 'Please fill out the \'Password Again\' field.');
+            }
+
+            $defined_password = $this->define_password($data['password']);
+            if (!is_bool($defined_password)) {
+                return alert_notify('danger', 'The password provided is too short.', '', true);
+            } else {
+                if ($data['password'] != $data['password_again']) {
+                    return alert_notify('danger', 'The passwords provided do not match.', '', true);
+                } else {
+                    $salt = $this->tData->get_config_salt('password');
+                    $user_variables['password'] = hash('SHA256', $data['password'].$salt);
+                }
+            }
+        }
+
+        // Check and define the email address
+        if (!is_bool($this->define_email($data['email']))) {
+            return alert_notify('danger', 'The email address you\'ve provided is not valid.', '', true);
+        } else {
+            $user_variables['email'] = $data['email'];
+        }
+
+        // Check and define the first name
+        if (strlen($data['firstname']) > 50) {
+            return alert_notify('danger', 'The first name is too long.  Use a nick name.', '', true);
+        } else {
+            $user_variables['firstname'] = $data['firstname'];
+        }
+
+        // Check and define the last name
+        if (strlen($data['lastname']) > 125) {
+            return alert_notify('danger', 'The last name is too long.', '', true);
+        } else {
+            $user_variables['lastname'] = $data['lastname'];
+        }
+
+        // Define all other user registration information
+        $user_variables['phone'] = $this->check_phone($data['phone']);
+        $user_variables['birthday'] = $data['bday_year'].'-'.$data['bday_month'].'-'.$data['bday_day'];
+        $user_variables['gender'] = $data['gender'];
+        $user_variables['groups'] = $data['groups'];
+        $user_variables['admin'] = $data['is_admin'] != 1 ? 0 : 1;
+
+        return $user_variables;
+    }
+
+    protected function create_account($data, $registration = false) {
+        $user_variables = Accounts::sanitize_account_variables($data);
+
+        if (is_array($user_variables) == false) {
+            return $user_variables;
+        }
+
+        $selector_query = $this->tData->select_from_table($this->tData->prefix.'_users', array('selector'), array(), 'GROUP BY `selector` ORDER BY `selector` DESC LIMIT 1');
+        if ($selector_query == false) {
+            $selector = time();
+        } else {
+            $selector_data = $this->tData->fetch_rows($selector_query);
+            $selector = $selector_data['selector'] + 1;
+        }
+
+        // Register the user
+        $query = $this->tData->insert_table_row($this->tData->prefix.'_users', array(
+            array('key' => 'id', 'value' => $selector, 'selector' => $selector),
+            array('key' => 'username', 'value' => $user_variables['username'], 'selector' => $selector),
+            array('key' => 'password', 'value' => $user_variables['password'], 'selector' => $selector),
+            array('key' => 'email', 'value' => $user_variables['email'], 'selector' => $selector),
+            array('key' => 'firstname', 'value' => $user_variables['firstname'], 'selector' => $selector),
+            array('key' => 'lastname', 'value' => $user_variables['lastname'], 'selector' => $selector),
+            array('key' => 'birthday', 'value' => $user_variables['birthday'], 'selector' => $selector),
+            array('key' => 'gender', 'value' => $user_variables['gender'], 'selector' => $selector),
+            array('key' => 'admin', 'value' => $user_variables['admin'], 'selector' => $selector),
+            array('key' => 'groups', 'value' => $user_variables['groups'], 'selector' => $selector),
+            array('key' => 'permanent', 'value' => 0, 'selector' => $selector),
+            array('key' => 'phone', 'value' => $user_variables['phone'], 'selector' => $selector),
+            array('key' => 'picture', 'value' => 'default-user-picture.png', 'selector' => $selector),
+            array('key' => 'created', 'value' => date('Y-m-d H:i:s'), 'selector' => $selector),
+            array('key' => 'active', 'value' => 1, 'selector' => $selector),
+            array('key' => 'activation_code', 'value' => $user_variables['activation-code'], 'selector' => $selector)
+        ));
+
+        // Check the query and continue
+        if (!$query) {
+            return alert_notify('danger', 'There was an error registering you in the database. Please try again later.', '', true);
+        } else {
+            return true;
+        }
+    }
+
+    public function save_account($data) {
+        $user_variables = Accounts::sanitize_account_variables($data, true);
+
+        if (is_array($user_variables) == false) {
+            return $user_variables;
+        }
+
+        $query_data = array(
+            'table'     => $this->tData->prefix.'_users',
+            'data'      => array(
+                array('value' => $user_variables['email']),
+                array('value' => $user_variables['firstname']),
+                array('value' => $user_variables['lastname']),
+                array('value' => $user_variables['phone']),
+                array('value' => $user_variables['birthday']),
+                array('value' => $user_variables['gender']),
+                array('value' => $user_variables['groups']),
+                array('value' => $user_variables['admin'])
+            ),
+            'clause'    => array(
+                array('operator' => 'AND', 'conditions' => array('key' => 'email', 'selector' => $user_variables['id'])),
+                array('operator' => 'AND', 'conditions' => array('key' => 'firstname', 'selector' => $user_variables['id'])),
+                array('operator' => 'AND', 'conditions' => array('key' => 'lastname', 'selector' => $user_variables['id'])),
+                array('operator' => 'AND', 'conditions' => array('key' => 'phone', 'selector' => $user_variables['id'])),
+                array('operator' => 'AND', 'conditions' => array('key' => 'birthday', 'selector' => $user_variables['id'])),
+                array('operator' => 'AND', 'conditions' => array('key' => 'gender', 'selector' => $user_variables['id'])),
+                array('operator' => 'AND', 'conditions' => array('key' => 'groups', 'selector' => $user_variables['id'])),
+                array('operator' => 'AND', 'conditions' => array('key' => 'admin', 'selector' => $user_variables['id']))
+            )
+        );
+
+        if (isset($user_variables['password'])) {
+            $query_data['data'][] = array('value' => $user_variables['password']);
+            $query_data['clause'][] = array('operator' => 'AND', 'conditions' => array('key' => 'password', 'selector' => $user_variables['id']));
+        }
+
+        $query = $this->tData->update_table_row($query_data['table'], $query_data['data'], $query_data['clause']);
+
+        if ($query == false) {
+            return alert_notify('danger', 'There was an issue with saving this information to the database.', '', true);
+        }
+
+        return true;
+    }
+
+    public function remove_account($id) {
+        $query = $this->tData->delete_table_row($this->tData->prefix.'_users', array('operator' => '', 'conditions' => array('selector' => Accounts::decode($id))));
+
+        if ($query == false) {
+            return alert_notify('There was an issue removing this account from the database.');
+        }
+
+        return true;
     }
 }
