@@ -210,7 +210,7 @@ class AccountsApi extends Accounts {
         return '<ul class=\'accounts\'>'.$this->tPages->print_list(true).'</ul>'.$this->tPages->print_pagination('accounts_next_page', 'admin-pagination', true);
     }
 
-    public function create_account($args) {
+    public function create_new_account($args) {
         if ($this->tUser->has_permission('add_users') == false) {
             return 'You do not have permission to create accounts.';
         }
@@ -240,7 +240,7 @@ class AccountsApi extends Accounts {
         return Accounts::save_account($data);
     }
 
-    public function remove_account($args) {
+    public function remove_user_account($args) {
         if ($this->tUser->has_permission('remove_users') == false) {
             return 'You do not have permission to remove accounts.';
         }

@@ -70,7 +70,7 @@ foreach ($user_results as $result) {
             theamus.ajax.api({
                 type:       'post',
                 url:        theamus.base_url+'accounts/admin/remove-account/',
-                method:     ['AccountsApi', 'remove_account'],
+                method:     ['AccountsApi', 'remove_user_account'],
                 data:       { custom: { id: encode('<?php echo $user['id']; ?>') } },
                 success:    function(data) {
                     console.log(data);

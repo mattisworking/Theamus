@@ -32,6 +32,7 @@
                         $('#account-search-results').html(data.response.data);
                         admin_window_run_on_load('add_account_listeners');
                     } else {
+                        console.log(data);
                         $('#account-search-results').html(alert_notify('danger', 'Something went wrong when searching for users.'));
                     }
                 }

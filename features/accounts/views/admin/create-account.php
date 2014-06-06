@@ -164,7 +164,7 @@ if ($tUser->has_permission('add_users') == false) {
             theamus.ajax.api({
                 type:       'post',
                 url:        theamus.base_url+'accounts/admin/create-account/',
-                method:     ['AccountsApi', 'create_account'],
+                method:     ['AccountsApi', 'create_new_account'],
                 data:       { form: $(this) },
                 success:    function(data) {
                     console.log(data);
