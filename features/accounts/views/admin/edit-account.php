@@ -184,7 +184,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
     <hr class='form-split'>
 
     <div class='form-button-group'>
-        <button type='submit' class='btn btn-success'>Create User</button>
+        <button type='submit' class='btn btn-success'>Save Information</button>
     </div>
 </form>
 

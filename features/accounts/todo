@@ -2,7 +2,7 @@
 [x] Create the 'remove' styling and access for user accounts
 [x] Add functionality for editing/saving user information
 [x] Add functionality for removing users
-[] Add functionality for registering users
+[x] Add functionality for registering users
 [] Comment and clean up the API classes
 [] Comment the JavaScript in all of the view files
 [] Update the user editing view files

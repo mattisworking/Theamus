@@ -30,16 +30,16 @@ class Accounts {
      */
     protected function define_username($username) {
         // Check for illegal characters
-        if (preg_match("/[^a-zA-Z0-9.-_@\[\]:;]/", $username)) {
-            return "invalid";
+        if (preg_match('/[^a-zA-Z0-9.-_@\[\]:;]/', $username)) {
+            return 'invalid';
 
         // Check the username length
         } elseif (strlen($username) > 25 || strlen($username) < 4) {
-            return "invalid";
+            return 'invalid';
 
         // Check for and existing username
         } elseif ($this->check_unused_username($username) == false) {
-            return "taken";
+            return 'taken';
         } else {
             return true;
         }
@@ -54,7 +54,7 @@ class Accounts {
      */
     protected function check_unused_username($username) {
         // Make the string sql safe and query the database for the username
-        $query = $this->tData->select_from_table($this->tData->prefix."_users", array(), array("operator" => "AND", "conditions" => array('key' => 'username', 'value' => $username)));
+        $query = $this->tData->select_from_table($this->tData->prefix.'_users', array(), array('operator' => 'AND', 'conditions' => array('key' => 'username', 'value' => $username)));
 
         // Check for results and return
         return $this->tData->count_rows($query) == 0 ? true : false;
@@ -88,7 +88,7 @@ class Accounts {
     protected function define_password($password = '') {
         // Check the password length
         if (strlen($password) < 4) {
-            return "short";
+            return 'short';
         }
 
         return true;
@@ -104,7 +104,7 @@ class Accounts {
     protected function define_email($email) {
         // Check the email via filter
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return "invalid";
+            return 'invalid';
         }
 
         return true;
@@ -120,18 +120,17 @@ class Accounts {
      */
     private function email_registered_user($email, $activation_code) {
         // Get the site settings, for personalization
-        $query = $this->tData->select_from_table($this->tData->prefix."_settings", array("name"));
+        $query = $this->tData->select_from_table($this->tData->prefix.'_settings', array('name'));
         $settings = $this->tData->fetch_rows($query);
 
         // Create the email message
-        $activation_addy = base_url."accounts/activate/&email=".$this->encode_string($email)."&code=$activation_code";
-        $message = "You've recently registered to ".$settings['name']."!<br /><br />";
-        $message .= "Now all you have to do is activate your account before you ".
-            "can log in.<br />";
-        $message .= "To activate your new account, <a href='$activation_addy'>click here</a>!";
+        $activation_addy = base_url.'accounts/activate/&email='.$email.'&code='.$activation_code;
+        $message = 'You\'ve recently registered to '.$settings['name'].'!<br /><br />';
+        $message .= 'Now all you have to do is activate your account before you can log in.<br />';
+        $message .= 'To activate your new account, <a href=\''.$activation_addy.'\'>click here</a>!';
 
         // Send the mail
-        return tMail($email, "Activate Your Account", $message);
+        return tMail($email, 'Activate Your Account', $message);
     }
 
 
@@ -144,44 +143,38 @@ class Accounts {
      */
     protected function activate_a_user($email, $activation_code) {
         // Define the query data defaults
-        $query_data = array("table_name" => $this->tData->prefix."_users", "data" => array(), "clause" => array());
+        $query_data = array('table_name' => $this->tData->prefix.'_users', 'data' => array());
 
-        // Define the query data to find this user in the database
-        $query_data['clause'] = array(
-            "operator"  => "AND",
-            "conditions"=> array("email" => $email, "activation_code" => $activation_code));
+        $selector_query = $this->tData->select_from_table($query_data['table_name'], array('selector'), array('operator' => 'AND', 'conditions' => array('key' => 'activation_code', 'value' => $activation_code)));
+        if ($selector_query == false || $this->tData->count_rows($selector_query) == 0 || $this->tData->count_rows($selector_query) > 1) {
+            return array('error' => true, 'message' => 'Couldn\'t find this user in the database.');
+        }
+        $selector_results = $this->tData->fetch_rows($selector_query);
+        $selector = $selector_results['selector'];
 
         // Try to find the user in the database
-        $find_user_query = $this->tData->select_from_table($query_data['table_name'], array("id", "active"), $query_data['clause']);
+        $find_user_query = $this->tData->select_from_table($query_data['table_name'], array(), array('operator' => '', 'conditions' => array('selector' => $selector)), 'ORDER BY `id` DESC');
+        if ($find_user_query == false || $this->tData->count_rows($find_user_query) == 0) {
+            return array('error' => true, 'message' => 'Couldn\'t find this user in the database.');
+        }
+        $user = $this->convert_keyval_to_associative($this->tData->fetch_rows($find_user_query));
 
-        // Check the 'find user' query
-        if ($find_user_query != false) {
-            if ($this->tData->count_rows($find_user_query) > 0) {
-                $user = $this->tData->fetch_rows($find_user_query);
-            } else {
-                return array("error" => true, "message" => "Couldn't find this user in the database.");
-            }
-        } else {
-            return array("error" => true, "message" => "There was an error querying the database for this user.");
+        if ($email != $user[$selector]['email']) {
+            return array('error' => true, 'message' => 'Bad email/activation code combination.');
         }
 
         // Check if the user is activated already or not
-        if ($user['active'] == 1) {
-            return "active";
+        if ($user[$selector]['active'] == 1) {
+            return 'active';
         }
 
         // Update the user's active status
-        $query_data['data'] = array("active" => 1);
-        $query_data['clause'] = array(
-            "operator" => "",
-            "conditions"=> array("id" => $user['id']));
-        $update_user_query = $this->tData->update_table_row($query_data['table_name'], $query_data['data'], $query_data['clause']);
+        $update_user_query = $this->tData->update_table_row($query_data['table_name'], array('value' => 1), array('operator' => 'AND', 'conditions'=> array('key' => 'active', 'selector' => $selector)));
 
-        if ($update_user_query != false) {
-            return array("error" => false, "message" => "Your account has been activated! - <a href='accounts/login/'>You can login here</a>.");
-        } else {
-            return array("error" => true, "message" => "There was an issue when updating this user's active status.");
+        if ($update_user_query == false) {
+            return array('error' => true, 'message' => 'There was an issue when updating this user\'s active status.');
         }
+        return array('error' => false, 'message' => 'Your account has been activated! - <a href=\'accounts/login/\'>You can login here</a>.');
     }
 
     public function accounts_tabs($file = '') {
@@ -201,23 +194,26 @@ class Accounts {
         return '<ul>'.implode('', $return_tabs).'</ul>';
     }
 
+    protected function convert_keyval_to_associative($data) {
+        $return_data = array();
+        foreach ($data as $item) {
+            $return_data[$item['selector']][$item['key']] = $item['value'];
+        }
+
+        return $return_data;
+    }
+
     protected function get_accounts() {
         $query_data = array(
-            "table_name"    => $this->tData->prefix."_users",
-            "clause"        => array(
-                "operator"      => "",
-                "conditions"    => array()
+            'table_name'    => $this->tData->prefix.'_users',
+            'clause'        => array(
+                'operator'      => '',
+                'conditions'    => array()
             ));
 
         $query = $this->tData->select_from_table($query_data['table_name'], array(), array(), 'ORDER BY `selector`');
         $user_results = $this->tData->fetch_rows($query);
-
-        $user_data = array();
-        foreach ($user_results as $user) {
-            $user_data[$user['selector']][$user['key']] = $user['value'];
-        }
-
-        return $user_data;
+        return $this->convert_keyval_to_associative($user_results);
     }
 
     protected function search_for_accounts($search_query = '') {
@@ -263,10 +259,10 @@ class Accounts {
             if (in_array($selector['selector'], $used_selectors)) {
                 continue;
             }
-            
+
             $user_clauses[] = array('operator' => '', 'conditions' => array('selector' => $selector['selector']));
         }
-        
+
         $user_query = $this->tData->select_from_table($query_data['table'], array('key', 'value', 'selector'), array(
             'operator'      => 'OR',
             'conditions'    => $user_clauses
@@ -275,12 +271,8 @@ class Accounts {
         if ($user_query != false) {
             $used_selectors[] = $selector;
             $user_results = $this->tData->fetch_rows($user_query);
-            
-            foreach ($user_results as $user_data) {
-                if (in_array($user_data['key'], $desired_keys)) {
-                    $users[$user_data['selector']][$user_data['key']] = $user_data['value'];
-                }
-            }
+
+            $users = $this->convert_keyval_to_associative($user_results);
         }
 
         return $users;
@@ -295,7 +287,6 @@ class Accounts {
             array('Birthday Day', 'bday_day'),
             array('Birthday Year', 'bday_year'),
             array('Email', 'email'),
-            array('Phone', 'phone'),
             array('Groups', 'groups'),
             array('Administrator', 'is_admin')
         );
@@ -315,8 +306,26 @@ class Accounts {
         return $args;
     }
 
+    protected function check_register_parameters($args) {
+        $required = array(
+            array('Username', 'username'),
+            array('First Name', 'firstname'),
+            array('Last Name', 'lastname'),
+            array('Email', 'email'),
+        );
+
+
+        foreach ($required as $parameter) {
+            if (!isset($args[$parameter[1]]) || $args[$parameter[1]] == '') {
+                return alert_notify('danger', 'Please fill out the \''.$parameter[0].'\' field.', '', true);
+            }
+        }
+
+        return $args;
+    }
+
     protected function decode($str) {
-        $decoded = "";
+        $decoded = '';
         for($i = 0; $i < strlen($str); $i++) {
             $b = ord($str[$i]);
             $a = $b ^ 123;
@@ -326,7 +335,7 @@ class Accounts {
         return $decoded;
     }
 
-    protected function sanitize_account_variables($data, $edit = false) {
+    protected function sanitize_account_variables($data, $edit = false, $registration = false) {
         if ($edit == true) {
             if (!isset($data['id']) || $data['id'] == '') {
                 return alert_notify('danger', 'Invalid account ID provided (or not?)', '', true);
@@ -390,17 +399,22 @@ class Accounts {
         }
 
         // Define all other user registration information
-        $user_variables['phone'] = $this->check_phone($data['phone']);
-        $user_variables['birthday'] = $data['bday_year'].'-'.$data['bday_month'].'-'.$data['bday_day'];
-        $user_variables['gender'] = $data['gender'];
-        $user_variables['groups'] = $data['groups'];
-        $user_variables['admin'] = $data['is_admin'] != 1 ? 0 : 1;
+        $user_variables['phone'] = $registration == false ? $this->check_phone($data['phone']) : '';
+        $user_variables['birthday'] = $registration == false ? $data['bday_year'].'-'.$data['bday_month'].'-'.$data['bday_day'] : date('Y-m-d');
+        $user_variables['gender'] = $registration == false ? $data['gender'] : 'm';
+        $user_variables['groups'] = $registration == false ? $data['groups'] : 'everyone,basic_users';
+        $user_variables['admin'] = 0;
+        if ($registration == false) {
+            $user_variables['admin'] = $data['is_admin'] != 1 ? 0 : 1;
+        }
 
         return $user_variables;
     }
 
     protected function create_account($data, $registration = false) {
-        $user_variables = Accounts::sanitize_account_variables($data);
+        $user_variables = Accounts::sanitize_account_variables($data, false, $registration);
+        $system_query = $this->tData->select_from_table($this->tData->prefix.'_settings', array('email_host'));
+        $system = $this->tData->fetch_rows($system_query);
 
         if (is_array($user_variables) == false) {
             return $user_variables;
@@ -415,6 +429,7 @@ class Accounts {
         }
 
         // Register the user
+        $this->tData->use_pdo == true ? $this->tData->db->beginTransaction() : $this->tData->db->autocommit(true);
         $query = $this->tData->insert_table_row($this->tData->prefix.'_users', array(
             array('key' => 'id', 'value' => $selector, 'selector' => $selector),
             array('key' => 'username', 'value' => $user_variables['username'], 'selector' => $selector),
@@ -430,14 +445,23 @@ class Accounts {
             array('key' => 'phone', 'value' => $user_variables['phone'], 'selector' => $selector),
             array('key' => 'picture', 'value' => 'default-user-picture.png', 'selector' => $selector),
             array('key' => 'created', 'value' => date('Y-m-d H:i:s'), 'selector' => $selector),
-            array('key' => 'active', 'value' => 1, 'selector' => $selector),
+            array('key' => 'active', 'value' => $registration == false || $system['email_host'] == '' ? 1 : 0, 'selector' => $selector),
             array('key' => 'activation_code', 'value' => $user_variables['activation-code'], 'selector' => $selector)
         ));
 
         // Check the query and continue
         if (!$query) {
+            $this->tData->use_pdo == true ? $this->tData->db->rollBack() : $this->tData->db->rollback();
             return alert_notify('danger', 'There was an error registering you in the database. Please try again later.', '', true);
         } else {
+            if ($registration == true && $system['email_host'] != '') {
+                if (!$this->email_registered_user($user_variables['email'], $user_variables['activation-code'])) {
+                    $this->tData->use_pdo == true ? $this->tData->db->rollBack() : $this->tData->db->rollback();
+                    return alert_notify('danger', 'There was an error registering you. Please try again later.', '', true);
+                }
+            }
+
+            $this->tData->use_pdo == true ? $this->tData->db->commit() : $this->tData->db->commit();
             return true;
         }
     }
