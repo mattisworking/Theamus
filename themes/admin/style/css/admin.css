@@ -228,20 +228,26 @@
 
 .admin-window {
     box-shadow: 0 0 5px #666;
+    min-height: 100px;
+    max-height: 300px;
     left: -5000px;
     min-width: 300px;
-    max-width: 85%;
+    max-width: 300px;
     opacity: 0;
+    overflow: hidden;
     position: absolute;
     top: 10px;
-    transition: opacity .2s ease-in-out;
-    -webkit-transition: opacity .2s ease-in-out;
-    -moz-transition: opacity .2s ease-in-out;
-    -ms-transition: opacity .2s ease-in-out;
+    transition: opacity .2s ease-in-out, max-width .5s ease-in-out, max-height 2s ease-in-out;
+    -webkit-transition: opacity .2s ease-in-out, max-width .5s ease-in-out, max-height .5s ease-in-out;
+    -moz-transition: opacity .2s ease-in-out, max-width .5s ease-in-out, max-height .5s ease-in-out;
+    -ms-transition: opacity .2s ease-in-out, max-width .5s ease-in-out, max-height .5s ease-in-out;
 }
 .admin-window-open {
+    max-height: 5000px;
     left: 200px;
     opacity: 1;
+    overflow: inherit;
+    max-width: 85%;
 }
 .admin-window-mobile {
     left: 10px;
@@ -293,7 +299,7 @@
     background-color: #fff;
     height: 100%;
     overflow: auto;
-    padding: 5px;
+    padding: 10px;
 }
 .admin-window-maxheight .window-content {
     padding: 5px 20px 5px 5px;

@@ -3,7 +3,7 @@
 [x] Add functionality for editing/saving user information
 [x] Add functionality for removing users
 [x] Add functionality for registering users
-[] Comment and clean up the API classes
+[x] Comment and clean up the API classes
 [] Comment the JavaScript in all of the view files
 [] Update the user editing view files
 [] Add API functionality for the user editing files
