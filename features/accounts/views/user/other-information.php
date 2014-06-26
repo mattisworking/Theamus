@@ -1,42 +1,65 @@
 <?php
+
+// Define the user information
 $user = $tUser->user;
+
 ?>
-<form class="site-form" onsubmit="return false;">
+<form class="form-horizontal col-10" id="user-form">
     <h2 class="form-header">General Information</h2>
+
+    <!-- Member Since -->
     <div class="form-group">
-        <label class="control-label">Member Since</label>
-        <div class="form-control-static"><?php echo date("F jS, Y", strtotime($user['created'])); ?></div>
-        <p class="help-block">Thank you!</p>
+        <label class="control-label col-3">Member Since</label>
+        <div class="col-9">
+            <p class="form-control-static"><?php echo date("F jS, Y", strtotime($user['created'])); ?></p>
+            <p class="help-block">Thank you!</p>
+        </div>
     </div>
 
     <h2 class="form-header">Other Information</h2>
+
+    <!-- Member Groups -->
     <div class="form-group">
-        <label class="control-label">Groups you are a part of</label>
-        <div class="form-control-static">
-            <?php
-            $groups = explode(",", $user['groups']);
-            foreach ($groups as $group) {
-                echo ucwords(str_replace("_", " ", $group)). "<br>";
-            }
-            ?>
+        <label class="control-label col-3">Associated Groups</label>
+        <div class="col-9">
+            <p class="form-control-static">
+                <?php
+                foreach (explode(",", $user['groups']) as $group) {
+                    echo ucwords(str_replace("_", " ", $group)). "<br>";
+                }
+                ?>
+            </p>
         </div>
     </div>
-    <div class="form-group">
-        <label class="control-label">Features you have access to</label>
-        <div class="form-control-static">
-            <?php
-            $groups = explode(",", $user['groups']);
-            foreach ($groups as $group) {
-                $query = $tData->select_from_table($tData->prefix."_features", array("name"), array("operator" => "", "conditions" => array("groups" => $group)));
 
-                if ($tData->count_rows($query) > 0) {
-                    $results = $tData->fetch_rows($query);
-                    foreach ($results as $feature) {
-                        echo $feature['name']."<br>";
+    <!-- Feature Access -->
+    <div class="form-group">
+        <label class="control-label col-3">Accessible Features</label>
+        <div class="col-9">
+            <p class="form-control-static">
+                <?php
+                foreach (explode(",", $user['groups']) as $group) {
+                    $query = $tData->select_from_table($tData->prefix."_features",
+                                                        array("name"),
+                                                        array("operator"    => "",
+                                                              "conditions"  => array("groups" => $group)));
+
+                    if ($tData->count_rows($query) > 0) {
+                        foreach ($tData->fetch_rows($query) as $feature) {
+                            echo $feature['name']."<br>";
+                        }
                     }
                 }
-            }
-            ?>
+                ?>
+            </p>
         </div>
     </div>
 </form>
+
+<script>
+    $(document).ready(function() {
+        $('#user-form').submit(function(e) {
+            e.preventDefault();
+        });
+    });
+</script>

@@ -64,7 +64,6 @@ switch ($file) {
                 $feature['header'] = 'Edit Your Account';
                 break;
         }
-        $feature['js']['file'][] = 'edit_user.js';
         $feature['nav'] = array(
             'Account Information' => 'accounts/user/edit-account',
             'Personal Information' => 'accounts/user/edit-personal',

@@ -1,59 +1,164 @@
 <?php
+
+// Define the user information
 $user = $tUser->user;
+
 ?>
-<div id="user-result"></div>
-<form class="form" id="user-form" onsubmit="return save_account();">
-    <h2 class="form-header">Login Information</h2>
-    <div class="form-group">
-        <label class="control-label">Username</label>
-        <div class="form-control-static"><?php echo $user['username']; ?></div>
-        <p class="help-block">This is the username you log in with, it's unique to you and cannot be changed.</p>
+
+<!-- User Form Result -->
+<div id='user-result'></div>
+
+<!-- User Edit Form -->
+<form class='form-horizontal col-10' id='user-form'>
+    <h2 class='form-header' style='margin-top: 0px;'>Login Information</h2>
+
+    <!-- Username -->
+    <div class='form-group'>
+        <label class='control-label col-2'>Username</label>
+        <div class=' col-10'>
+            <p class='form-control-static'><i><?php echo $user['username']; ?></i></p>
+            <p class='help-block'>This is the username you log in with, it's unique to you and cannot be changed.</p>
+        </div>
     </div>
 
+    <hr class='form-split'>
 
-    <div class="form-group">
-        <label class="control-label checkbox">
+    <!-- Change Password -->
+    <div class='form-group' style='margin-left: 20px;'>
+        <label class='checkbox'>
+            <input type='checkbox' name='change_password' id='change-password'>
             Change Password
-            <input type="checkbox" name="change_pass" id="changePass" onchange="toggle_pass();">
         </label>
     </div>
 
-    <div id="passwords" style="display:none;">
-        <hr class="form-split">
-
-        <div class="form-group">
-            <label class="control-label" for="password">New Password</label>
-            <input type="password" id="password" name="password" class="form-control">
-            <p class="help-block">What would you like your new password to be?<br>I bet it's something good.</p>
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="repeat-password">Repeat Password</label>
-            <input type="password" id="repeat-password" name="repeat_password" class="form-control">
-            <p class="help-block">This should match the password above.</p>
+    <div id='passwords' style='display:none;'>
+        <!-- Password -->
+        <div class='form-group'>
+            <label class='control-label col-3' for='password'>New Password</label>
+            <div class='col-9'>
+                <input type='password' id='password' name='password' class='form-control'>
+            </div>
         </div>
 
-        <hr class="form-split">
-    </div>
-
-    <h2 class="form-header">Profile Picture</h2>
-    <div class="form-group">
-        <label class="control-label">Current Picture</label>
-        <div class="form-control-static">
-            <?php if ($user['picture'] == ""): ?>
-            <img id="current-pic" src="media/profiles/default-user-picture.png" alt="" height="150">
-            <?php else: ?>
-            <img id="current-pic" src="media/profiles/<?=$user['picture']?>" alt="" height="150">
-            <?php endif; ?>
+        <!-- Password Repeat -->
+        <div class='form-group'>
+            <label class='control-label col-3' for='password-again'>Password Again</label>
+            <div class='col-9'>
+                <input type='password' name='password_again' id='password-again' class='form-control'>
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        <label class="control-label" for="picture">Change Picture</label>
-        <input type="file" class="form-control" id="picture" name="picture" />
+
+    <hr class='form-split' id='password-split'>
+
+    <h2 class='form-header'>Profile Picture</h2>
+
+    <div class='col-12'>
+        <!-- Profile Picture -->
+        <div class='col-4'>
+            <div class='form-group'>
+                <label class='control-label'>Current Picture</label>
+                <div class='form-control-static' style='text-align: center;'>
+                    <?php if ($user['picture'] == ''): ?>
+                    <img src='media/profiles/default-user-picture.png' alt='' height='150'>
+                    <?php else: ?>
+                    <img src='media/profiles/<?php echo $user['picture']; ?>' alt='' height='150'>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <div class='col-8'>
+            <div class='form-group'>
+                <label class='control-label' for='picture'>Change Picture</label>
+                <div class='form-control-static'>
+                    <input type='file' class='form-control' id='picture' name='picture'>
+                </div>
+
+                <?php if ($tUser->user['picture'] != 'default-user-picture.png'): ?>
+                <p class='form-control-static'>
+                    <a href='#' id='remove-picture'>Remove Picture</a>
+                </p>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
 
-    <hr class="form-split">
+    <hr class='form-split'>
 
-    <div class="site-formsubmitrow">
-        <button type="submit" class="btn btn-success">Save</button>
+    <div class='form-button-group' style='text-align: right;'>
+        <button type='submit' class='btn btn-success'>Save Account Information</button>
     </div>
 </form>
+
+<script>
+    $(document).ready(function() {
+        $('#change-password').click(function() {
+            if (this.checked === true) {
+                $('#passwords').show();
+            } else {
+                $('#passwords').hide();
+            }
+        });
+
+        $('#remove-picture').click(function(e) {
+            e.preventDefault();
+
+            scroll_top();
+            theamus.ajax.api({
+                type:       'post',
+                url:        theamus.base_url+'accounts/user/save-account/',
+                method:     ['Accounts', 'remove_user_picture'],
+                success:    function(data) {
+                    if (typeof(data) !== 'object') {
+                        $('#user-result').html(alert_notify('danger', 'There was an issue sending this data to the server.'));
+                        return;
+                    }
+
+                    if (typeof(data) === 'string') {
+                        $('#user-result').html(data.response.data);
+                        return;
+                    }
+
+                    $('#user-result').html(alert_notify('success', 'Profile picture removed.'));
+
+                    setTimeout(function() {
+                        window.location.reload();
+                    }, 2500);
+                }
+            });
+        });
+
+        $('#user-form').submit(function(e) {
+            e.preventDefault();
+
+            scroll_top();
+            theamus.ajax.api({
+                type:       'post',
+                url:        theamus.base_url+'accounts/user/save-account/',
+                method:     ['Accounts', 'save_current_account'],
+                data:       { form: this },
+                success:    function(data) {
+                    if (typeof(data) !== 'object') {
+                        $('#user-result').html(alert_notify('danger', 'There was an issue sending this data to the server.'));
+                        return;
+                    }
+
+                    if (typeof(data) === 'string') {
+                        $('#user-result').html(data.response.data);
+                        return;
+                    }
+
+                    $('#user-result').html(alert_notify('success', 'This information has been saved.'));
+
+                    setTimeout(function() {
+                        $('#user-result').html('');
+                        $('#user-result').hide();
+                    }, 2500);
+                }
+            });
+
+            return false;
+        });
+    });
+</script>

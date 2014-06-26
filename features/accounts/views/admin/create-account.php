@@ -1,5 +1,6 @@
 <?php
 
+// Check the user's permission against creating accounts
 if ($tUser->has_permission('add_users') == false) {
     die('You don\'t have permission to create new users.');
 }
@@ -16,6 +17,7 @@ if ($tUser->has_permission('add_users') == false) {
 <form class="form-horizontal new-account-form">
     <div class="form-header">Login Information</div>
 
+    <!-- Username -->
     <div class='form-group'>
         <label class='control-label col-3' for='username'>Username</label>
         <div class='col-9'>
@@ -28,6 +30,7 @@ if ($tUser->has_permission('add_users') == false) {
 
     <hr class='form-split' />
 
+    <!-- Password -->
     <div class='form-group'>
         <label class='control-label col-3' for='password'>Password</label>
         <div class='col-9'>
@@ -35,6 +38,7 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
+    <!-- Password Repeat -->
     <div class='form-group'>
         <label class='control-label col-3' for='password-again'>Password Again</label>
         <div class='col-9'>
@@ -44,6 +48,7 @@ if ($tUser->has_permission('add_users') == false) {
 
     <div class='form-header'>Personal Information</div>
 
+    <!-- First Name -->
     <div class='form-group'>
         <label class='control-label col-3' for='firstname'>First Name</label>
         <div class='col-9'>
@@ -51,6 +56,7 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
+    <!-- Last Name -->
     <div class='form-group'>
         <label class='control-label col-3' for='lastname'>Last Name</label>
         <div class='col-9'>
@@ -58,6 +64,7 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
+    <!-- Gender -->
     <div class='form-group'>
         <label class='control-label col-3' for='gender'>Gender</label>
         <div class='col-9'>
@@ -68,6 +75,7 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
+    <!-- Birthday -->
     <div class='form-group'>
         <label class='control-label col-3'>Birthday</label>
         <div class='col-9'>
@@ -97,6 +105,7 @@ if ($tUser->has_permission('add_users') == false) {
 
     <div class='form-header'>Contact Information</div>
 
+    <!-- Email -->
     <div class='form-group'>
         <label class='control-label col-3' for='email'>Email</label>
         <div class='col-9'>
@@ -104,6 +113,7 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
+    <!-- Phone Number -->
     <div class='form-group'>
         <label class='control-label col-3' for='phone'>Phone</label>
         <div class='col-9'>
@@ -113,6 +123,7 @@ if ($tUser->has_permission('add_users') == false) {
 
     <div class='form-header'>Permissions and Access</div>
 
+    <!-- Groups -->
     <div class='form-group'>
         <label class='control-label col-3' for='groups'>Groups</label>
         <div class='col-9'>
@@ -133,6 +144,7 @@ if ($tUser->has_permission('add_users') == false) {
     </div>
 
     <?php if ($tUser->is_admin() && $tUser->in_group("administrators")): ?>
+    <!-- Administrator User -->
     <div class="form-group">
         <label class='checkbox' for='is-admin'>
             <input type='checkbox' name='is_admin' id='is-admin'>
@@ -153,33 +165,39 @@ if ($tUser->has_permission('add_users') == false) {
 
 <script>
     $(document).ready(function() {
-        admin_window_run_on_load('change_accounts_tab');
+        admin_window_run_on_load('change_accounts_tab'); // Listen to the tab changer
 
+        // New user form submission
         $('.new-account-form').submit(function(e) {
             e.preventDefault();
 
+            // Scroll to the top of the window and show a loading notification
             $('#theamus-accounts').scrollTop(0);
             $('#create-account-result').html(alert_notify('spinner', 'Creating...'));
 
+            // Make the call to create a new user
             theamus.ajax.api({
                 type:       'post',
                 url:        theamus.base_url+'accounts/admin/create-account/',
-                method:     ['AccountsApi', 'create_new_account'],
-                data:       { form: $(this) },
+                method:     ['Accounts', 'create_new_account'],
+                data:       { form: this },
                 success:    function(data) {
-                    console.log(data);
-
+                    // Show an error if the call returned isn't what it should be
                     if (typeof(data) !== 'object') {
                         $('#create-account-result').html(alert_notify('danger', 'Something happened when trying to create this user. It didn\'t work. :('));
                         return;
                     }
 
+                    // Show the error produced by the call
                     if (typeof(data.response.data) !== 'boolean') {
                         $('#create-account-result').html(data.response.data);
                         return;
                     }
 
+                    // Show the success message for a successful result
                     $('#create-account-result').html(alert_notify('success', 'This user was created successfully.'));
+
+                    // Go back to the list of users
                     setTimeout(function() {
                         update_admin_window_content('theamus-accounts', 'accounts/admin/');
                         change_admin_window_title('theamus-accounts', 'Theamus Accounts');

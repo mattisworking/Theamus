@@ -179,7 +179,7 @@ function user_logout() {
     theamus.ajax.api({
         type:       'post',
         url:        theamus.base_url+'accounts/logout/',
-        method:     ['AccountsApi', 'logout'],
+        method:     ['Accounts', 'logout'],
         success:    go_to
     });
 

@@ -8,7 +8,7 @@ class Accounts {
      */
     protected $tData;
 
-    
+
    /**
      * Theamus user class
      *
@@ -98,6 +98,9 @@ class Accounts {
             // Define the phone number and remove anything that isn't a number
             $phone = urldecode($number);
             $numbers = preg_replace('/[^0-9]/', '', $phone);
+
+            // Check for numeric numbers only
+            if (!is_numeric($numbers)) return '';
 
             // Check for a leading 1 and remove it if there is one
             if (strlen($numbers) >= 10 && strlen($numbers) <= 11) {
@@ -477,6 +480,9 @@ class Accounts {
 
             // Define the user ID in the return array
             $user_variables['id'] = $this->decode($data['id']);
+
+            // Define the user active variable
+            $user_variables['active'] = !isset($data['active']) || $data['active'] == '' || is_bool($data['active']) ? 1 : 0;
         }
 
         // Check the request - conting on if it IS an 'edit' request'
@@ -569,6 +575,11 @@ class Accounts {
      * @return string|boolean
      */
     protected function create_account($data, $registration = false) {
+        // Check for an administrator
+        if (!$registration && (!$this->tUser->is_admin() || !$this->tUser->has_permission('add_users'))) {
+            die('You must be an administrator to do this.');
+        }
+
         // Sanitize and check the given variables
         $user_variables = $this->sanitize_account_variables($data, false, $registration);
 
@@ -643,6 +654,9 @@ class Accounts {
      * @return string|boolean
      */
     public function save_account($data) {
+        // Check for an administrator
+        if (!$this->tUser->is_admin() || !$this->tUser->has_permission('edit_users')) die('You must be an administrator to do this.');
+
         // Sanitize and check the given variables
         $user_variables = $this->sanitize_account_variables($data, true);
 
@@ -662,7 +676,8 @@ class Accounts {
                 array('value' => $user_variables['birthday']),
                 array('value' => $user_variables['gender']),
                 array('value' => $user_variables['groups']),
-                array('value' => $user_variables['admin'])
+                array('value' => $user_variables['admin']),
+                array('value' => $user_variables['active'])
             ),
             'clause'    => array(
                 array('operator' => 'AND', 'conditions' => array('key' => 'email', 'selector' => $user_variables['id'])),
@@ -672,7 +687,8 @@ class Accounts {
                 array('operator' => 'AND', 'conditions' => array('key' => 'birthday', 'selector' => $user_variables['id'])),
                 array('operator' => 'AND', 'conditions' => array('key' => 'gender', 'selector' => $user_variables['id'])),
                 array('operator' => 'AND', 'conditions' => array('key' => 'groups', 'selector' => $user_variables['id'])),
-                array('operator' => 'AND', 'conditions' => array('key' => 'admin', 'selector' => $user_variables['id']))
+                array('operator' => 'AND', 'conditions' => array('key' => 'admin', 'selector' => $user_variables['id'])),
+                array('operator' => 'AND', 'conditions' => array('key' => 'active', 'selector' => $user_variables['id']))
             )
         );
 
@@ -700,6 +716,9 @@ class Accounts {
      * @return string|boolean
      */
     public function remove_account($id) {
+        // Check for an administrator
+        if (!$this->tUser->is_admin() || !$this->tUser->has_permission('remove_users')) die('You must be an administrator to do this.');
+
         // Check the given ID and return respectively
         if ($id == '') {
             return alert_notify('danger', 'The given user id is invalid.', '', true);
@@ -714,5 +733,586 @@ class Accounts {
         }
 
         return true; // Return positively
+    }
+
+
+    /**
+     * Checks for a logged in user
+     *
+     * @return boolean
+     */
+    private function check_user() {
+        return $this->tUser->user != false ? true : false;
+    }
+
+
+    /**
+     * Saves the currently logged in user's edited information to the database
+     *
+     * @param array $user
+     * @return string|boolean
+     */
+    public function save_current_account($user) {
+        // Boot the user if they aren't logged in
+        if (!$this->check_user()) die('You must be logged in to save account information.');
+
+        // Define default variables
+        $query_data = array();
+
+        // Update the user's profile picture
+        if (!empty($_FILES)) {
+            $picture = $_FILES['picture'];
+
+            // Get the filetype
+            $filetype_array = explode('.', $picture['name']);
+            $filetype = strtolower($filetype_array[count($filetype_array) - 1]);
+
+            // Define the file name
+            $filename = md5(time().$picture['name']).'.'.$filetype;
+
+            // Check filetype
+            $allowed_types = array('jpg', 'png', 'jpeg', 'bmp', 'tiff');
+            if (!in_array($filetype, $allowed_types)) {
+                alert_notify('danger', 'Invalid type of profile picture uploaded.', '', true);
+            }
+
+            // Upload the file
+            if (move_uploaded_file($picture['tmp_name'], path(ROOT.'/media/profiles/'.$filename))) {
+                $query_data['data'][]   = array('value' => $filename);
+                $query_data['clause'][] = array(
+                    'operator'      => 'AND',
+                    'conditions'    => array('key' => 'picture', 'selector' => $this->tUser->user['id']));
+            } else {
+                alert_notify('danger', 'There was an error uploading your picture. This may be because of file permissions.', '', true);
+            }
+        }
+
+        // Save the user's password
+        if (is_bool($user['change_password'])) {
+            // Check for a password
+            if (!isset($user['password']) || $user['password'] == '') {
+                return alert_notify('danger', 'Please fill out the password field.', '', true);
+            }
+
+            // Check for a repeated password
+            if (!isset($user['password_again']) || $user['password_again'] == '') {
+                return alert_notify('danger', 'Please fill out the password field.', '', true);
+            }
+
+            // Check the password length
+            if ($this->define_password($user['password']) !== true) {
+                return alert_notify('danger', 'The password provided is too short.', '', true);
+            }
+
+            // Check the passwords against eachother
+            if ($user['password'] != $user['password_again']) {
+                return alert_notify('danger', 'The passwords provided do not match.', '', true);
+            }
+
+            // Define the salt to encrypt the password with
+            $salt = $this->tData->get_config_salt('password');
+
+            // Update the database
+            $query_data['data'][] = array('value' => hash('SHA256', $user['password'].$salt));
+            $query_data['clause'][] = array(
+                    'operator'      => 'AND',
+                    'conditions'    => array('key' => 'password', 'selector' => $this->tUser->user['id']));
+        }
+
+        // Update the database
+        if (isset($query_data['data']) && isset($query_data['clause'])) {
+            $update_query = $this->tData->update_table_row($this->tData->prefix.'_users', $query_data['data'], $query_data['clause']);
+
+            // Check the update query
+            if(!$update_query) {
+                return alert_notify('danger', 'There was an issue when saving this information to the database.', '', true);
+            }
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Changes a user's profile picture back to the default picture
+     *
+     * @return string|boolean
+     */
+    public function remove_user_picture() {
+        // Check for a logged in user
+        if (!$this->check_user()) die('You must be logged in to remove account profile pictures.');
+
+        // Check the user's profile picture for the default picture
+        if ($this->tUser->user['picture'] != 'default-user-picture.png') {
+            return alert_notify('danger', 'You cannot remove the default profile picture.', '', true);
+        }
+
+        // Remove the user's picture from the folder
+        if (!unlink(path(ROOT.'/media/profiles/'.$this->tUser->user['picture']))) {
+            return alert_notify('danger', 'There was an error deleting the picture from the pictures folder.', '', true);
+        }
+
+        // Update the table row to reflect the change
+        $query = $this->tData->update_table_row($this->tData->prefix.'_users',
+            array('value' => 'default-user-picture.png'),
+            array(
+                'operator'      => 'AND',
+                'conditions'    => array('key' => 'picture', 'selector' => $this->tUser->user['id'])));
+
+        // Check the query
+        if (!$query) {
+            return alert_notify('danger', 'There was an issue when updating the picture field in the database.', '', true);
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Saves users personal information to the database
+     *
+     * @param array $user
+     * @return string|boolean
+     */
+    public function save_current_personal($user) {
+        // Check for a logged in user
+        if (!$this->check_user()) die('You must be logged in to save personal account information.');
+
+        // Validate the first name
+        if (!isset($user['firstname']) || $user['firstname'] == '') {
+            return alert_notify('danger', 'Please fill out the "First Name" field.', '', true);
+        }
+
+        // Validate the last name
+        if (!isset($user['lastname']) || $user['lastname'] == '') {
+            return alert_notify('danger', 'Please fill out the "Last Name" field.', '', true);
+        }
+
+        // Define the birthday
+        $user['birthday'] = $user['bday_y'].'-'.$user['bday_m'].'-'.$user['bday_d'];
+
+        // Update the database with this new information
+        $query = $this->tData->update_table_row($this->tData->prefix.'_users',
+            array(
+                array('value' => $user['firstname']),
+                array('value' => $user['lastname']),
+                array('value' => $user['gender']),
+                array('value' => $user['birthday'])),
+            array(
+                array(
+                    'operator'      => 'AND',
+                    'conditions'    => array('key' => 'firstname', 'selector' => $this->tUser->user['id'])),
+                array(
+                    'operator'      => 'AND',
+                    'conditions'    => array('key' => 'lastname', 'selector' => $this->tUser->user['id'])),
+                array(
+                    'operator'      => 'AND',
+                    'conditions'    => array('key' => 'gender', 'selector' => $this->tUser->user['id'])),
+                array(
+                    'operator'      => 'AND',
+                    'conditions'    => array('key' => 'birthday', 'selector' => $this->tUser->user['id']))));
+
+        // Check the query
+        if (!$query) {
+            return alert_notify('danger', 'There was an issue when saving this information to the database.', '', true);
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Saves user contact information to the database
+     *
+     * @param array $user
+     * @return string|boolean
+     */
+    public function save_current_contact($user) {
+        // Check for a logged in user
+        if (!$this->check_user()) die('You must be logged in to save account contact information.');
+
+        // Check for an email address
+        if (!isset($user['email']) || $user['email'] == '') {
+            return alert_notify('danger', 'Please fill out the "Email Address" field.', '', true);
+        }
+
+        // Validate the email
+        if ($this->define_email($user['email']) != true) {
+            return alert_notify('danger', 'Please enter a valid email address.', '', true);
+        }
+
+        // Update the database with this information
+        $query = $this->tData->update_table_row($this->tData->prefix.'_users',
+            array(
+                array('value' => $user['email']),
+                array('value' => $this->check_phone($user['phone']))),
+            array(
+                array(
+                    'operator'      => 'AND',
+                    'conditions'    => array('key' => 'email', 'selector' => $this->tUser->user['id'])),
+                array(
+                    'operator'      => 'AND',
+                    'conditions'    => array('key' => 'phone', 'selector' => $this->tUser->user['id']))));
+
+        // Check the query
+        if (!$query) {
+            return alert_notify('danger', 'There was an issue when saving this information to the database', '', true);
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Sets up return data to be sent to the client if there is an error
+     *
+     * @param string $message
+     * @return array
+     */
+    private function api_error($message = '') {
+        return array('response'=>array('data' => ''), 'error' => array('status'=>1,'message'=>$message));
+    }
+
+
+    /**
+     * Logs a user out, destroying their session and cookies
+     *
+     * @return boolean
+     */
+    public function logout() {
+        // Remove the session and cookies
+        session_destroy();
+        setcookie('session', '', 30, '/');
+        setcookie('userid', '', 30, '/');
+
+        return true; // Return
+    }
+
+
+    /**
+     * Logs a user in, creating a session and setting cookies
+     *
+     * @param array $args
+     * @return array|boolean
+     */
+    public function login($args) {
+        // Define the configured salts
+        $session_salt = $this->tData->get_config_salt('session');
+
+        // Validate the username
+        if (isset($args['username'])) {
+            if ($args['username'] == '') {
+                return $this->api_error('Please fill out the \'Username\' field.');
+            }
+        } else {
+            return $this->api_error('There was an error finding the username variable.');
+        }
+
+        // Validate the password
+        if (isset($args['password'])) {
+            if ($args['password'] == '') {
+                return $this->api_error('Please fill out the \'Password\' field.');
+            }
+        } else {
+            return $this->api_error('There was an error finding the password variable.');
+        }
+
+        // Define the username and password
+        $username = urldecode($args['username']);
+        $password = hash('SHA256', urldecode($args['password']).$this->tData->get_config_salt('password'));
+
+
+        // Query the database to check the existance of the given username
+        $selector_query = $this->tData->select_from_table($this->tData->prefix.'_users', array('selector'), array(
+            'operator'      => 'AND',
+            'conditions'    => array('key' => 'username', 'value' => $username)
+        ));
+
+        // Check for query results
+        if ($this->tData->count_rows($selector_query) == 0) {
+            return $this->api_error('Invalid username.');
+        }
+
+        // Define the selectors related to the provided username
+        $selector = $this->tData->fetch_rows($selector_query);
+
+        // Query the database for all of the information related to the found selector
+        $user_query = $this->tData->select_from_table($this->tData->prefix.'_users', array(), array(
+            'operator'      => '',
+            'conditions'    => array('selector' => $selector['selector'])
+        ));
+
+        // Define the user information
+        $user = $this->convert_keyval_to_associative($this->tData->fetch_rows($user_query));
+
+        // Check the user's password against the database
+        if ($user[$selector['selector']]['password'] != $password) {
+            return $this->api_error('Invalid credentials');
+        }
+
+        // Check the user's active status
+        if ($user[$selector['selector']]['active'] == 0) {
+            return $this->api_error('This account is not active. Please contact an adminsitrator to have it activated.');
+        }
+
+        // Define a new session value and the cookie expiration time
+        $session = md5(time().$session_salt);
+        $expire = time() + 3600;
+        if (isset($args['keep_session'])) {
+            if ($args['keep_session'] == 'true') {
+                $expire = time() + (60 * 60 * 24 * 14); // Two weeks from NOW
+            }
+        }
+
+        // Update the user's session in the database
+        if (!$this->tUser->add_user_session($user[$selector['selector']]['id'], $session, $expire)) {
+            return $this->api_error('There was an error updating/creating the session.');
+        }
+
+        return true; // Return
+    }
+
+
+    /**
+     * Checks for a valid username when a user is registering.
+     *  As they are typing, this provides the data to show a check or X in the text box
+     *
+     * @param array $args
+     * @return string
+     */
+    public function check_username($args) {
+        // Validate the given username, making sure it exists and isn't blank
+        if (!isset($args['username']) || $args['username'] == '') {
+            return 'invalid';
+        }
+
+        // Check the username on a higher level, for it's existence in the database or illegal characters and return the value
+        return $this->define_username(urldecode($args['username']));
+    }
+
+
+    /**
+     * Checks for a valid password when a user is registering.
+     *  As they are typing, this provides the data to show a check or X in the text box
+     *
+     * @param array $args
+     * @return string
+     */
+    public function check_password($args) {
+        // Validate the given password, making sure it exists and isn't blank
+        if (!isset($args['password']) || $args['password'] == '') {
+            return 'invalid';
+        }
+
+        // Check the password on a higher level, for length, mostly
+        return $this->define_password(urldecode($args['password']));
+    }
+
+
+    /**
+     * Checks for a valid email address when a user is registering.
+     *  As they are typing, this provides the data to show a check or X in the text box
+     *
+     * @param array $args
+     * @return string
+     */
+    public function check_email($args) {
+        // Validate the given email address, making sure it exists and isn't blank
+        if (!isset($args['email']) || $args['email'] == '') {
+            return 'invalid';
+        }
+
+        // Check the password on a higher level, validating it as an address
+        return $this->define_email(urldecode($args['email']));
+    }
+
+
+    /**
+     * Runs the parent (Accounts) function to register users to the website
+     *
+     * @param array $args
+     * @return array|boolean
+     */
+    public function register_user($args) {
+        // Validate the required registration parameters
+        $data = $this->check_register_parameters($args);
+
+        // Return based on the results of the validation above ^^
+        if (!is_bool($data) && !is_array($data)) {
+            return $data;
+        }
+
+        $data['change_password'] = true; // Pay attention to the password
+
+        // Return the value that was returned by trying to register a user
+        return $this->create_account($data, true);
+    }
+
+
+    /**
+     * Defines the information to send out to the parent class, then runs a parent
+     * function to activate a user
+     *
+     * @param array $args
+     * @return array
+     */
+    public function activate_user($args) {
+        // Validate the given email address, making sure it exists and it isn't empty
+        if (!isset($args['email']) || $args['email'] == '') {
+            return array('error' => true, 'message' => 'Couldn\'t activate because there is no email address defined.');
+        }
+
+        // Validate the activation code, making sure it exists and it isn't empty
+        if (!isset($args['code']) || $args['code'] == '') {
+            return array('error' => true, 'message' => 'Couldn\'t activation because there is no activation code defined.');
+        }
+
+        // Define the email address and activation code
+        $email = urldecode($args['email']);
+        $code = urldecode($args['code']);
+
+        // Return the value that was returned by trying to activate a user
+        return $this->activate_a_user($email, $code);
+    }
+
+
+    /**
+     * Defines a template to use when listing users out in the window
+     *
+     * @return string
+     */
+    private function user_template() {
+        return implode('', array(
+            '<li>',
+            '<ul class=\'user-options\'>',
+            $this->tUser->has_permission('edit_users') ? '<li><a href=\'#\' name=\'edit-account-link\' data-id=\'%id%\'><span class=\'glyphicon ion-edit\'></span></a></li>' : '',
+            $this->tUser->has_permission('remove_users') ? '::%permanent% == 0 ? "<li><a href=\'#\' name=\'remove-account-link\' data-id=\'%id%\'><span class=\'glyphicon ion-close\'></span></a></li>" : ""::' : '',
+            '</ul>',
+            '<span class=\'full-name\'>::stripslashes(trim(urldecode(\'%firstname% %lastname%\')))::</span>',
+            '<span class=\'username\'>%username%</span>',
+            '</li>'
+        ));
+    }
+
+
+    /**
+     * Defines user accounts into a presentable list for the administrator
+     *
+     * @param array $args
+     * @return string
+     */
+    public function get_user_accounts_list($args) {
+        // Check for an administrator
+        if (!$this->tUser->is_admin()) die('You must be an administrator to do this.');
+
+        // Define the page data information that will set up the return data
+        $this->tPages->set_page_data(array(
+            'data'              => $this->get_accounts(),
+            'per_page'      	=> 25,
+            'current'       	=> $args['page'],
+            'list_template' 	=> $this->user_template()
+        ));
+
+        // Return the list of users
+        return '<ul class=\'accounts\'>'.$this->tPages->print_list(true).'</ul>'.$this->tPages->print_pagination('accounts_next_page', 'admin-pagination', true);
+    }
+
+
+    /**
+     * Calls a parent(Accounts) class function that performs a search for users related to this website
+     *  and returns the information in a list format
+     *
+     * @param array $args
+     * @return string|array
+     */
+    public function search_accounts($args) {
+        // Check for an administrator
+        if (!$this->tUser->is_admin()) die('You must be an administrator to do this.');
+
+        // Validate the search query, making sure it exists
+        if (!isset($args['search_query'])) {
+            return alert_notify('danger', 'The search query was not found.', '', true);
+        }
+
+        // Define the current page number
+        $args['page'] = !isset($args['page']) || !is_numeric($args['page']) ? 1 : $args['page'];
+
+        // Search for the accounts in the database
+        $searched_accounts = $this->search_for_accounts($args['search_query']);
+
+        // Check if there are users to show - if not, show the results
+        if (!is_array($searched_accounts)) {
+            return $searched_accounts;
+        }
+
+        // Define the page data information that will set up the return data
+        $this->tPages->set_page_data(array(
+            'data'              => $searched_accounts,
+            'per_page'      	=> 25,
+            'current'       	=> $args['page'],
+            'list_template' 	=> $this->user_template()
+        ));
+
+        // Return the list of users
+        return '<ul class=\'accounts\'>'.$this->tPages->print_list(true).'</ul>'.$this->tPages->print_pagination('accounts_next_page', 'admin-pagination', true);
+    }
+
+
+    /**
+     * Calls a parent(Accounts) class function that creates a new user in the database
+     *
+     * @param array $args
+     * @return string|boolean
+     */
+    public function create_new_account($args) {
+        // Validate the fields required to create a new account
+        $data = $this->check_account_parameters($args);
+
+        // Check the validation above and return relevant information
+        if (!is_bool($data) && !is_array($data)) {
+            return $data;
+        }
+
+        $data['change_password'] = true; // Change the password (create)
+
+        // Return the data returned by creating an account from the parent class
+        return $this->create_account($data);
+    }
+
+
+    /**
+     * Calls a parent(Accounts) class function that saves account information to the database
+     *
+     * @param array $args
+     * @return string|boolean
+     */
+    public function save_account_information($args) {
+        // Validate the fields required to save account information
+        $data = $this->check_account_parameters($args, true);
+
+        // Check the validation above and return relevant information
+        if (!is_bool($data) && !is_array($data)) {
+            return $data;
+        }
+
+        // Return the data returned by saving the account information function from the parent class
+        return $this->save_account($data);
+    }
+
+
+    /**
+     * Calls a parent(Accounts) class function that removes a user from the database
+     *
+     * @param array $args
+     * @return string|boolean
+     */
+    public function remove_user_account($args) {
+        // Validate the given id, making sure it exists and has a value
+        if (!isset($args['id']) || $args['id'] == '') {
+            return 'Invalid account ID provided (or not?)';
+        }
+
+        // Return the data returned by the remove_account function from the parent class
+        return $this->remove_account($args['id']);
     }
 }

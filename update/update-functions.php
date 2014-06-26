@@ -64,6 +64,10 @@ function update_11() {
     return true;
 }
 
+function update_12() {
+    if (!update_users_table()) return false;
+}
+
 function update_version($version) {
     // Define the return array, connect and define database variables
     $return = array();
@@ -95,11 +99,10 @@ function update_users_table() {
 
     $this->tData->db->beginTransaction();
 
-    //$create_table = $this->tData->custom_query('CREATE TABLE IF NOT EXISTS `'.$temp_table_name.'` (`id` int(11) NOT NULL AUTO_INCREMENT, `key` varchar(100) NOT NULL, `value` TEXT NOT NULL, `selector` int(11) NOT NULL, PRIMARY KEY (`id`)) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;');
-    $create_table = false;
+    $create_table = $this->tData->custom_query('CREATE TABLE IF NOT EXISTS `'.$temp_table_name.'` (`id` int(11) NOT NULL AUTO_INCREMENT, `key` varchar(100) NOT NULL, `value` TEXT NOT NULL, `selector` int(11) NOT NULL, PRIMARY KEY (`id`)) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;');
     if ($create_table === false) {
         $this->tData->db->rollBack();
-        return 'There was an error creating the table \''.$temp_table_name.'\'.';
+        return false;
     }
 
     $all_accounts = $this->get_accounts();
@@ -117,23 +120,23 @@ function update_users_table() {
 
     if ($add_new_data == false) {
         $this->tData->db->rollBack();
-        return 'There was an error adding the new data to the temporary database.';
+        return false;
     }
 
     $remove_old_table = $this->tData->custom_query('DROP TABLE `'.$old_table_name.'`');
 
     if ($remove_old_table == false) {
         $this->tData->db->rollBack();
-        return 'There was an error dropping the old table \''.$old_table_name.'\'';
+        return false;
     }
 
     $rename_temp_table = $this->tData->custom_query('RENAME TABLE `'.$temp_table_name.'` TO `'.$old_table_name.'`');
 
     if ($rename_temp_table == false) {
         $this->tData->db->rollBack();
-        return 'There was an error renaming the temporary table.';
+        return false;
     }
 
     $this->tData->db->commit();
-    return 'The new users table has been successfully created and all information was transferred.';
+    return true;
 }

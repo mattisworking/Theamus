@@ -112,6 +112,7 @@ $('#password').keyup(function () {
         })
     }
 });
+
 $('#password-repeat').keyup(function () {
     if ($(this).val() === '') {
         change_glyph('password-repeat-group', false, '')
@@ -121,6 +122,7 @@ $('#password-repeat').keyup(function () {
         change_glyph('password-repeat-group', 'ion-checkmark', '')
     }
 });
+
 $('#email').keyup(function () {
     if ($(this).val() === '') {
         change_glyph('email-group', false, '')
@@ -148,6 +150,7 @@ $('#email').keyup(function () {
         })
     }
 });
+
 $('#register-form').submit(function (e) {
     e.preventDefault();
     $('#register-result').html(alert_notify('spinner', 'Registering...'));

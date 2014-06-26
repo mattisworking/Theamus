@@ -1,34 +1,42 @@
 <?php
 
+// Check the user's permissions for editing accounts
 if ($tUser->has_permission('edit_users') == false) {
     die(alert_notify('danger', 'You don\'t have permission to edit users.'));
 }
 
+// Check for a valid account ID
 if (!isset($url_params[0]) || !is_numeric($url_params[0])) {
     die(alert_notify('danger', 'Error finding the user from the given (or not?) ID.'));
 }
 
-$user_id = $url_params[0];
-$user_query = $tData->select_from_table($tData->prefix.'_users', array(), array('operator' => '', 'conditions' => array('selector' => $user_id)), 'ORDER BY `id`');
+// Query the database for the user based on the given ID
+$user_query = $tData->select_from_table($tData->prefix.'_users',
+                                        array(),
+                                        array('operator'    => '',
+                                              'conditions'  => array('selector' => $url_params[0])),
+                                        'ORDER BY `id`');
+
+// Check the user query
 if ($user_query == false) {
     die(alert_notify('danger', 'There was an issue when querying for users in the database.'));
 }
 
+// Check for any returned results from the database
 if ($tData->count_rows($user_query) == 0) {
     die(alert_notify('danger', 'This user was not found in the database.'));
 }
 
+// Define the user data from the gathered information
 $user_results = $tData->fetch_rows($user_query);
 
+// Assign the user data into an associative array to make it easier for data grabbing
 $user = array();
-$ignore = array('password');
-
 foreach ($user_results as $result) {
-    if (!in_array($result['key'], $ignore)) {
-        $user[$result['key']] = $result['value'];
-    }
+    $user[$result['key']] = $result['value'];
 }
 
+// Split up the birthday for the selects
 $user['birthday_array'] = explode('-', $user['birthday']);
 
 ?>
@@ -43,6 +51,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
 <form class='form-horizontal edit-account-form'>
     <div class='form-header'>Login Information</div>
 
+    <!-- Username -->
     <div class='form-group'>
         <label class='control-label col-3'>Username</label>
         <div class='col-9'>
@@ -55,6 +64,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
 
     <hr class='form-split' />
 
+    <!-- Password Change -->
     <div class='form-group'>
         <label class='checkbox'>
             <input type='checkbox' name='change_password'>
@@ -63,6 +73,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
     </div>
 
     <div id='password-group' style='display:none;'>
+        <!-- Password -->
         <div class='form-group'>
             <label class='control-label col-3' for='password'>Password</label>
             <div class='col-9'>
@@ -70,6 +81,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
             </div>
         </div>
 
+        <!-- Repeat Password -->
         <div class='form-group'>
             <label class='control-label col-3' for='password-again'>Password Again</label>
             <div class='col-9'>
@@ -80,6 +92,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
 
     <div class='form-header'>Personal Information</div>
 
+    <!-- First Name -->
     <div class='form-group'>
         <label class='control-label col-3' for='firstname'>First Name</label>
         <div class='col-9'>
@@ -87,6 +100,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
         </div>
     </div>
 
+    <!-- Last Name -->
     <div class='form-group'>
         <label class='control-label col-3' for='lastname'>Last Name</label>
         <div class='col-9'>
@@ -94,6 +108,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
         </div>
     </div>
 
+    <!-- Gender -->
     <div class='form-group'>
         <label class='control-label col-3' for='gender'>Gender</label>
         <div class='col-9'>
@@ -104,6 +119,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
         </div>
     </div>
 
+    <!-- Birthday -->
     <div class='form-group'>
         <label class='control-label col-3'>Birthday</label>
         <div class='col-9'>
@@ -136,6 +152,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
 
     <div class='form-header'>Contact Information</div>
 
+    <!-- Email -->
     <div class='form-group'>
         <label class='control-label col-3' for='email'>Email</label>
         <div class='col-9'>
@@ -143,6 +160,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
         </div>
     </div>
 
+    <!-- Phone Number -->
     <div class='form-group'>
         <label class='control-label col-3' for='phone'>Phone</label>
         <div class='col-9'>
@@ -153,6 +171,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
     <?php if ($tUser->is_admin() && $tUser->in_group('administrators')): ?>
     <div class='form-header'>Permissions and Access</div>
 
+    <!-- Groups -->
     <div class='form-group'>
         <label class='control-label col-3' for='groups'>Groups</label>
         <div class='col-9'>
@@ -170,16 +189,25 @@ $user['birthday_array'] = explode('-', $user['birthday']);
         </div>
     </div>
 
+    <!-- Administrator -->
     <div class='form-group'>
-        <label class='checkbox' for='is-admin'>
-            <input type='checkbox' name='is_admin' id='is-admin' <?php if ($user['admin'] == 1) echo 'checked'; ?>>
+        <label class='checkbox'>
+            <input type='checkbox' name='is_admin' <?php if ($user['admin'] == 1) echo 'checked'; ?>>
             Administrator
         </label>
-        <div class='form-control-feedback'>
-            <br><strong>Note:</strong> Making the user an administrator will give he or she the rights to the administration panel.  This does not affect the abilities and access provided by placing the user in the 'Administrators' group, however.
-        </div>
+        <p class='form-control-feedback'>
+            <strong>Note:</strong> Making the user an administrator will give he or she the rights to the administration panel.  This does not affect the abilities and access provided by placing the user in the 'Administrators' group, however.
+        </p>
     </div>
     <?php endif; ?>
+
+    <!-- Active User -->
+    <div class='form-group'>
+        <label class='checkbox'>
+            <input type='checkbox' name='active' <?php if ($user['active'] == 1) echo 'checked'; ?>>
+            Active User
+        </label>
+    </div>
 
     <hr class='form-split'>
 
@@ -190,8 +218,9 @@ $user['birthday_array'] = explode('-', $user['birthday']);
 
 <script>
     $(document).ready(function() {
-        admin_window_run_on_load('change_accounts_tab');
+        admin_window_run_on_load('change_accounts_tab'); // Listen to the tab changer
 
+        // Toggle the password change fields
         $('[name="change_password"]').click(function(e) {
             if (this.checked === true) {
                 $('#password-group').show();
@@ -200,33 +229,37 @@ $user['birthday_array'] = explode('-', $user['birthday']);
             }
         });
 
+        // Save account information form submission
         $('.edit-account-form').submit(function(e) {
             e.preventDefault();
 
+            // Scroll to the top of the window and show a loading notification
             $('#theamus-accounts').scrollTop(0);
             $('#edit-account-result').html(alert_notify('spinner', 'Saving...'));
 
+            // Make the call to save this user information
             theamus.ajax.api({
                 type:       'post',
                 url:        theamus.base_url+'accounts/admin/save-account',
-                method:     ['AccountsApi', 'save_account_information'],
+                method:     ['Accounts', 'save_account_information'],
                 data:       {
                     form: this,
-                    custom: {
-                        id: encode('<?php echo $user['id']; ?>')
-                    }
+                    custom: { id: encode('<?php echo $user['id']; ?>') }
                 },
                 success:    function(data) {
+                    // Show an error if the call returned isn't what it should be
                     if (typeof(data) !== 'object') {
                         $('#edit-account-result').html(alert_notify('danger', 'Something happened when trying to save this information. It didn\'t work. :('));
                         return;
                     }
 
+                    // Show the error produced by the call
                     if (typeof(data.response.data) !== 'boolean') {
                         $('#edit-account-result').html(data.response.data);
                         return;
                     }
 
+                    // Show the success message for a successful result
                     $('#edit-account-result').html(alert_notify('success', 'This information has been saved.'));
                 }
             });

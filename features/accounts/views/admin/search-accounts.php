@@ -13,26 +13,30 @@
     </div>
 </form>
 
+<!-- Accounts Search Results List -->
 <div id='account-search-results' class='accounts-list'></div>
 
 <script>
     $(document).ready(function() {
-        admin_window_run_on_load('change_accounts_tab');
+        admin_window_run_on_load('change_accounts_tab'); // Listen to tab changer
 
+        // Search form submission
         $('.search-form').submit(function(e) {
             e.preventDefault();
 
+            // Make the call to search for accounts
             theamus.ajax.api({
                 type:       'get',
                 url:        theamus.base_url+'accounts/admin/search-for-accounts/',
-                method:     ['AccountsApi', 'search_accounts'],
+                method:     ['Accounts', 'search_accounts'],
                 data:       { form: this },
                 success:    function(data) {
+                    // Show an error if the call returned isn't what it should be
                     if (typeof(data) === 'object') {
                         $('#account-search-results').html(data.response.data);
                         admin_window_run_on_load('add_account_listeners');
                     } else {
-                        console.log(data);
+                        // Show the success message for a successful result
                         $('#account-search-results').html(alert_notify('danger', 'Something went wrong when searching for users.'));
                     }
                 }
