@@ -8,7 +8,7 @@ $feature['class']['folder']     = 'php';
 
 // Custom function file to load beforehand
 //$feature['functions']['file'] = 'php/functions.php';
-$feature['api']['class_file'] = array('php/accounts.class.php', 'php/accounts-api.php');
+$feature['api']['class_file'] = array('php/accounts.class.php');
 
 // Define feature information
 $feature['alias']       = 'accounts';

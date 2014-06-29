@@ -6,11 +6,12 @@ function accounts_next_page(page) {
     theamus.ajax.api({
         type:       'get',
         url:        theamus.base_url+'accounts/get-user-accounts-list/',
-        method:     ['AccountsAPI', 'get_user_accounts_list'],
+        method:     ['Accounts', 'get_user_accounts_list'],
         data:       {
             custom: { page: page }
         },
         success:    function(data) {
+            console.log(data);
             if (typeof(data) === 'object') {
                 $('#accounts-list').html(data.response.data);
             }
