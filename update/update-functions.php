@@ -11,7 +11,7 @@ function update_02() {
     $tData->db  = $tData->connect(true);
 
     // Create the themes-data table
-    $query = $tData->db->query("CREATE TABLE IF NOT EXISTS `".$tData->get_system_prefix()."_themes-data` (`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(`id`), `key` TEXT NOT NULL, `value` TEXT NOT NULL, `selector` TEXT NOT NULL, `theme` VARCHAR(50) NOT NULL);");
+    $query = $tData->db->query("CREATE TABLE IF NOT EXISTS `".DB_PREFIX."themes-data` (`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(`id`), `key` TEXT NOT NULL, `value` TEXT NOT NULL, `selector` TEXT NOT NULL, `theme` VARCHAR(50) NOT NULL);");
 
     // Check the query and return
     if ($query == false) {
@@ -29,10 +29,10 @@ function update_11() {
     // Connect to the database
     $tData      = new tData();
     $tData->db  = $tData->connect();
-    $prefix     = $tData->get_system_prefix();
+    $prefix     = DB_PREFIX;
 
     // Create the user sessions table
-    $tData->db->query("CREATE TABLE IF NOT EXISTS `".$prefix."_user-sessions` (`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(`id`), `key` TEXT NOT NULL, `value` TEXT NOT NULL, `ip_address` TEXT NOT NULL, `user_id` INT NOT NULL);");
+    $tData->db->query("CREATE TABLE IF NOT EXISTS `".$prefix."user-sessions` (`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(`id`), `key` TEXT NOT NULL, `value` TEXT NOT NULL, `ip_address` TEXT NOT NULL, `user_id` INT NOT NULL);");
 
     // Get the tables from the database
     $tables = array();
@@ -42,23 +42,23 @@ function update_11() {
     }
 
     // Rename the images table
-    if (!in_array($prefix."_media", $tables));
-    $tData->db->query("RENAME TABLE `".$prefix."_images` TO `".$prefix."_media`");
+    if (!in_array($prefix."media", $tables));
+    $tData->db->query("RENAME TABLE `".$prefix."images` TO `".$prefix."media`");
 
     // Find the session column in the user's table
-    $users_table = $tData->db->query("SELECT `session` FROM `".$prefix."_users` LIMIT 1");
+    $users_table = $tData->db->query("SELECT `session` FROM `".$prefix."users` LIMIT 1");
 
     // Drop the session column
     if ($users_table) {
-        $tData->db->query("ALTER TABLE `".$prefix."_users` DROP COLUMN `session`;");
+        $tData->db->query("ALTER TABLE `".$prefix."users` DROP COLUMN `session`;");
     }
 
     // Find the type column in the media table
-    $media_table = $tData->db->query("SELECT `type` FROM `".$prefix."_media` LIMIT 1");
+    $media_table = $tData->db->query("SELECT `type` FROM `".$prefix."media` LIMIT 1");
 
     // Add the type column
     if (!$media_table) {
-        $tData->db->query("ALTER TABLE `".$prefix."_media` ADD `type` TEXT NOT NULL;");
+        $tData->db->query("ALTER TABLE `".$prefix."media` ADD `type` TEXT NOT NULL;");
     }
 
     return true;
@@ -73,10 +73,10 @@ function update_version($version) {
     $return = array();
     $tDataClass = new tData();
     $tData = $tDataClass->connect();
-    $prefix = $tDataClass->get_system_prefix();
+    $prefix = DB_PREFIX;
 
     // Update the version
-    $return[] = $tData->query("UPDATE `".$prefix."_settings` SET `version`='$version'") ? true : false;
+    $return[] = $tData->query("UPDATE `".$prefix."settings` SET `version`='$version'") ? true : false;
 
     // Disconnect from the database and return
     $tDataClass->disconnect();
@@ -94,8 +94,8 @@ function update_cleanup() {
 }
 
 function update_users_table() {
-    $old_table_name = $this->tData->prefix.'_users';
-    $temp_table_name = $this->tData->prefix.'_users-new';
+    $old_table_name = $this->tData->prefix.'users';
+    $temp_table_name = $this->tData->prefix.'users-new';
 
     $this->tData->db->beginTransaction();
 

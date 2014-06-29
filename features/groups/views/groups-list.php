@@ -31,7 +31,7 @@ $template = <<<TEMPLATE
 TEMPLATE;
 
 $query_data = array(
-    "table_name"    => $tData->prefix."_groups",
+    "table_name"    => $tData->prefix."groups",
     "data"          => array("id", "alias", "name", "permanent"),
     "clause"        => array(
         "operator"  => "OR",

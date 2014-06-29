@@ -2,7 +2,7 @@
 
 $error = array(); // Empty error array
 $get = filter_input_array(INPUT_GET); // Define and clean the GET information
-$query_data = array("table" => $tData->prefix."_media");
+$query_data = array("table" => $tData->prefix."media");
 
 // Image ID
 $id = 0; // Default for the table check later

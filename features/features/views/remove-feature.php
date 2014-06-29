@@ -5,7 +5,7 @@ $get = filter_input_array(INPUT_GET);
 if (isset($get['id'])) {
     $id = $get['id'];
     if (is_numeric($id)) {
-        $query = $tData->select_from_table($tData->prefix."_features", array("id", "name"), array(
+        $query = $tData->select_from_table($tData->prefix."features", array("id", "name"), array(
             "operator"  => "",
             "conditions"=> array("id" => $id)
         ));

@@ -3,7 +3,7 @@
 $error = false; // Start out the day nicely.
 
 // Define and check the system settings
-$settings_query = $tData->select_from_table($tData->prefix."_settings", array("version"));
+$settings_query = $tData->select_from_table($tData->prefix."settings", array("version"));
 if (!$settings_query) {
     $error = "There was an error gathering information about the host system.";
 } else {

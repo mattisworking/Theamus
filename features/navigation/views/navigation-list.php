@@ -26,7 +26,7 @@ $template = <<<TEMPLATE
 </ul>
 TEMPLATE;
 
-$query = $tData->select_from_table($tData->prefix."_links", array("id", "text", "path", "groups"), array(
+$query = $tData->select_from_table($tData->prefix."links", array("id", "text", "path", "groups"), array(
     "operator"  => "OR",
     "conditions"=> array(
         "[%]text" => $search."%",

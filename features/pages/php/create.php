@@ -12,7 +12,7 @@ if (isset($post['title'])) {
         $alias = strtolower(str_replace(" ", "_", trim($clean_alias)));
 
         // Check the database for an existing page
-        $query_find_page = $tData->select_from_table($tData->prefix."_pages", array("id"), array(
+        $query_find_page = $tData->select_from_table($tData->prefix."pages", array("id"), array(
             "operator"  => "",
             "conditions"=> array("alias" => $alias)
         ));
@@ -54,7 +54,7 @@ if (isset($post['navigation'])) {
 // Get new link
 if (isset($post['create_link'])) {
     if ($post['create_link'] == "true") {
-        $query_create_link = $tData->insert_table_row($tData->prefix."_links", array(
+        $query_create_link = $tData->insert_table_row($tData->prefix."links", array(
             "alias"     => $alias,
             "text"      => $title,
             "path"      => $alias,
@@ -75,7 +75,7 @@ if (isset($post['create_link'])) {
 if (!empty($error)) {
     notify("admin", "failure", $error[0]);
 } else {
-    $query_create_page = $tData->insert_table_row($tData->prefix."_pages", array(
+    $query_create_page = $tData->insert_table_row($tData->prefix."pages", array(
         "alias"     => $alias,
         "title"     => $title,
         "content"   => $content,

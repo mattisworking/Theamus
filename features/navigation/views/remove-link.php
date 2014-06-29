@@ -5,7 +5,7 @@ $get = filter_input_array(INPUT_GET);
 if (isset($get['id'])) {
     $id = $get['id'];
     if (is_numeric($id)) {
-        $query = $tData->select_from_table($tData->prefix."_links", array("id", "text", "path"), array(
+        $query = $tData->select_from_table($tData->prefix."links", array("id", "text", "path"), array(
             "operator"  => "",
             "conditions"=> array("id" => $id)
         ));

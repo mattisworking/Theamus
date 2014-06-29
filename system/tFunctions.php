@@ -142,7 +142,7 @@ function tMail($to, $subject, $message) {
     $tData      = new tData();
     $tData->db  = $tData->connect(true);
 
-    $query      = $tData->select_from_table($tData->get_system_prefix()."_settings", array("email_protocol", "email_host", "email_port", "email_user", "email_password", "email_user", "name"));
+    $query      = $tData->select_from_table(DB_PREFIX."settings", array("email_protocol", "email_host", "email_port", "email_user", "email_password", "email_user", "name"));
     $settings   = $tData->fetch_rows($query);
 
     $mail = new PHPMailer();
@@ -194,7 +194,7 @@ function show_page_navigation($loc = "main", $child_of = 0) {
     $tUser      = new tUser();
 
     $query_data = array(
-        "table"     => $tData->get_system_prefix()."_links",
+        "table"     => DB_PREFIX."links",
         "columns"   => array("groups", "path", "text", "id"),
         "clause"    => array(
             "operator"  => "AND",

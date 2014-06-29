@@ -55,7 +55,7 @@ if (!empty($error)) {
 		include $tempPath.$tempFolder."/config.php";
 
 		// Define the features prefix
-		$table = $tDataClass->prefix."_features";
+		$table = $tDataClass->prefix."features";
 
 		// Clean up variables
 		isset($feature['folder']) && $feature['folder'] != ""
@@ -73,7 +73,7 @@ if (!empty($error)) {
 		$dbprefix = isset($feature['db_prefix']) ? $feature['db_prefix'] : "";
 		if ($dbprefix != "") {
 			$last = substr($dbprefix, "-1");
-			$dbprefix = $last != "_" ? $dbprefix."_" : $dbprefix;
+			$dbprefix = $last != "_" ? $dbprefix."" : $dbprefix;
 		}
 
 		if (!empty($error)) {
@@ -96,7 +96,7 @@ if (!empty($error)) {
 				if (is_array($feature['permissions'])) {
 					foreach ($feature['permissions'] as $perm) {
 						$permission = $tData->real_escape_string($perm);
-						$ptable = $tDataClass->prefix."_permissions";
+						$ptable = $tDataClass->prefix."permissions";
 						$permSql = "INSERT INTO `".$ptable."` (`feature`,
 							`permission`) VALUES ('".$alias."', '".$permission."')";
 						$tData->query($permSql);

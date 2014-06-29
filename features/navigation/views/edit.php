@@ -12,7 +12,7 @@ if (isset($get['id']) && $get['id'] != "") {
     $error = "I can't find the link you're looking for.";
 }
 
-$query = $tData->select_from_table($tData->prefix."_links", array(), array(
+$query = $tData->select_from_table($tData->prefix."links", array(), array(
     "operator"  => "",
     "conditions"=> array("id" => $id)
 ));

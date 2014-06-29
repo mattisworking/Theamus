@@ -18,7 +18,7 @@ class FeatureInstall {
         // Define the data class and connect to the database
         $this->tDataClass           = new tData();
         $this->tData                = $this->tDataClass->connect();
-        $this->tDataClass->prefix   = $this->tDataClass->get_system_prefix();
+        $this->tDataClass->prefix   = DB_PREFIX;
 
         // Define the features class
         $this->Features = new Features();
@@ -73,7 +73,7 @@ class FeatureInstall {
         // Loop through all of the permissions
         foreach ($p as $item) {
             // Add the query to the global install sql
-            $this->install_sql[] = "INSERT INTO `".$this->tDataClass->prefix."_permissions` (`feature`, `permission`) VALUES ('".$this->config['alias']."', '".$this->tData->real_escape_string($item)."');";
+            $this->install_sql[] = "INSERT INTO `".$this->tDataClass->prefix."permissions` (`feature`, `permission`) VALUES ('".$this->config['alias']."', '".$this->tData->real_escape_string($item)."');";
         }
     }
 
@@ -89,7 +89,7 @@ class FeatureInstall {
         $home = $this->tData->real_escape_string($home);
 
         // Create the query to add this group
-        $query = "INSERT INTO `".$this->tDataClass->prefix."_groups` (`alias`, `name`, `permissions`, `permanent`, `home_override`) VALUES ('$alias', '$name', '$permissions', 0, '$home');";
+        $query = "INSERT INTO `".$this->tDataClass->prefix."groups` (`alias`, `name`, `permissions`, `permanent`, `home_override`) VALUES ('$alias', '$name', '$permissions', 0, '$home');";
 
         // Add the query to the global install sql
         $this->install_sql[] = $query;

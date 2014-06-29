@@ -5,7 +5,7 @@ $get = filter_input_array(INPUT_GET);
 if (isset($get['id'])) {
     $id = $get['id'];
     if (is_numeric($id)) {
-        $query_page = $tData->select_from_table($tData->prefix."_pages", array("id", "title", "alias"), array(
+        $query_page = $tData->select_from_table($tData->prefix."pages", array("id", "title", "alias"), array(
             "operator"  => "",
             "conditions"=> array("id" => $id)
         ));
@@ -48,7 +48,7 @@ if (isset($get['id'])) {
     <br/><br/>Removing a page cannot be undone.
     <?php
     // Find associated links
-    $query_links = $tData->select_from_table($tData->prefix."_links", array("id"), array(
+    $query_links = $tData->select_from_table($tData->prefix."links", array("id"), array(
         "operator"  => "",
         "conditions"=> array("[%]path" => $page['alias']."%")
     ));

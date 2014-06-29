@@ -26,7 +26,7 @@ $template = <<<TEMPLATE
 </ul>
 TEMPLATE;
 
-$query = $tData->select_from_table($tData->prefix."_features", array("id", "alias", "name", "permanent", "enabled"), array(
+$query = $tData->select_from_table($tData->prefix."features", array("id", "alias", "name", "permanent", "enabled"), array(
     "operator"  => "",
     "conditions"=> array("[%]name" => $search."%")
 ), "ORDER BY `name` ASC");

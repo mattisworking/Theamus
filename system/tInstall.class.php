@@ -112,7 +112,7 @@ class tInstall {
         $tData      = new tData();
         $tData->db  = $tData->connect(true);
 
-        $query = $tData->select_from_table($tData->get_system_prefix()."_settings", array(), array("operator" => "", "conditions" => array("installed" => 1)));
+        $query = $tData->select_from_table(DB_PREFIX."settings", array(), array("operator" => "", "conditions" => array("installed" => 1)));
         if ($query) {
             $results = $tData->fetch_rows($query);
             $ret = count($results) > 0 ? true : false;

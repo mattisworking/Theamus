@@ -10,7 +10,7 @@ if (isset($get['groups']) && $get['groups'] != "") {
 }
 
 // Query the database for groups
-$query = $tData->select_from_table($tData->prefix."_groups", array("alias", "name"));
+$query = $tData->select_from_table($tData->prefix."groups", array("alias", "name"));
 $results = $tData->fetch_rows($query);
 $all_groups = isset($results[0]) ? $results : array($results);
 

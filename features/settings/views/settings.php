@@ -1,6 +1,6 @@
 <?php
 
-$query = $tData->select_from_table($tData->prefix."_settings");
+$query = $tData->select_from_table($tData->prefix."settings");
 
 // Grab settings information
 $result = $tData->fetch_rows($query);

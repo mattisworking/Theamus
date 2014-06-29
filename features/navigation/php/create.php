@@ -3,7 +3,7 @@
 $error = array(); // Error checking array
 $post  = filter_input_array(INPUT_POST); // Clean post input
 $query_data = array(
-    "table" => $tData->prefix."_links",
+    "table" => $tData->prefix."links",
     "data"  => array()
 );
 

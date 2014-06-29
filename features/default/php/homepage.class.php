@@ -15,13 +15,13 @@ class HomePage {
     private function initialize() {
         $this->tData = new tData();
         $this->tData->db = $this->tData->connect();
-        $this->tData->prefix = $this->tData->get_system_prefix();
+        $this->tData->prefix = DB_PREFIX;
         $this->tUser = new tUser();
         return;
     }
 
     private function get_system_home() {
-        $q = $this->tData->db->query("SELECT `home` FROM `".$this->tData->prefix."_settings`");
+        $q = $this->tData->db->query("SELECT `home` FROM `".$this->tData->prefix."settings`");
         if (!$q) throw new Exception("Cannot find the home page in the settings table.");
         if ($q->num_rows == 0) throw new Exception("There is no home page column in the settings table.");
         $r = $q->fetch_assoc();
@@ -44,7 +44,7 @@ class HomePage {
         $gs = explode(",", $g);
         foreach ($gs as $g) {
             $g = $this->tData->db->real_escape_string($g);
-            $q = $this->tData->db->query("SELECT `home_override` FROM `".$this->tData->prefix."_groups` WHERE `alias`='$g'");
+            $q = $this->tData->db->query("SELECT `home_override` FROM `".$this->tData->prefix."groups` WHERE `alias`='$g'");
             if (!$q) continue;
             if ($q->num_rows == 0) continue;
             $r = $q->fetch_assoc();
@@ -85,7 +85,7 @@ class HomePage {
     private function handle_page($given = false) {
         $h = $given == false ? $this->decode_home() : $given;
         if (!array_key_exists("id", $h)) throw new Exception("No page ID defined.");
-        $q = $this->tData->db->query("SELECT * FROM `".$this->tData->prefix."_pages` WHERE `id`='".$h['id']."'");
+        $q = $this->tData->db->query("SELECT * FROM `".$this->tData->prefix."pages` WHERE `id`='".$h['id']."'");
         if (!$q) throw new Exception("Error querying the database for the home page.");
         if ($q->num_rows == 0) throw new Exception("Cannot find the home page in the database.");
         $p = $q->fetch_assoc();
@@ -107,7 +107,7 @@ class HomePage {
         $h = $given == false ? $this->decode_home() : $given;
         if (!array_key_exists("id", $h)) throw new Exception("No feature ID defined.");
         if (!array_key_exists("file", $h)) throw new Exception("No feature file defined.");
-        $q = $this->tData->db->query("SELECT * FROM `".$this->tData->prefix."_features` WHERE `id`='".$h['id']."'");
+        $q = $this->tData->db->query("SELECT * FROM `".$this->tData->prefix."features` WHERE `id`='".$h['id']."'");
         if (!$q) throw new Exception("Error querying the database for the home feature.");
         if ($q->num_rows == 0) throw new Exception("Cannot find the home feature in the database.");
         $f = $q->fetch_assoc();

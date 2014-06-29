@@ -4,7 +4,7 @@ $prefix = $tData->prefix;
 
 $info = array("pages", "users", "features", "links", "groups", "media");
 foreach($info as $i) {
-    $table = $prefix."_".$i;
+    $table = $prefix."".$i;
     $query = $tData->select_from_table($table, array("id"));
     $total[$i] = $tData->count_rows($query);
 }

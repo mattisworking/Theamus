@@ -37,7 +37,7 @@
                     <select name="groups" multiple="multiple" size="7">
                     <?php
                         // Query the database for groups
-                        $query = $tData->select_from_table($tData->prefix."_groups", array("alias", "name"));
+                        $query = $tData->select_from_table($tData->prefix."groups", array("alias", "name"));
 
                         // Loop through all groups, showing as options
                         $results = $tData->fetch_rows($query);

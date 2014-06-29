@@ -13,12 +13,12 @@ class Pages {
     private function initialize_variables() {
         $this->tDataClass = new tData();
         $this->tData = $this->tDataClass->connect();
-        $this->tDataClass->prefix = $this->tDataClass->get_system_prefix();
+        $this->tDataClass->prefix = DB_PREFIX;
         return;
     }
 
     private function get_current_theme() {
-        $q = $this->tData->query("SELECT `alias` FROM `".$this->tDataClass->prefix."_themes` WHERE `active`=1");
+        $q = $this->tData->query("SELECT `alias` FROM `".$this->tDataClass->prefix."themes` WHERE `active`=1");
         if ($q) {
             $r = $q->fetch_assoc();
             return $r['alias'];

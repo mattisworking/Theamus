@@ -1,7 +1,7 @@
 <?php
 
 $post = filter_input_array(INPUT_POST); // Clean the incoming information
-$query_data = array("table" => $tData->prefix."_links");
+$query_data = array("table" => $tData->prefix."links");
 $error = array(); // Error checking
 $id = ""; // Default ID for the check query later
 

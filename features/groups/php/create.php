@@ -5,7 +5,7 @@ $error = array(); // Define an empty error array
 $post = filter_input_array(INPUT_POST); // Define a filtered post array
 $get = filter_input_array(INPUT_GET);   // Define a filtered get array
 
-$query_data = array("table" => $tData->prefix."_groups", "data" => array());
+$query_data = array("table" => $tData->prefix."groups", "data" => array());
 
 // Get group name
 if ($post['name'] != "") {

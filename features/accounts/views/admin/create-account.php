@@ -129,7 +129,7 @@ if ($tUser->has_permission('add_users') == false) {
         <div class='col-9'>
             <select name="groups" multiple="multiple" size="7">
                 <?php
-                $query = $tData->select_from_table($tData->prefix."_groups", array("alias", "name"));
+                $query = $tData->select_from_table($tData->prefix."groups", array("alias", "name"));
 
                 $results = $tData->fetch_rows($query);
                 foreach ($results as $group) {

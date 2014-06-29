@@ -9,7 +9,7 @@ if (isset($get['feature']) && $get['feature'] != "") {
 }
 
 // Query the database for all available features
-$query = $tData->select_from_table($tData->prefix."_features", array("alias", "name"), array(), "ORDER BY `name` ASC");
+$query = $tData->select_from_table($tData->prefix."features", array("alias", "name"), array(), "ORDER BY `name` ASC");
 
 // Check for a valid query
 if ($query != false && $tData->count_rows($query) > 0) {

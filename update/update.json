@@ -23,7 +23,8 @@
             "Major overhaul to the Administration panel - https://github.com/Eyraahh/Theamus/issues/39",
             "Fixed a few issues with the Pagination class",
             "Updated the Theamus theme.css style",
-            "Rewrote the Accounts feature providing style and security updates - https://github.com/Eyraahh/Theamus/issues/37"
+            "Rewrote the Accounts feature providing style and security updates - https://github.com/Eyraahh/Theamus/issues/37",
+            "Decreased the amount of database calls/queries by 44% on page load - https://github.com/Eyraahh/Theamus/issues/42"
         ]
     },
     "authors": [

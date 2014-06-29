@@ -11,7 +11,7 @@ if (isset($_GET['id'])) {
     }
 }
 
-$query_data = array("table" => $tData->prefix."_features");
+$query_data = array("table" => $tData->prefix."features");
 
 // Find the feature in the database
 $query = $tData->select_from_table($query_data['table'], array("alias"), array(

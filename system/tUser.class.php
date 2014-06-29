@@ -67,7 +67,7 @@ class tUser {
         $this->cookies          = filter_input_array(INPUT_COOKIE);
         $this->tData            = new tData();
         $this->tData->db        = $this->tData->connect(true);
-        $this->tData->prefix    = $this->tData->get_system_prefix();
+        $this->tData->prefix    = DB_PREFIX;
         $this->tCall            = new tCall(false);
         return true;
     }
@@ -112,7 +112,7 @@ class tUser {
     private function get_user_info() {
         if ($this->check_login()) {
             // Get the user's information from the database
-            $query = $this->tData->select_from_table($this->tData->prefix."_users", array(), array("operator" => "", "conditions" => array("selector" => $this->cookies['userid'])));
+            $query = $this->tData->select_from_table($this->tData->prefix."users", array(), array("operator" => "", "conditions" => array("selector" => $this->cookies['userid'])));
             if ($query == false) {
                 $this->user = false;
                 return false;
@@ -126,7 +126,7 @@ class tUser {
             }
 
             // Get the user's session and IP address
-            $user_sessions = $this->get_user_sessions(false, $this->user['id']);
+            $user_sessions = defined('USER_SESSIONS') ? unserialize(USER_SESSIONS) : $this->get_user_sessions(false, $this->user['id']);
             $user_ip = $_SERVER['REMOTE_ADDR'];
 
             // Force a logout and go to the default page if the user isn't logged in
@@ -148,7 +148,7 @@ class tUser {
      * @return boolean|array
      */
     public function get_specific_user($id = 0) {
-        $q = $this->tData->select_from_table($this->tData->prefix."_users", array(), array("operator" => "", "conditions" => array("selector" => $id)));
+        $q = $this->tData->select_from_table($this->tData->prefix."users", array(), array("operator" => "", "conditions" => array("selector" => $id)));
         if ($this->tData->count_rows($q) > 0) return $this->tData->fetch_rows($q);
         return false;
     }
@@ -200,7 +200,7 @@ class tUser {
     public function has_permission($permission) {
         $ret = array();
         foreach(explode(",", $this->user['groups']) as $group) {
-            $q = $this->tData->select_from_table($this->tData->prefix."_groups", array(), array("operator" => "", "conditions" => array("alias" => $group)));
+            $q = $this->tData->select_from_table($this->tData->prefix."groups", array(), array("operator" => "", "conditions" => array("alias" => $group)));
             $qd = $q == false ? false : $this->tData->fetch_rows($q);
             if ($qd != false) {
                 $permissions = explode(",", $qd['permissions']);
@@ -278,7 +278,7 @@ class tUser {
         }
 
         // Query the database for the current users IP address and check it
-        $query = $this->tData->select_from_table($this->tData->prefix."_user-sessions", array(), array("operator" => "", "conditions" => array("user_id" => $user_id)));
+        $query = $this->tData->select_from_table($this->tData->prefix."user-sessions", array(), array("operator" => "", "conditions" => array("user_id" => $user_id)));
         if (!$query) {
             return array();
         }
@@ -289,6 +289,7 @@ class tUser {
             $user = $this->tData->fetch_rows($query);
             $user = !isset($user[0]) ? array($user) : $user;
             foreach ($user as $u) {
+                if (in_array($u['ip_address'], $ip_addresses)) continue;
                 $ip_addresses[] = $u['ip_address'];
             }
         }
@@ -306,7 +307,7 @@ class tUser {
         // Loop through all of the IP addresses, gathering information
         foreach ($ip_addresses as $address) {
             // Query the database for information related to this IP address and check it
-            $query = $this->tData->select_from_table($this->tData->prefix."_user-sessions", array(), array(
+            $query = $this->tData->select_from_table($this->tData->prefix."user-sessions", array(), array(
                 "operator"      => "AND",
                 "conditions"    => array(
                     "ip_address"    => $address,
@@ -344,6 +345,7 @@ class tUser {
         }
 
         // Return the information
+        define('USER_SESSIONS', serialize($return));
         return $return;
     }
 
@@ -359,7 +361,7 @@ class tUser {
      */
     public function update_user_session($user_id = 0, $session_key = "", $expire = 0, $ip = "") {
         // Get the session for this user
-        $user_sessions = $this->get_user_sessions(true, $user_id);
+        $user_sessions = defined('USER_SESSIONS') ? unserialize(USER_SESSIONS) : $this->get_user_sessions(true, $user_id);
         $session = $user_sessions[$ip];
 
         // Get the user browser information
@@ -413,7 +415,7 @@ class tUser {
         );
 
         // Query the database updating the user session information
-        if ($this->tData->update_table_row($this->tData->prefix."_user-sessions", $query_data['data'], $query_data['clause']) != false) {
+        if ($this->tData->update_table_row($this->tData->prefix."user-sessions", $query_data['data'], $query_data['clause']) != false) {
             $this->set_cookies($user_id, $session_key, $expire);
             return true;
         }
@@ -463,7 +465,7 @@ class tUser {
         $user_browser   = $browser['name']." ".$browser['version'];
 
         // Check if the user already has a session on this computer, it's just expired
-        $user_sessions = $this->get_user_sessions(true, $user_id);
+        $user_sessions = defined('USER_SESSIONS') ? unserialize(USER_SESSIONS) : $this->get_user_sessions(true, $user_id);
         if (isset($user_sessions[$ip])) {
             if ($user_sessions[$ip]['expires'] > time()) {
                 // Define the session key, set the cookies and return
@@ -478,7 +480,7 @@ class tUser {
         }
 
         // Define the query to add to the database
-        $query = $this->tData->insert_table_row($this->tData->prefix."_user-sessions", array(
+        $query = $this->tData->insert_table_row($this->tData->prefix."user-sessions", array(
             array(
                 "key"           => "session_key",
                 "value"         => $session_key,

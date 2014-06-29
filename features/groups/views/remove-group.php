@@ -5,7 +5,7 @@ $get = filter_input_array(INPUT_GET);
 if (isset($get['id'])) {
     $id = $get['id'];
     if (is_numeric($id)) {
-        $query_group = $tData->select_from_table($tData->prefix."_groups", array("id", "alias", "name"), array(
+        $query_group = $tData->select_from_table($tData->prefix."groups", array("id", "alias", "name"), array(
             "operator"  => "",
             "conditions"=> array("id" => $id)
         ));
@@ -14,7 +14,7 @@ if (isset($get['id'])) {
             if ($tData->count_rows($query_group) > 0) {
                 $group = $tData->fetch_rows($query_group);
 
-                $query_users = $tData->select_from_table($tData->prefix."_users", array("id"), array(
+                $query_users = $tData->select_from_table($tData->prefix."users", array("id"), array(
                     "operator"  => "",
                     "conditions"=> array(
                         "[%]groups" => "%".$group['alias']."%"

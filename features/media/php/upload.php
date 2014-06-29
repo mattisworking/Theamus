@@ -32,7 +32,7 @@ if (!empty($error)) {
 } else {
     if (move_uploaded_file($file['tmp_name'], $upload_path.$alias)) {
         $query_data = array(
-            "table" => $tData->prefix."_media",
+            "table" => $tData->prefix."media",
             "data"  => array(
                 "path"      => $alias,
                 "file_name" => $name,

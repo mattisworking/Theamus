@@ -18,7 +18,7 @@ class Features {
         // Define the data class and connect to the database
         $this->tDataClass           = new tData();
         $this->tData                = $this->tDataClass->connect();
-        $this->tDataClass->prefix   = $this->tDataClass->get_system_prefix();
+        $this->tDataClass->prefix   = DB_PREFIX;
 
         // Define the file management class
         $this->tFiles = new tFiles();
@@ -278,7 +278,7 @@ class Features {
         $prefix = $this->tData->real_escape_string($config['db_prefix']);
 
         // Query the database, installing the feature in the theamus features table
-        $query = $this->tData->query("INSERT INTO `".$this->tDataClass->prefix."_features` ".
+        $query = $this->tData->query("INSERT INTO `".$this->tDataClass->prefix."features` ".
                 "(`alias`, `name`, `groups`, `permanent`, `enabled`, `db_prefix`) VALUES ".
                 "('$alias', '$name', '$groups', 0, 1, '$prefix')");
 
@@ -305,7 +305,7 @@ class Features {
 
     private function get_feature_information($id = 0) {
         // Query the database for the feature
-        $query = $this->tData->query("SELECT * FROM `".$this->tDataClass->prefix."_features` WHERE `id`='$id'");
+        $query = $this->tData->query("SELECT * FROM `".$this->tDataClass->prefix."features` WHERE `id`='$id'");
 
         // Check the query and return
         if (!$query) {
@@ -352,14 +352,14 @@ class Features {
         $alias = $this->tData->real_escape_string($alias);
 
         // Delete the feature from the features table, check it too
-        $query = $this->tData->query("DELETE FROM `".$this->tDataClass->prefix."_features` WHERE `alias`='$alias'");
+        $query = $this->tData->query("DELETE FROM `".$this->tDataClass->prefix."features` WHERE `alias`='$alias'");
         if (!$query) {
             $this->developer_message = "Database error information: ".print_r($this->tData->error, true);
             throw new Exception("There was an error removing this feature from the database.");
         }
 
         // Delete the permissions from the database, check it
-        $query = $this->tData->query("DELETE FROM `".$this->tDataClass->prefix."_permissions` WHERE `feature`='$alias'");
+        $query = $this->tData->query("DELETE FROM `".$this->tDataClass->prefix."permissions` WHERE `feature`='$alias'");
         if (!$query) {
             $this->developer_message = "Database error information: ".print_r($this->tData->error, true);
             throw new Exception("There was an error removing the permissions associated to this feature from the database.");
@@ -457,7 +457,7 @@ class Features {
         $enabled    = $post['enabled'] == "true" ? "1" : "0";
 
         // Query the database, saving the changes
-        $query = $this->tData->query("UPDATE `".$this->tDataClass->prefix."_features` SET `groups`='$groups', `enabled`='$enabled' WHERE `id`='$id'");
+        $query = $this->tData->query("UPDATE `".$this->tDataClass->prefix."features` SET `groups`='$groups', `enabled`='$enabled' WHERE `id`='$id'");
 
         // Check the query and return
         if (!$query) {

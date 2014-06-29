@@ -25,13 +25,13 @@ class Settings {
     private function initialize() {
         $this->tData = new tData();
         $this->tData->db = $this->tData->connect();
-        $this->tData->prefix = $this->tData->get_system_prefix();
+        $this->tData->prefix = DB_PREFIX;
         $this->tFiles = new tFiles();
         return;
     }
 
     private function get_system_home() {
-        $q = $this->tData->db->query("SELECT `home` FROM `".$this->tData->prefix."_settings`");
+        $q = $this->tData->db->query("SELECT `home` FROM `".$this->tData->prefix."settings`");
         if (!$q) throw new Exception("Cannot find the home page in the settings table.");
         if ($q->num_rows == 0) throw new Exception("There is no home page column in the settings table.");
         $r = $q->fetch_assoc();
@@ -46,7 +46,7 @@ class Settings {
 
     private function get_db_rows($w, $id = false) {
         $where = $id == false ? "" : "WHERE `id`='$id'";
-        $q = $this->tData->db->query("SELECT * FROM `".$this->tData->prefix."_$w` $where");
+        $q = $this->tData->db->query("SELECT * FROM `".$this->tData->prefix."$w` $where");
         if (!$q) throw new Exception("Error querying database for $w.");
         if ($q->num_rows == 0) throw new Exception("There are no $w to show.");
         while ($row = $q->fetch_assoc()) $ret[] = $row;
@@ -54,7 +54,7 @@ class Settings {
     }
 
     protected function get_system_info() {
-        $q = $this->tData->db->query("SELECT * FROM `".$this->tData->prefix."_settings`");
+        $q = $this->tData->db->query("SELECT * FROM `".$this->tData->prefix."settings`");
         if (!$q) throw new Exception("There was an issue querying the database for the custom settings");
         return $q->fetch_assoc();
     }
@@ -135,7 +135,7 @@ class Settings {
         if (!isset($post['home-page']) || $post['home-page'] == "") throw new Exception("Please choose a home page.");
         else $home = $this->tData->db->real_escape_string(urldecode($post['home-page']));
 
-        $q = $this->tData->db->query("UPDATE `".$this->tData->prefix."_settings` SET `name`='$name', `home`='$home'");
+        $q = $this->tData->db->query("UPDATE `".$this->tData->prefix."settings` SET `name`='$name', `home`='$home'");
         if (!$q) throw new Exception("There was an error updating the settings database.");
         else return true;
     }

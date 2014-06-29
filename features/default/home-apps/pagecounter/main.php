@@ -1,6 +1,6 @@
 <?php
 
-$pages_table = $tData->prefix."_pages";
+$pages_table = $tData->prefix."pages";
 $query = $tData->select_from_table($pages_table, array("title", "views"), array(), "ORDER BY `views` DESC LIMIT 5");
 
 if ($query != false) {

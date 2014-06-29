@@ -16,7 +16,7 @@ function home_type($array) {
 }
 
 $error = array();   // Define an empty error array
-$query_data = array("table" => $tData->prefix."_groups");
+$query_data = array("table" => $tData->prefix."groups");
 
 $get = filter_input_array(INPUT_GET);   // Define a filtered 'get'
 
@@ -96,7 +96,7 @@ if ($query_group != false) {                                // Check for a succe
                 <select name="permissions" id="permissions" size="20" multiple="multiple">
                     <?php
                     // Query the database for permissions
-                    $query_permissions = $tData->select_from_table($tData->prefix."_permissions", array("permission", "feature"));
+                    $query_permissions = $tData->select_from_table($tData->prefix."permissions", array("permission", "feature"));
 
                     // Loop through results
                     $results = $tData->fetch_rows($query_permissions);
@@ -179,7 +179,7 @@ if ($query_group != false) {                                // Check for a succe
                         <label class='admin-selectlabel'>
                             <select name='pageid'>
                             <?php
-                            $query_pages = $tData->select_from_table($tData->prefix."_pages", array("id", "title"));
+                            $query_pages = $tData->select_from_table($tData->prefix."pages", array("id", "title"));
 
                             // Make sure there are pages
                             if ($tData->count_rows($query_pages) > 0) {
@@ -234,7 +234,7 @@ if ($query_group != false) {                                // Check for a succe
                                 <?php
                                 // Define the features table and query the database
                                 // for all available features
-                                $query_features = $tData->select_from_table($tData->prefix."_features", array("id", "alias", "name"));
+                                $query_features = $tData->select_from_table($tData->prefix."features", array("id", "alias", "name"));
 
                                 // Make sure there are features to show
                                 if ($tData->count_rows($query_features) > 0) {
@@ -245,7 +245,7 @@ if ($query_group != false) {                                // Check for a succe
                                         $homeFeature['selected'] = $homeFeature['id'] == $feature['id'] ? 'selected' : '';
 
                                         if ($homeFeature['id'] != '') {
-                                            $query_homefeature = $tData->select_from_table($tData->prefix."_features", array("alias"), array(
+                                            $query_homefeature = $tData->select_from_table($tData->prefix."features", array("alias"), array(
                                                 "operator"  => "",
                                                 "conditions"=> array("id" => $homeFeature['id'])
                                             ));

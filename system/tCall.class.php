@@ -283,7 +283,7 @@ class tCall {
 
         $this->tData = new tData();
         $this->tData->db = $this->tData->connect(true);
-        $this->tData->prefix = $this->tData->get_system_prefix();
+        $this->tData->prefix = DB_PREFIX;
 
         $this->tPages = new tPages();
 
@@ -299,18 +299,12 @@ class tCall {
      * @return boolean
      */
     private function display_errors() {
-        $settings_table = $this->tData->prefix."_settings";
-
         if ($this->tData) {
-            $q = $this->tData->select_from_table($settings_table, array("display_errors"));
-
-            if ($q) {
-                $settings = $this->tData->fetch_rows($q);
-                if (isset($settings['display_errors'])) {
-                    ini_set("display_errors", $settings['display_errors']);
-                } else {
-                    ini_set("display_errors", 0);
-                }
+            $settings = defined('TM_SETTINGS') ? unserialize(TM_SETTINGS) : array();
+            if (isset($settings['display_errors'])) {
+                ini_set("display_errors", $settings['display_errors']);
+            } else {
+                ini_set("display_errors", 0);
             }
         }
         return true;
@@ -323,15 +317,9 @@ class tCall {
      * @return boolean
      */
     private function developer_mode() {
-        $settings_table = $this->tData->prefix."_settings";
-
         if ($this->tData) {
-            $q = $this->tData->select_from_table($settings_table, array("developer_mode"));
-
-            if ($q) {
-                $settings = $this->tData->fetch_rows($q);
-                return $settings['developer_mode'] == "1" ? true : false;
-            }
+            $settings = defined('TM_SETTINGS') ? unserialize(TM_SETTINGS) : array();
+            return isset($settings['developer_mode']) && $settings['developer_mode'] == "1" ? true : false;
         }
     }
 
@@ -515,7 +503,7 @@ class tCall {
      */
     private function determine_page() {
         if ($this->tData->db) {
-            $query = $this->tData->select_from_table($this->tData->prefix."_pages", array(), array("operator" => "", "conditions" => array("alias" => $this->parameters[0])));
+            $query = $this->tData->select_from_table($this->tData->prefix."pages", array(), array("operator" => "", "conditions" => array("alias" => $this->parameters[0])));
 
             if ($query != false) {
                 if ($this->tData->count_rows($query) == 0) {
@@ -701,7 +689,7 @@ class tCall {
     private function get_feature_information() {
         if ($this->install == false) {
             $query_data = array(
-                "table"     => $this->tData->prefix."_features",
+                "table"     => $this->tData->prefix."features",
                 "clause"    => array(
                     "operator"  => "",
                     "conditions"=> array("alias" => $this->feature_folder)
@@ -745,8 +733,7 @@ class tCall {
         $this->tUser->set_420hash();
 
         if ($this->install == false) {
-            $query = $this->tData->select_from_table($this->tData->prefix."_settings", array("name"));
-            $settings = $this->tData->fetch_rows($query);
+            $settings = defined('TM_SETTINGS') ? unserialize(TM_SETTINGS) : array();
         } else {
             $settings['name'] = "Theamus Installation";
         }
@@ -808,7 +795,7 @@ class tCall {
             $folder = "default";
             if ($tData) {
                 $query_data = array(
-                    "table" => $this->tData->prefix."_themes",
+                    "table" => $this->tData->prefix."themes",
                     "clause"=> array(
                         "operator"  => "",
                         "conditions"=> array("active" => 1)
@@ -1252,8 +1239,7 @@ class tCall {
      */
     private function error_page($type="404") {
         if ($this->install == false) {
-            $query = $this->tData->select_from_table($this->tData->prefix."_settings");
-            $settings = $this->tData->fetch_rows($query);
+            $settings = defined('TM_SETTINGS') ? unserialize(TM_SETTINGS) : array();
         } else {
             $settings['name'] = "Theamus Installation";
         }

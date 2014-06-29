@@ -36,7 +36,7 @@ $template = <<<TEMPLATE
 TEMPLATE;
 
 $tPages->set_page_data(array(
-    "sql" => "SELECT * FROM `".$tDataClass->prefix."_media`",
+    "sql" => "SELECT * FROM `".$tDataClass->prefix."media`",
     "per_page" => 9,
     "current" => $page,
     "list_template" => $template

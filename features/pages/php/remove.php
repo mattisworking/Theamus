@@ -5,8 +5,8 @@ $post = filter_input_array(INPUT_POST);
 $error = array();
 
 $query_data = array(
-    "pages_table"   => $tData->prefix."_pages",
-    "links_table"   => $tData->prefix."_links"
+    "pages_table"   => $tData->prefix."pages",
+    "links_table"   => $tData->prefix."links"
 );
 
 // Check for a valid page ID

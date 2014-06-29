@@ -17,7 +17,7 @@ class FeatureUninstall {
         // Define the data class and connect to the database
         $this->tDataClass           = new tData();
         $this->tData                = $this->tDataClass->connect();
-        $this->tDataClass->prefix   = $this->tDataClass->get_system_prefix();
+        $this->tDataClass->prefix   = DB_PREFIX;
 
         // Define the features class
         $this->Features = new Features();
@@ -28,7 +28,7 @@ class FeatureUninstall {
         if ($table == "" || $key == "" || $value == "") throw new Exception("One or more values to uninstall the table data is invalid.");
         
         // Write the query to run
-        $query = "DELETE FROM `".$this->tDataClass->prefix."_$table` WHERE `$key`='$value';";
+        $query = "DELETE FROM `".$this->tDataClass->prefix."$table` WHERE `$key`='$value';";
         
         // Add the query to the global query array
         $this->uninstall_sql[] = $query;

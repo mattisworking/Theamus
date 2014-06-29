@@ -32,7 +32,7 @@
                 <select name="permissions" id="permissions" size="20" multiple="multiple">
                     <?php
                     // Query the database for permissions
-                    $query = $tData->select_from_table($tData->prefix."_permissions", array("permission", "feature"));
+                    $query = $tData->select_from_table($tData->prefix."permissions", array("permission", "feature"));
 
                     // Loop through results
                     $results = $tData->fetch_rows($query);

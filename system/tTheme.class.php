@@ -83,7 +83,7 @@ class tTheme {
         // Don't connect to the database if it isn't required to do so
         if ($this->no_database == false) {
             $this->tData->db = $this->tData->connect(true);
-            $this->tData->prefix = $this->tData->get_system_prefix();
+            $this->tData->prefix = DB_PREFIX;
         }
 
         try {
@@ -117,7 +117,7 @@ class tTheme {
      */
     private function get_settings() {
         if ($this->no_database == false) {
-            $query = $this->tData->select_from_table($this->tData->prefix."_settings");
+            $query = $this->tData->select_from_table($this->tData->prefix."settings");
             if (!$query) throw new Exception("Error getting system settings information from the database.");
             return $this->tData->fetch_rows($query);
         } else {
@@ -285,23 +285,14 @@ class tTheme {
     public function get_system_variable($key = "") {
         // Return nothing if we are given nothing
         if ($key == "") return "";
-
-        // Sanitize the key and query the database
-        $query = $this->tData->select_from_table($this->tData->prefix."_settings", array($key));
-
-        // Check the query and gather the results
-        if (!$query) {
-            return "";
+        
+        $settings = defined('TM_SETTINGS') ? unserialize(TM_SETTINGS) : array();
+        
+        // Check for the key's existance and return relatively
+        if (isset($settings[$key])) {
+            return $settings[$key];
         } else {
-            // Get the results
-            $row = $this->tData->fetch_rows($query);
-
-            // Check for the key's existance and return relatively
-            if (isset($row[$key])) {
-                return $row[$key];
-            } else {
-                return "";
-            }
+            return "";
         }
     }
 
@@ -373,7 +364,7 @@ class tTheme {
         }
 
         // Define the sql query
-        $query_data = array("table_name" => $this->tData->prefix."_themes-data");
+        $query_data = array("table_name" => $this->tData->prefix."themes-data");
         if ($key == false) {
             $query_data['clause'] = array(
                 "operator" => "AND",

@@ -25,7 +25,7 @@ $template = <<<TEMPLATE
 </ul>
 TEMPLATE;
 
-$query = $tData->select_from_table($tData->prefix."_themes", array("name", "id", "permanent", "active", "alias"), array(
+$query = $tData->select_from_table($tData->prefix."themes", array("name", "id", "permanent", "active", "alias"), array(
     "operator"  => "OR",
     "conditions"=> array(
         "[%]alias"  => $search."%",

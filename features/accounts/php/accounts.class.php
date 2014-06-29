@@ -37,7 +37,7 @@ class Accounts {
         // Connect to the database
         $this->tData            = new tData();
         $this->tData->db        = $this->tData->connect(true);
-        $this->tData->prefix    = $this->tData->get_system_prefix();
+        $this->tData->prefix    = DB_PREFIX;
 
         $this->tUser            = new tUser();  // User data class
         $this->tPages           = new tPages(); // Pagination class
@@ -77,7 +77,7 @@ class Accounts {
      */
     protected function check_unused_username($username) {
         // Make the string sql safe and query the database for the username
-        $query = $this->tData->select_from_table($this->tData->prefix.'_users', array(), array('operator' => 'AND', 'conditions' => array('key' => 'username', 'value' => $username)));
+        $query = $this->tData->select_from_table($this->tData->prefix.'users', array(), array('operator' => 'AND', 'conditions' => array('key' => 'username', 'value' => $username)));
 
         // Check for results and return
         return $this->tData->count_rows($query) == 0 ? true : false;
@@ -160,7 +160,7 @@ class Accounts {
      */
     private function email_registered_user($email, $activation_code) {
         // Get the site settings, for personalization
-        $query = $this->tData->select_from_table($this->tData->prefix.'_settings', array('name'));
+        $query = $this->tData->select_from_table($this->tData->prefix.'settings', array('name'));
         $settings = $this->tData->fetch_rows($query);
 
         // Create the email message
@@ -183,7 +183,7 @@ class Accounts {
      */
     protected function activate_a_user($email, $activation_code) {
         // Define the query data defaults
-        $query_data = array('table_name' => $this->tData->prefix.'_users', 'data' => array());
+        $query_data = array('table_name' => $this->tData->prefix.'users', 'data' => array());
 
         // Query the database to find the user with the actvation code provided
         $selector_query = $this->tData->select_from_table($query_data['table_name'], array('selector'), array('operator' => 'AND', 'conditions' => array('key' => 'activation_code', 'value' => $activation_code)));
@@ -281,7 +281,7 @@ class Accounts {
     protected function get_accounts() {
         // Define the query data that will find the users in the database
         $query_data = array(
-            'table_name'    => $this->tData->prefix.'_users',
+            'table_name'    => $this->tData->prefix.'users',
             'clause'        => array('operator' => '', 'conditions' => array()));
 
         // Query the database for all of the users
@@ -309,7 +309,7 @@ class Accounts {
 
         // Define the query information that will be used to find the user in the database based on the search query provided
         $query_data = array(
-            'table'     => $this->tData->prefix.'_users',
+            'table'     => $this->tData->prefix.'users',
             'clause'    => array(
                 'operator'      => 'OR',
                 'conditions'    => array(
@@ -589,11 +589,11 @@ class Accounts {
         }
 
         // Find the system's email host in the database
-        $system_query = $this->tData->select_from_table($this->tData->prefix.'_settings', array('email_host'));
+        $system_query = $this->tData->select_from_table($this->tData->prefix.'settings', array('email_host'));
         $system = $this->tData->fetch_rows($system_query);
 
         // Query the database for all of the user's selectors
-        $selector_query = $this->tData->select_from_table($this->tData->prefix.'_users', array('selector'), array(), 'GROUP BY `selector` ORDER BY `selector` DESC LIMIT 1');
+        $selector_query = $this->tData->select_from_table($this->tData->prefix.'users', array('selector'), array(), 'GROUP BY `selector` ORDER BY `selector` DESC LIMIT 1');
 
         // Define a new selector for the new user
         if ($selector_query == false) {
@@ -605,7 +605,7 @@ class Accounts {
 
         // Create the user in the database
         $this->tData->use_pdo == true ? $this->tData->db->beginTransaction() : $this->tData->db->autocommit(true);
-        $query = $this->tData->insert_table_row($this->tData->prefix.'_users', array(
+        $query = $this->tData->insert_table_row($this->tData->prefix.'users', array(
             array('key' => 'id', 'value' => $selector, 'selector' => $selector),
             array('key' => 'username', 'value' => $user_variables['username'], 'selector' => $selector),
             array('key' => 'password', 'value' => $user_variables['password'], 'selector' => $selector),
@@ -667,7 +667,7 @@ class Accounts {
 
         // Define the query data that will properly update the user information
         $query_data = array(
-            'table'     => $this->tData->prefix.'_users',
+            'table'     => $this->tData->prefix.'users',
             'data'      => array(
                 array('value' => $user_variables['email']),
                 array('value' => $user_variables['firstname']),
@@ -725,7 +725,7 @@ class Accounts {
         }
 
         // Remove the user's information from the database
-        $query = $this->tData->delete_table_row($this->tData->prefix.'_users', array('operator' => '', 'conditions' => array('selector' => Accounts::decode($id))));
+        $query = $this->tData->delete_table_row($this->tData->prefix.'users', array('operator' => '', 'conditions' => array('selector' => Accounts::decode($id))));
 
         // Check the query and return respectively
         if ($query == false) {
@@ -821,7 +821,7 @@ class Accounts {
 
         // Update the database
         if (isset($query_data['data']) && isset($query_data['clause'])) {
-            $update_query = $this->tData->update_table_row($this->tData->prefix.'_users', $query_data['data'], $query_data['clause']);
+            $update_query = $this->tData->update_table_row($this->tData->prefix.'users', $query_data['data'], $query_data['clause']);
 
             // Check the update query
             if(!$update_query) {
@@ -853,7 +853,7 @@ class Accounts {
         }
 
         // Update the table row to reflect the change
-        $query = $this->tData->update_table_row($this->tData->prefix.'_users',
+        $query = $this->tData->update_table_row($this->tData->prefix.'users',
             array('value' => 'default-user-picture.png'),
             array(
                 'operator'      => 'AND',
@@ -892,7 +892,7 @@ class Accounts {
         $user['birthday'] = $user['bday_y'].'-'.$user['bday_m'].'-'.$user['bday_d'];
 
         // Update the database with this new information
-        $query = $this->tData->update_table_row($this->tData->prefix.'_users',
+        $query = $this->tData->update_table_row($this->tData->prefix.'users',
             array(
                 array('value' => $user['firstname']),
                 array('value' => $user['lastname']),
@@ -942,7 +942,7 @@ class Accounts {
         }
 
         // Update the database with this information
-        $query = $this->tData->update_table_row($this->tData->prefix.'_users',
+        $query = $this->tData->update_table_row($this->tData->prefix.'users',
             array(
                 array('value' => $user['email']),
                 array('value' => $this->check_phone($user['phone']))),
@@ -1023,7 +1023,7 @@ class Accounts {
 
 
         // Query the database to check the existance of the given username
-        $selector_query = $this->tData->select_from_table($this->tData->prefix.'_users', array('selector'), array(
+        $selector_query = $this->tData->select_from_table($this->tData->prefix.'users', array('selector'), array(
             'operator'      => 'AND',
             'conditions'    => array('key' => 'username', 'value' => $username)
         ));
@@ -1037,7 +1037,7 @@ class Accounts {
         $selector = $this->tData->fetch_rows($selector_query);
 
         // Query the database for all of the information related to the found selector
-        $user_query = $this->tData->select_from_table($this->tData->prefix.'_users', array(), array(
+        $user_query = $this->tData->select_from_table($this->tData->prefix.'users', array(), array(
             'operator'      => '',
             'conditions'    => array('selector' => $selector['selector'])
         ));

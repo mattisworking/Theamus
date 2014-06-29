@@ -3,7 +3,7 @@
 // Error checking
 $error = array();
 $query_data = array(
-    "table" => $tData->prefix."_settings",
+    "table" => $tData->prefix."settings",
     "data"  => array()
 );
 

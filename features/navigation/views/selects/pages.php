@@ -3,7 +3,7 @@
 $alias = urldecode(filter_input(INPUT_GET, "page"));
 
 // Query the database for all of the site's pages
-$query = $tData->select_from_table($tData->prefix."_pages", array("alias", "title"));
+$query = $tData->select_from_table($tData->prefix."pages", array("alias", "title"));
 
 // Check for a valid query
 if ($query != false && $tData->count_rows($query) > 0) {

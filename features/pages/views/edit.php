@@ -9,7 +9,7 @@ if (isset($get['id'])) {
     // Check the ID has a value
     if ($id != "") {
         // Query the database for the page
-        $query = $tData->select_from_table($tData->prefix."_pages", array(), array(
+        $query = $tData->select_from_table($tData->prefix."pages", array(), array(
             "operator"  => "",
             "conditions"=> array("id" => $id)
         ));
@@ -84,7 +84,7 @@ if (isset($get['id'])) {
                             $pageGroups = explode(",", $page['groups']);
 
                             // Query the database for groups
-                            $query = $tData->select_from_table($tData->prefix."_groups", array("alias", "name"));
+                            $query = $tData->select_from_table($tData->prefix."groups", array("alias", "name"));
                             
                             // Loop through all groups, showing as options
                             $results = $tData->fetch_rows($query);

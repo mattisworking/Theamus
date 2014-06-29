@@ -11,7 +11,7 @@ if ($post['theme_id'] != "") {
 }
 
 // Query the database for this theme
-$query_find_theme = $tData->select_from_table($tData->prefix."_themes", array("alias"), array(
+$query_find_theme = $tData->select_from_table($tData->prefix."themes", array("alias"), array(
     "operator"  => "",
     "conditions"=> array("id" => $id)
 ));
@@ -32,12 +32,12 @@ if (!empty($error)) {
 
     $this->tData->show_query_errors = true;
     $this->tData->use_pdo == false ? $this->tData->db->autocommit(false) : $this->tData->db->beginTransaction();
-    $query_remove_theme = $tData->delete_table_row($tData->prefix."_themes", array(
+    $query_remove_theme = $tData->delete_table_row($tData->prefix."themes", array(
         "operator"  => "",
         "conditions"=> array("id" => $id)
     ));
 
-    $query_remove_data = $tData->delete_table_row($tData->prefix."_themes-data", array(
+    $query_remove_data = $tData->delete_table_row($tData->prefix."themes-data", array(
         "operator"  => "",
         "conditions"=> array("theme" => $theme['alias'])
     ));

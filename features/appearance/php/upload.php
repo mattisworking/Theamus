@@ -67,7 +67,7 @@ if (!empty($error)) {
 			notify("admin", "failure", $error[0]);
 		} else {
 			// Define the theme database table
-			$table = $tDataClass->prefix."_themes";
+			$table = $tDataClass->prefix."themes";
 
 			// Add this entry to the database
 			$sql['add'] = "INSERT INTO `".$table."` (`alias`, `name`, `active`,

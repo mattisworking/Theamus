@@ -17,12 +17,12 @@ class Navigation {
     private function initialize_variables() {
         $this->tDataClass           = new tData();
         $this->tData                = $this->tDataClass->connect();
-        $this->tDataClass->prefix   = $this->tDataClass->get_system_prefix();
+        $this->tDataClass->prefix   = DB_PREFIX;
         return;
     }
 
     private function get_current_theme() {
-        $q = $this->tData->query("SELECT * FROM `".$this->tDataClass->prefix."_themes` WHERE `active`=1");
+        $q = $this->tData->query("SELECT * FROM `".$this->tDataClass->prefix."themes` WHERE `active`=1");
         return $q->fetch_assoc();
     }
 
@@ -50,7 +50,7 @@ class Navigation {
 
     public function get_children_select($child_of = 0) {
         $ret = array("<option value='0'>Not a Child</option>");
-        $q = $this->tData->query("SELECT * FROM `".$this->tDataClass->prefix."_links` ORDER BY `text` ASC");
+        $q = $this->tData->query("SELECT * FROM `".$this->tDataClass->prefix."links` ORDER BY `text` ASC");
         while ($row = $q->fetch_assoc()) {
             $s = $row['id'] == $child_of ? "selected" : "";
             $ret[] = "<option value='".$row['id']."' $s>".$row['text']."</option>";

@@ -13,7 +13,7 @@ if (isset($get['id']) && $get['id'] != "") {
 }
 
 // Check the database for this feature
-$query = $tData->select_from_table($tData->prefix."_features", array(), array(
+$query = $tData->select_from_table($tData->prefix."features", array(), array(
     "operator"  => "",
     "conditions"=> array("id" => $id)
 ));

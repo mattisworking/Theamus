@@ -11,7 +11,7 @@ if (!isset($url_params[0]) || !is_numeric($url_params[0])) {
 }
 
 // Find the user information in the database
-$user_query = $tData->select_from_table($tData->prefix.'_users', array(), array('operator' => '', 'conditions' => array('selector' => $url_params[0])), 'ORDER BY `id`');
+$user_query = $tData->select_from_table($tData->prefix.'users', array(), array('operator' => '', 'conditions' => array('selector' => $url_params[0])), 'ORDER BY `id`');
 
 // Check the user query
 if ($user_query == false) {

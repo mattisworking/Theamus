@@ -39,7 +39,7 @@ $user = $tUser->user;
             <p class="form-control-static">
                 <?php
                 foreach (explode(",", $user['groups']) as $group) {
-                    $query = $tData->select_from_table($tData->prefix."_features",
+                    $query = $tData->select_from_table($tData->prefix."features",
                                                         array("name"),
                                                         array("operator"    => "",
                                                               "conditions"  => array("groups" => $group)));

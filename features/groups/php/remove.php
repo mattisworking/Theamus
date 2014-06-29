@@ -5,8 +5,8 @@ $error = array(); // Define an empty error array
 $post = filter_input_array(INPUT_POST); // Define filtered post
 
 $query_data = array(
-    "group_table"   => $tData->prefix."_groups",
-    "user_table"    => $tData->prefix."_users",
+    "group_table"   => $tData->prefix."groups",
+    "user_table"    => $tData->prefix."users",
     "user_data"    => array(),
     "user_clause"  => array()
 );

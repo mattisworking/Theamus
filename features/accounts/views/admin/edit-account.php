@@ -11,7 +11,7 @@ if (!isset($url_params[0]) || !is_numeric($url_params[0])) {
 }
 
 // Query the database for the user based on the given ID
-$user_query = $tData->select_from_table($tData->prefix.'_users',
+$user_query = $tData->select_from_table($tData->prefix.'users',
                                         array(),
                                         array('operator'    => '',
                                               'conditions'  => array('selector' => $url_params[0])),
@@ -177,7 +177,7 @@ $user['birthday_array'] = explode('-', $user['birthday']);
         <div class='col-9'>
             <select name='groups' multiple='multiple' size='7'>
                 <?php
-                $query = $tData->select_from_table($tData->prefix.'_groups', array('alias', 'name'));
+                $query = $tData->select_from_table($tData->prefix.'groups', array('alias', 'name'));
 
                 $results = $tData->fetch_rows($query);
                 foreach ($results as $group) {

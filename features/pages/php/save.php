@@ -2,7 +2,7 @@
 
 $post = filter_input_array(INPUT_POST);
 $query_data = array(
-    "table" => $tData->prefix."_pages",
+    "table" => $tData->prefix."pages",
     "data"  => array(),
     "clause"=> array()
 );
@@ -53,7 +53,7 @@ if (isset($post['title'])) {
 }
 
 // Find the a page link with the old alias in the links database
-$link_query = $tData->select_from_table($tData->prefix."_links", array("id"), array("operator" => "", "conditions" => array("[%]path" => $page['alias']."%")));
+$link_query = $tData->select_from_table($tData->prefix."links", array("id"), array("operator" => "", "conditions" => array("[%]path" => $page['alias']."%")));
 if ($link_query == false) {
     echo notify("admin", "failure", "There was an querying the link database.");
     die();
@@ -109,7 +109,7 @@ if (!empty($error)) {
         if ($tData->count_rows($link_query) > 0) {
             $link = $tData->fetch_rows($link_query);
             $tData->show_query_errors = true;
-            $update_link = $tData->update_table_row($tData->prefix."_links", array("path" => $alias), array(
+            $update_link = $tData->update_table_row($tData->prefix."links", array("path" => $alias), array(
                 "operator"      => "",
                 "conditions"    => array("id" => $link['id'])
             ));

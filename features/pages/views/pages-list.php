@@ -23,7 +23,7 @@ $template = <<<TEMPLATE
 </ul>
 TEMPLATE;
 
-$query = $tData->select_from_table($tData->prefix."_pages", array("id", "title", "views", "permanent"), array(
+$query = $tData->select_from_table($tData->prefix."pages", array("id", "title", "views", "permanent"), array(
     "operator"  => "",
     "conditions"=> array("[%]title" => $search."%")
 ));

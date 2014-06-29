@@ -205,7 +205,7 @@ class Install {
 
         // Trailing underscore
         if (substr($table_prefix, -1) != "_") {
-            $args['database-table-prefix'] = $table_prefix."_";
+            $args['database-table-prefix'] = $table_prefix."";
         }
 
         // Return the information
@@ -527,7 +527,7 @@ class Install {
         $args['user']['password'] = hash('SHA256', $args['user']['password'].$salt);
 
         // Add the user to the database
-        $query = $tData->insert_table_row($tData->get_system_prefix()."_users", array(
+        $query = $tData->insert_table_row(DB_PREFIX."users", array(
             "username"      => $args['user']['username'],
             "password"      => $args['user']['password'],
             "email"         => $args['user']['email'],
@@ -582,8 +582,8 @@ class Install {
 
 
         // Add the system information to the database
-        $query = $tData->insert_table_row($tData->get_system_prefix()."_settings", array(
-            "prefix"            => $tData->get_system_prefix(),
+        $query = $tData->insert_table_row(DB_PREFIX."settings", array(
+            "prefix"            => DB_PREFIX,
             "name"              => $args['site_name'],
             "display_errors"    => $args['options']['developer-mode'],
             "developer_mode"    => $args['options']['developer-mode'],

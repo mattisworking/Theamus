@@ -18,7 +18,7 @@ $template = <<<TEMPLATE
     </div>
 TEMPLATE;
 
-$query = $tData->select_from_table($tData->prefix."_media", array("id", "path", "type"));
+$query = $tData->select_from_table($tData->prefix."media", array("id", "path", "type"));
 if ($query != false) {
     if ($tData->count_rows($query) > 0) {
         $results = $tData->fetch_rows($query);

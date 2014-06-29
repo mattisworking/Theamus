@@ -39,7 +39,7 @@ class Appearance {
 
     private function get_db_theme() {
         $id = $this->get_id_get();
-        $q = $this->tData->query("SELECT * FROM `".$this->tDataClass->prefix."_themes` WHERE `id`='$id'");
+        $q = $this->tData->query("SELECT * FROM `".$this->tDataClass->prefix."themes` WHERE `id`='$id'");
         if ($q && $q->num_rows > 0) return $q->fetch_assoc();
         else throw new Exception("Cannot retrieve Theme database information.");
         return;
@@ -184,7 +184,7 @@ class Appearance {
     }
 
     private function add_theme_db($c) {
-        $q = $this->tData->query("INSERT INTO `".$this->tDataClass->prefix."_themes` (`alias`, `name`, `active`, `permanent`) VALUES ".
+        $q = $this->tData->query("INSERT INTO `".$this->tDataClass->prefix."themes` (`alias`, `name`, `active`, `permanent`) VALUES ".
                 "('".$c['theme']['folder']."', '".$c['theme']['name']."', 0, 0)");
         if (!$q) {
             $this->clean_theme_folder($c['theme']['folder']);
@@ -274,7 +274,7 @@ class Appearance {
     public function set_active_theme() {
         $id = filter_input(INPUT_GET, "id");
         if (isset($id) && is_numeric($id)) {
-            $table = $this->tDataClass->prefix."_themes";
+            $table = $this->tDataClass->prefix."themes";
             $this->tData->query("UPDATE `$table` SET `active`=0");
             $this->tData->query("UPDATE `$table` SET `active`=1 WHERE `id`='$id'");
             notify("admin", "success", "Active theme updated.");
