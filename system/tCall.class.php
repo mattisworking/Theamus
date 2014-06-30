@@ -1051,7 +1051,8 @@ class tCall {
             "<script src='system/js/theme.js'></script>",
             "<script src='system/external/prettify/prettify.js'></script>",
             "<script src='system/external/rangy/rangy.js'></script>",
-            "<script>theamus.info = ".$this->define_javascript_info()."</script>"
+            $this->tUser->user && $this->tUser->is_admin() ? "<script src='themes/admin/js/admin.min.js'></script>" : "",
+            "<script>theamus.info = ".$this->define_javascript_info()."</script>",
         );
         return implode("\n", $ret);
     }
@@ -1266,7 +1267,7 @@ class tCall {
      * @return string
      */
     private function include_admin() {
-        return path(ROOT."/themes/admin/html.php");
+        return path(ROOT."/themes/admin/html.min.php");
     }
 
 
@@ -1316,7 +1317,7 @@ class tCall {
             $init_class = $this->init_class;
             ${$init_class} = new $init_class;
         }
-        
+
         $url_params = $this->parameters;
 
         echo $this->get_javascript(true);
