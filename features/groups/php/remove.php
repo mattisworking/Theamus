@@ -41,42 +41,48 @@ if ($id != false) {
 }
 
 if ($group != false) {
-    $query_find_users = $tData->select_from_table($query_data['user_table'], array("id", "groups"), array(
-        "operator"  => "",
+    $query_find_users = $tData->select_from_table($query_data['user_table'], array("selector", "value"), array(
+        "operator"  => "AND",
         "conditions"=> array(
-            "[%]groups" => "%".$group['alias']."%"
+            "[%]value"  => "%".$group['alias']."%",
+            "key"       => "groups"
         )
     ));
 
-    if ($query_find_users != false) {
-        if ($tData->count_rows($query_find_users) > 0) {
-            $results = $tData->fetch_rows($query_find_users);
-            $users = isset($results[0]) ? $results : array($results);
+    if (!$query_find_users) {
+        $error[] = 'There was an error querying the users database table.';
+    }
 
-            foreach ($users as $user) {
-                $user_groups = explode(",", $user['groups']);
-                $new_groups = array();
-                foreach ($user_groups as $ug) {
-                    if ($ug != $group['alias']) {
-                        $new_groups[] = $ug;
-                    }
-                }
-
-                $query_data['user_data'][] = array("groups" => implode(",", $new_groups));
-                $query_data['user_clause'][] = array(
-                    "operator"  => "",
-                    "conditions"=> array("id" => $user['id'])
-                );
+    $user_selectors = array();
+    if ($tData->count_rows($query_find_users) > 0) {
+        foreach ($tData->fetch_rows($query_find_users) as $user_selector) {
+            if (!in_array($user_selectors, $user_selector)) {
+                $user_selectors[] = $user_selector;
             }
         }
-    } else {
-        $error[] = "There was an error querying the database for users.";
+
+        foreach ($user_selectors as $user) {
+            $user_groups = explode(",", $user['value']);
+            $new_groups = array();
+
+            foreach ($user_groups as $ug) {
+                if ($ug != $group['alias']) {
+                    $new_groups[] = $ug;
+                }
+            }
+
+            $query_data['user_data'][] = array('value' => implode(',', $new_groups));
+            $query_data['user_clause'][] = array(
+                "operator"  => "AND",
+                "conditions"=> array("selector" => $user['selector'], 'key' => 'groups')
+            );
+        }
     }
 }
 
 // Show errors
 if (!empty($error)) {
-    notify("admin", "failure", $error[0]);
+    alert_notify('danger', $error[0]);
 } else {
     $clean_users_query = true;
     if (!empty($query_data['user_data'])) {
@@ -85,21 +91,21 @@ if (!empty($error)) {
 
     if ($clean_users_query != false) {
         // Clear the db buffer before moving on
-        if ($tData->use_pdo == true) {
+        if ($tData->use_pdo == true && is_object($clean_users_query)) {
             $clean_users_query->closeCursor();
         }
 
         $query = $tData->delete_table_row($query_data['group_table'], array(
-            "operator"  => "",
-            "conditions"=> array("id" => $id)
+            "operator"      => "",
+            "conditions"    => array("id" => $id)
         ));
 
         if ($query != false) {
-            notify("admin", "success", "This group has been removed.");
+            alert_notify('success', "This group has been removed.");
         } else {
-            notify("admin", "failure", "There was an issue deleting this group.");
+            alert_notify('danger', "There was an issue deleting this group.");
         }
     } else {
-        notify("admin", "failure", "There was an error updating the users database table.");
+        alert_notify('danger', "There was an error updating the users database table.");
     }
 }

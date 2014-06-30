@@ -17,6 +17,11 @@ $admin_files = array(
 // Deny bad users
 $tUser->deny_non_admins($file, $admin_files);
 
+$feature['class']['file'] = 'groups.class.php';
+$feature['class']['init'] = 'Groups';
+
+define('FILE', $file);
+
 // File specification
 switch ($file) {
 	case "index.php":

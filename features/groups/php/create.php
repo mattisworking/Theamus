@@ -40,7 +40,7 @@ if ($post['permissions'] != "" || $post['name'] == "Everyone") {
 }
 
 if (!empty($error)) { // Show errors
-	notify("admin", "failure", $error[0]);
+	alert_notify('danger', $error[0]);
 } else {
     // Define the creation query data
     $query_data['data'] = array(
@@ -55,9 +55,9 @@ if (!empty($error)) { // Show errors
 
 	// Notify user and get out
     if ($query != false) {
-        notify("admin", "success", "This group has been created.<br/>".js_countdown());
+        alert_notify('success', "This group has been created.<br/>".js_countdown());
         run_after_ajax("back_to_grouplist");
     } else {
-        notify("admin", "failure", "There was an error querying the database to create.");
+        alert_notify('danger', "There was an error querying the database to create.");
     }
 }

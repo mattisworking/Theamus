@@ -1,66 +1,53 @@
-<div class="admin_content-header">
-    <span class="admin_content-header-img">
-        <img id="admin_content-header-img" src="features/groups/img/create-groups.png" alt="" />
-    </span>
-    <div class="right" style="margin-top: -2px;">
-        <input type="button" onclick="admin_go('accounts', 'groups/');" value="Go Back" />
-    </div>
-	<div class="admin_content-header-text">
-        Create a New Group
-    </div>
-</div>
+<!-- Groups Tabs -->
+<div class='admin-tabs'><?php echo $Groups->groups_tabs(FILE); ?></div>
 
-<div class="admin_page-content">
-    <div id="group-result"></div>
-    <form class="admin-form" id="group-form" onsubmit="return create_group();">
-        <div class="admin-formrow">
-            <div class="admin-formlabel">Group Name</div>
-            <div class="admin-forminput">
-                <input type="text" class="longtext" name="name" id="name" maxlength="100"
-                       autocomplete="off" />
-            </div>
-            <div class="admin-forminfo">
-                <span>This is the name that will appear to users, a general name.</span>
-            </div>
+<!-- Form Results -->
+<div id='group-result'></div>
+
+<!-- Form -->
+<form class='form-horizontal' id='group-form' onsubmit='return create_group();' style='margin-top: 20px;'>
+    <!-- Group Name -->
+    <div class='form-group'>
+        <label class='control-label col-3' for='name'>Group Name</label>
+        <div class='col-9'>
+            <input type='text' class='form-control' name='name' id='name' autocomplete='off'>
         </div>
+    </div>
 
-        <hr />
+    <!-- Permissions -->
+    <div class='form-group'>
+        <label class='control-label col-3' for='permissions'>Permissions</label>
+        <div class='col-9'>
+            <select class='form-control' name='permissions' id='permissions' size='20' multiple='multiple'>
+                <?php
+                // Query the database for permissions
+                $query = $tData->select_from_table($tData->prefix.'permissions', array('permission', 'feature'));
 
-        <div class="admin-formrow">
-            <div class="admin-formlabel afl-float">Permissions</div>
-            <div class="admin-forminput">
-                <select name="permissions" id="permissions" size="20" multiple="multiple">
-                    <?php
-                    // Query the database for permissions
-                    $query = $tData->select_from_table($tData->prefix."permissions", array("permission", "feature"));
+                // Loop through results
+                $results = $tData->fetch_rows($query);
+                foreach ($results as $permission) {
+                    // Clean up the text
+                    $permission_permission  = ucwords(str_replace('_', ' ', $permission['permission']));
+                    $permission_feature     = ucwords(str_replace('_', ' ', $permission['feature']));
 
-                    // Loop through results
-                    $results = $tData->fetch_rows($query);
-                    foreach ($results as $permission) {
-                        // Clean up the text
-                        $permission_permission  = ucwords(str_replace("_", " ", $permission['permission']));
-                        $permission_feature     = ucwords(str_replace("_", " ", $permission['feature']));
-
-                        // Show options
-                        if ($tUser->has_permission($permission['permission']) || ($tUser->is_admin() && $tUser->in_group("administrators"))) {
-                            echo "<option value='".$permission['permission']."'>$permission_feature - $permission_permission</option>";
-                        }
+                    // Show options
+                    if ($tUser->has_permission($permission['permission']) || ($tUser->is_admin() && $tUser->in_group('administrators'))) {
+                        echo '<option value=\''.$permission['permission'].'\'>'.$permission_feature.' - '.$permission_permission.'</option>';
                     }
-                    ?>
-                </select>
-            </div>
-            <div class="admin-forminfo">
-                <span>All of the permissions selected here will be available to any
-                    user in this group.</span>
-            </div>
+                }
+                ?>
+            </select>
+            <p class='form-control-feedback'>All of the permissions selected here will be available to any user in this group.</p>
         </div>
+    </div>
 
-        <hr />
+    <hr class='form-split'>
 
-        <div class="admin-formsubmitrow">
-            <input type="submit" class="admin-greenbtn" value="Create Group" />
-            <input type="button" class="admin-redbtn" value="Cancel"
-                onclick="return admin_go('accounts', 'groups/')" />
-        </div>
-    </form>
-</div>
+    <div class='form-button-group'>
+        <button type='submit' class='btn btn-success'>Create Group</button>
+    </div>
+</form>
+
+<script>
+    admin_window_run_on_load('change_groups_tab');
+</script>

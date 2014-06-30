@@ -42,7 +42,7 @@ if ($get['home'] != "") {
 
 // Show errors
 if (!empty($error)) {
-    notify("admin", "failure", $error[0]);
+    alert_notify('danger', $error[0]);
 
 // Update group
 } else {
@@ -63,8 +63,8 @@ if (!empty($error)) {
 
 
     if ($query != false) {
-        notify("admin", "success", "This information has been saved.");
+        alert_notify('success', "This information has been saved.");
     } else {
-        notify("admin", "failure", "There was an error querying the database.");
+        alert_notify('danger', "There was an error querying the database.");
     }
 }

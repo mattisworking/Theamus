@@ -3,7 +3,10 @@ function load_groups() {
     theamus.ajax.run({
         url: "groups/groups-list/",
         result: "groups_list",
-        type: "include"
+        type: "include",
+        after: function() {
+            list_listeners();
+        }
     });
 
     return false;
@@ -19,38 +22,20 @@ function search_groups() {
     return false;
 }
 
-function remove_group(id) {
-    admin_scroll_top();
-    $("#remove-window").show();
-	$("#remove-window").html(working());
-    theamus.ajax.run({
-        url: "groups/remove-group&id=" + id,
-        result: "remove-window",
-        type: "include"
+function list_listeners() {
+    $('[name="edit-group-link"]').click(function(e) {
+        e.preventDefault();
+
+        change_admin_window_title('theamus-groups', 'Edit Group');
+        update_admin_window_content('theamus-groups', 'groups/edit?id='+$(this).data('id'));
     });
 
-	return false;
-}
+    $('[name="remove-group-link"]').click(function(e) {
+        e.preventDefault();
 
-function close_remove_group() {
-    $("#remove-window").html("");
-    $("#remove-window").hide();
-
-    return false;
-}
-
-function submit_remove_group() {
-    $("#remove_result").html(working());
-    theamus.ajax.run({
-        url: "groups/remove/",
-        result: "remove_result",
-        extra_fields: "group_id",
-        after: {
-            do_function: ["close_remove_group", "search_groups"]
-        }
+        change_admin_window_title('theamus-groups', 'Edit Group');
+        update_admin_window_content('theamus-groups', 'groups/remove-group?id='+$(this).data('id'));
     });
-
-    return false;
 }
 
 function groups_next_page(page) {
@@ -61,6 +46,14 @@ function groups_next_page(page) {
         type:   "include"
     });
     return false;
+}
+
+function change_groups_tab() {
+    $('[name="groups-tab"]').click(function(e) {
+        e.preventDefault();
+        update_admin_window_content('theamus-groups', $(this).attr('data-file'));
+        change_admin_window_title('theamus-groups', $(this).attr('data-title'));
+    });
 }
 
 $(document).ready(function() {

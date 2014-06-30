@@ -1,35 +1,50 @@
-.group_windows {
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 150px;
+#groups_list {
+    margin: 10px 0;
+    width: 600px;
 }
-
-.group-window {
-    background-color: #FFF;
-    border: 1px solid #CCC;
-    box-shadow: 0px 0px 10px #CCC;
-    display: none;
-    margin: 0px auto;
-    max-height: 400px;
-    overflow-y: auto;
-    width: 450px;
-    z-index: 2000000;
+#groups_list > ul,
+#groups_list > ul li ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
-.group-window > .window-header {
-    border-bottom: 1px solid #EEE;
-    font-family: Raleway, sans-serif;
-    font-size: 12pt;
-    margin: 0 0 10px;
-    padding: 10px 0;
-    text-align: center;
+#groups_list > ul li {
+    display: block;
+    padding: 10px;
+    transition: background-color .3s ease-in-out;
+    -webkit-transition: background-color .3s ease-in-out;
+    -moz-transition: background-color .3s ease-in-out;
+    -ms-transition: background-color .3s ease-in-out;
 }
-.group-window > .window-content {
-    padding: 5px 20px 20px;
+#groups_list > ul li:hover {
+    background-color: #ddd;
 }
-.group-window > .window-content > .window-options {
-    border-top: 1px solid #CCC;
-    margin: 20px 0 0;
-    padding: 10px 10px 0;
-    text-align: right;
+#groups_list > ul > li:nth-child(even) {
+    background-color: #eee;
+}
+#groups_list > ul li .group-name {
+    display: inline-block;
+    margin: 0 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
+}
+#groups_list > ul li .group-alias {
+    display: inline-block;
+    margin: 0 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 150px;
+}
+#groups_list > ul li ul {
+    float: right;
+    margin-top: -9px;
+}
+#groups_list > ul li ul li {
+    display: inline-block;
+}
+#groups_list > ul li ul li a {
+    color: #222;
 }
