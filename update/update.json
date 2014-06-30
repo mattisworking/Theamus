@@ -24,7 +24,8 @@
             "Fixed a few issues with the Pagination class",
             "Updated the Theamus theme.css style",
             "Rewrote the Accounts feature providing style and security updates - https://github.com/Eyraahh/Theamus/issues/37",
-            "Decreased the amount of database calls/queries by 44% on page load - https://github.com/Eyraahh/Theamus/issues/42"
+            "Decreased the amount of database calls/queries by 44% on page load - https://github.com/Eyraahh/Theamus/issues/42",
+            "Updated the pagination class to show page links in a more pretty way while opening some customization to how they show - https://github.com/Eyraahh/Theamus/issues/41"
         ]
     },
     "authors": [

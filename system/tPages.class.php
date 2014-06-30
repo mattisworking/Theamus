@@ -147,13 +147,14 @@ class tPages {
      */
     public function set_page_data($array) {
         if (is_array($array)) {
-            $this->sql              = isset($array['sql']) ? $array['sql'] : false;
-            $this->defined_data     = isset($array['data']) ? $array['data'] : array();
-            $this->per_page         = $array['per_page'];
-            $this->current          = $array['current'];
-            $this->list_template    = $array['list_template'];
-            $this->template_header  = isset($array['template_header']) ? $array['template_header'] : "";
-            $this->notify           = isset($array['notify']) ? $array['notify'] : "admin";
+            $this->sql                  = isset($array['sql']) ? $array['sql'] : false;
+            $this->defined_data         = isset($array['data']) ? $array['data'] : array();
+            $this->per_page             = $array['per_page'];
+            $this->current              = $array['current'];
+            $this->list_template        = $array['list_template'];
+            $this->template_header      = isset($array['template_header']) ? $array['template_header'] : "";
+            $this->notify               = isset($array['notify']) ? $array['notify'] : "admin";
+            $this->total_page_numbers   = isset($array['total_page_numbers']) ? $array['total_page_numbers'] : 2;
             return true;
         }
         return false;
@@ -330,10 +331,10 @@ class tPages {
      * @param string $function
      * @return string
      */
-    private function make_pagination($number, $function="next_page") {
+    private function make_pagination($number, $function="next_page", $text = "") {
         $current = "";
         if ($number == $this->current) $current = "class='current'";
-        $link = "<a href='#' ".$current." onclick=\"return ".$function."('".$number."');\">".$number."</a>";
+        $link = "<a href='#' ".$current." onclick=\"return ".$function."('".$number."');\">".($text != "" ? $text : $number)."</a>";
         return $link;
     }
 
@@ -356,10 +357,34 @@ class tPages {
      * @return boolean
      */
     public function print_pagination($function="next_page", $class = 'pagination', $return = false) {
-        $end = $this->get_pagination_stop();
+        $stop = $this->get_pagination_stop();
         $links = "<div class='$class'>";
+
         $links .= $this->print_current();
-        for ($i = 1; $i <= $end; $i++) $links .= $this->make_pagination($i, $function);
+
+        // Define the start and stop links based on the current page and the total page numbers defined by the developer
+        $start = $this->current - $this->total_page_numbers < 1 ? 1 : $this->current - $this->total_page_numbers;
+        $end = $this->current + $this->total_page_numbers > $stop ? $stop : $this->current + $this->total_page_numbers;
+
+        // Define further the start and stop links based on the current page
+        $start_i = $stop == $end && $start - $this->total_page_numbers > 1 ? $start - $this->total_page_numbers : $start;
+        if ($this->current == 1) {
+            $end_i = $stop > $end ? $end + $this->total_page_numbers : $end;
+        } else {
+            $end_i = $this->current - $this->total_page_numbers < 1 && $start > 1 ? ($end + $this->total_page_numbers) - $start_i : $end;
+        }
+
+        // Add the 'previous' page link (<)
+        if ($this->current > 1) $links .= $this->make_pagination($this->current - 1, $function, '<');
+
+        // Add all of the page number links
+        for ($i = $start_i; $i <= $end_i; $i++) {
+            $links .= $this->make_pagination($i, $function);
+        }
+
+        // Add the 'next page' link (>)
+        if ($this->current < $stop) $links .= $this->make_pagination($this->current + 1, $function, '>');
+
         $links .= "</div>";
         if ($return != false) return $links;
         echo $links;
