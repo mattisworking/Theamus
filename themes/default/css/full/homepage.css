@@ -1,0 +1,167 @@
+/*--
+    Credit to the clouds goes to:
+    @thecodeplayer - http://www.twitter.com/thecodeplayer
+    tutorial - http://thecodeplayer.com/walkthrough/pure-css3-animated-clouds-background
+--*/
+
+* {
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+/*-- HTML, body --*/
+html, body  {
+    margin: 0;
+    padding: 0;
+}
+body {
+    background-image: url("../img/stripe-bg.png");
+    height: 100%;
+    width: 100%;
+}
+
+/*-- Fonts --*/
+@font-face {
+    font-family: 'josefin';
+    src: url('fonts/JosefinSans/josefinsans.eot');
+    src: url('fonts/JosefinSans/josefinsans.eot?#iefix') format('embedded-opentype'),
+        url('fonts/JosefinSans/josefinsans.woff') format('woff'),
+        url('fonts/JosefinSans/josefinsans.ttf') format('truetype'),
+        url('fonts/JosefinSans/josefinsans.svg#josefin_sans') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+/*-- Content Wrappers --*/
+.site_wrapper {
+    position: relative;
+}
+.homepage_wrapper {
+    background-color: #333;
+    border: 2px solid #AAA;
+    border-radius: 20px;
+    box-shadow: inset 0 0 10px #AAA;
+    display: inline-block;
+    left: 50%;
+    margin-left: -400px;
+    padding: 40px;
+    position: relative;
+}
+
+/*-- Clouds --*/
+.clouds_wrapper {
+    background: #c9dbe9;
+    background: -webkit-linear-gradient(top, #c9dbe9 0%, #fff 100%);
+    background: linear-gradient(top, #c9dbe9 0%, #fff 100%);
+    background: -moz-linear-gradient(top, #c9dbe9 0%, #fff 100%);
+    background: -ms-linear-gradient(top, #c9dbe9 0%, #fff 100%);
+    height: 375px;
+    overflow: hidden;
+    padding: 100px 0;
+    position: absolute;
+    width: 800px;
+    z-index: 10;
+}
+.cloud {
+    background: #fff;
+    border-radius: 200px;
+    -moz-border-radius: 200px;
+    -webkit-border-radius: 200px;
+    box-shadow: 0px 10px 10px #AAA;
+    height: 60px;
+    position: relative;
+    width: 200px;
+}
+.cloud:before, .cloud:after {
+    content: '';
+    background: #fff;
+    border-radius: 100px;
+    -moz-border-radius: 100px;
+    -webkit-border-radius: 100px;
+    height: 80px;
+    position: absolute;
+    left: 10px;
+    position: absolute;
+    top: -15px;
+    -webkit-transform: rotate(30deg);
+    transform: rotate(30deg);
+    -moz-transform: rotate(30deg);
+    width: 100px;
+}
+.cloud:after {
+    height: 120px;
+    left: auto;
+    right: 15px;
+    top: -55px;
+    width: 120px;
+}
+.x2 {
+    left: 250px;
+    opacity: 0.6;
+    top: -10px;
+    -webkit-transform: scale(0.6);
+    -moz-transform: scale(0.6);
+    transform: scale(0.6);
+}
+.x3 {
+    left: -250px;
+    opacity: 0.8;
+    top: -200px;
+    -webkit-transform: scale(0.8);
+    -moz-transform: scale(0.8);
+    transform: scale(0.8);
+}
+.x4 {
+    left: 420px;
+
+    opacity: 0.75;
+    top: -250px;
+    -webkit-transform: scale(0.75);
+    -moz-transform: scale(0.75);
+    transform: scale(0.75);
+}
+.x5 {
+    left: 550px;
+    opacity: 0.8;
+    top: -150px;
+    -webkit-transform: scale(0.8);
+    -moz-transform: scale(0.8);
+    transform: scale(0.8);
+}
+
+
+/*-- Content --*/
+.content-wrapper {
+    background-color: #FFF;
+    padding-bottom: 50px;
+    width: 800px;
+}
+.homepage_header {
+    font-size: 50pt;
+    font-family: "josefin";
+    margin-top: 125px;
+    position: relative;
+    text-align: center;
+    text-shadow: 0 0 10px #888;
+    z-index: 15;
+}
+.homepage_content {
+    color: #444;
+    font-family: Arial, sans-serif;
+    font-size: 11pt;
+    margin: 75px 50px 0;
+    position: relative;
+    z-index: 15;
+}
+
+.homepage_content a {
+    color: #444;
+    font-weight: bold;
+    text-decoration: none;
+}
+.homepage_content a:hover {
+    color: #000;
+    text-decoration: underline;
+}

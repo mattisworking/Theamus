@@ -1,41 +1,7 @@
-body {
-    height: auto;
-}
-/* Fonts */
-@font-face {
-    font-family: "Source Sans";
-    src: url('fonts/SourceSans/sourcesans.eot');
-    src: url('fonts/SourceSans/sourcesans.eot?#iefix') format('embedded-opentype'),
-         url('fonts/SourceSans/sourcesans.woff') format('woff'),
-         url('fonts/SourceSans/sourcesans.ttf') format('truetype'),
-         url('fonts/SourceSans/sourcesans.svg#SourceSans') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-/* Header */
-.login_header {
-    font-family: "Source Sans", sans-serif;
-    font-size: 18pt;
-    margin: 10% auto 0;
-    width: 300px;
-}
-.login_header-company {
-    color: #88a;
-}
-
-/* Login Area */
-.login_area-wrapper {
-    border: 1px solid #88a;
-    padding: 10px;
-    margin: 10px auto 0;
-    width: 300px;
-}
-.login_site-link {
-    padding: 10px;
-}
-.login_site-link > a {
-    color: #88C;
-    text-decoration: none;
-}
+body{height:auto}
+@font-face{font-family:"Source Sans";src:url(fonts/SourceSans/sourcesans.eot?#iefix) format(embedded-opentype), url(fonts/SourceSans/sourcesans.woff) format(woff), url(fonts/SourceSans/sourcesans.ttf) format(truetype), url(fonts/SourceSans/sourcesans.svg#SourceSans) format(svg);font-weight:400;font-style:normal}
+.login_header{font-family:"Source Sans", sans-serif;font-size:18pt;width:300px;margin:10% auto 0}
+.login_header-company{color:#88a}
+.login_area-wrapper{border:1px solid #88a;width:300px;margin:10px auto 0;padding:10px}
+.login_site-link{padding:10px}
+.login_site-link > a{color:#88C;text-decoration:none}
