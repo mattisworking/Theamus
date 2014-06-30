@@ -1044,11 +1044,7 @@ class tCall {
     private function default_javascript() {
         $ret = array(
             "<script src='system/js/jquery.js'></script>",
-            "<script src='system/external/shim/classlist.js'></script>",
-            "<script src='system/js/ajax/ajax.js'></script>",
-            "<script src='system/editor/js/editor.js'></script>",
-            "<script src='system/js/main.js'></script>",
-            "<script src='system/js/theme.js'></script>",
+            "<script src='system/js/theamus.js'></script>",
             "<script src='system/external/prettify/prettify.js'></script>",
             "<script src='system/external/rangy/rangy.js'></script>",
             $this->tUser->user && $this->tUser->is_admin() ? "<script src='themes/admin/js/admin.min.js'></script>" : "",
