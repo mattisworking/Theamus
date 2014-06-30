@@ -11,7 +11,6 @@ function accounts_next_page(page) {
             custom: { page: page }
         },
         success:    function(data) {
-            console.log(data);
             if (typeof(data) === 'object') {
                 $('#accounts-list').html(data.response.data);
             }
