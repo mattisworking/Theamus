@@ -39,6 +39,6 @@ switch ($file) {
         break;
 
     case "show-page.php":
-        $feature['js']['script'][] = "$(document).ready(function() { prettyPrint(); });";
+        $feature['js']['script'][] = "document.addEventListener('DOMContentLoaded', function() { prettyPrint(); });";
         break;
 }

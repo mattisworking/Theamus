@@ -26,7 +26,8 @@
             "Rewrote the Accounts feature providing style and security updates - https://github.com/Eyraahh/Theamus/issues/37",
             "Decreased the amount of database calls/queries by 44% on page load - https://github.com/Eyraahh/Theamus/issues/42",
             "Updated the pagination class to show page links in a more pretty way while opening some customization to how they show - https://github.com/Eyraahh/Theamus/issues/41",
-            "The admin panel can live on the left side of the page or the right side - https://github.com/Eyraahh/Theamus/issues/44"
+            "The admin panel can live on the left side of the page or the right side - https://github.com/Eyraahh/Theamus/issues/44",
+            "Changed where the script loaded for the default theme - https://github.com/Eyraahh/Theamus/issues/45"
         ]
     },
     "authors": [

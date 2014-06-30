@@ -57,7 +57,7 @@ $user = $tUser->user;
 </form>
 
 <script>
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function() {
         $('#user-form').submit(function(e) {
             e.preventDefault();
         });

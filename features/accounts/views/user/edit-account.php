@@ -92,7 +92,7 @@ $user = $tUser->user;
 </form>
 
 <script>
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function() {
         $('#change-password').click(function() {
             if (this.checked === true) {
                 $('#passwords').show();

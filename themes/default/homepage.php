@@ -5,7 +5,6 @@
 		<title><?php echo $tTheme->get_page_variable("title"); ?></title>
         <?php echo $tTheme->get_page_variable("css"); ?>
 		<link rel="stylesheet" href="<?php echo $tTheme->get_page_variable("theme_path"); ?>css/homepage.css" />
-        <?php echo $tTheme->get_page_variable("js"); ?>
 	</head>
 
 	<body>
@@ -28,6 +27,7 @@
 			</div>
 		</div>
 
+        <?php echo $tTheme->get_page_variable("js"); ?>
 		<script>var wrapper=document.querySelector(".site_wrapper"),wrapper_height=wrapper.offsetHeight,window_height=window.innerHeight,center=window_height/2-wrapper_height/2;wrapper.style.top=center+"px"</script>
 	</body>
 </html>
