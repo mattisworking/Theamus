@@ -1,22 +1,13 @@
-<div class="admin_content-header">
-    <span class="admin_content-header-img">
-        <img id="admin_content-header-img" src="features/media/img/media.png" alt="" />
-    </span>
-	<div class="admin_content-header-text">Media</div>
-</div>
+<!-- Media Tabs -->
+<div class='admin-tabs'><?php echo $Media->media_tabs(FILE); ?></div>
 
-<div class="admin_page-content">
-    <div class="admin-listsink">
-        <div class="right">
-            <input type="button" class="admin-purpbtn" id="add_media" value="Add New Media" />
-        </div>
-        <div class="clearfix"></div>
-    </div>
-    <div class="media_windows">
-        <div id="remove_window" class="media-window"></div>
-        <div id="add_window" class="media-window add_media-window"></div>
-    </div>
-    <div id="remove_result"></div>
-    <div id="media-result"></div>
-	<div class="admin-list" id="media_list" style="min-width:700px;"></div>
-</div>
+<!-- Remove Media Result -->
+<div id='media-result' style='margin-top: 15px;'></div>
+
+<!-- Media List -->
+<div id='media-list'></div>
+
+<script>
+    admin_window_run_on_load('change_media_tab');
+    admin_window_run_on_load('load_media_list');
+</script>

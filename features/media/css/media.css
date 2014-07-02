@@ -1,28 +1,19 @@
+#media-list {
+    margin-top: 20px;
+    position: relative;
+    width: 600px;
+}
 .media_list-img {
-    border: 1px solid #CCC;
-    border-radius: 10px;
-    box-pack: center;
-    box-align: center;
-    display: box;
-    display: -webkit-box;
-    -webkit-box-pack: center;
-    -webkit-box-align: center;
-    display: -moz-box;
-    -moz-box-pack: center;
-    -moz-box-align: center;
-    display: -ms-box;
-    -ms-box-pack: center;
-    -ms-box-align: center;
-    float: left;
-    height: 225px;
-    margin: 10px 1%;
-    padding: 10px;
+    display: inline-block;
+    margin: 15px 10px;
     position: relative;
 }
 .media_list-img > img,
 .media_list-img > iframe {
-    max-height: 225px;
-    max-width: 300px;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    box-shadow: 0 0 10px #222;
+    width: 175px;
     overflow: hidden;
 }
 .media_list-img > iframe {
@@ -44,21 +35,25 @@
     top: 0;
 }
 .media_list-remove {
-    background: #000;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 50%;
     color: #F44 !important;
-    font-size: 14pt;
-    font-weight: bold;
-    padding: 5px 20px;
+    padding: 7px 10px;
     position: absolute;
-    left: 20px;
-    top: 10px;
+    left: 5px;
+    text-decoration: none;
+    top: 3px;
 }
 .media_list-remove:hover {
     background: #444;
     text-decoration: none !important;
 }
 
-/* Windows */
+.add-media {
+    margin-top: 15px;
+    width: 600px;
+}
+
 .media_windows {
     left: 0;
     position: absolute;

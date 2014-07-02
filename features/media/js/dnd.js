@@ -78,10 +78,15 @@ function upload_media(num) {
                     growbar: "uprog-"+num['i'],
                     percentage: "uper-"+num['i'],
                     hide: false,
-                    stop: 5.58
+                    stop: 5.98
                 }
             });
         }, 1000);
+    } else {
+        setTimeout(function() {
+            change_admin_window_title('theamus-media', 'Theamus Media');
+            update_admin_window_content('theamus-media', 'media/index/');
+        }, 2000);
     }
 }
 
