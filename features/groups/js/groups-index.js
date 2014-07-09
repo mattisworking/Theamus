@@ -1,5 +1,5 @@
 function load_groups() {
-    $("#groups_list").html(working());
+    $("#groups_list").html(alert_notify('spinner', 'Loading...'));
     theamus.ajax.run({
         url: "groups/groups-list/",
         result: "groups_list",
@@ -13,11 +13,14 @@ function load_groups() {
 }
 
 function search_groups() {
-    $("#groups_list").html(working());
+    $("#groups_list").html(alert_notify('spinner', 'Searching...'));
     theamus.ajax.run({
         url: "groups/groups-list/&search=" + $("#search").val(),
         result: "groups_list",
-        type: "include"
+        type: "include",
+        after: function() {
+            list_listeners();
+        }
     });
     return false;
 }
@@ -39,7 +42,7 @@ function list_listeners() {
 }
 
 function groups_next_page(page) {
-    $("#groups_list").html(working());
+    $("#groups_list").html(alert_notify('spinner', 'Loading...'));
     theamus.ajax.run({
         url:    "groups/groups-list&search="+ $("#search").val()+"&page="+page,
         result: "groups_list",
