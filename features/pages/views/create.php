@@ -1,90 +1,84 @@
-<div class="admin_content-header">
-    <span class="admin_content-header-img">
-        <img id="admin_content-header-img" src="features/pages/img/create-pages.png" alt="" />
-    </span>
-    <div class="right" style="margin-top: -2px;">
-        <input type="button" onclick="admin_go('pages', 'pages/');" value="Go Back" />
+<!-- Pages Tabs -->
+<div class='admin-tabs'><?php echo $Pages->pages_tabs(FILE); ?></div>
+
+<!-- Create Page Result -->
+<div id="page-result"></div>
+
+<!-- Create Page Form -->
+<form class="form" id="page-form" onsubmit="return create_page();" style='width: 800px;'>
+    <!-- Title -->
+    <h2 class="form-header">Page Title</h2>
+    <div class='form-group col-12'>
+        <input type='text' class='form-control' id='title' name='title' autocomplete='off' placeholder='e.g. About My Site'>
     </div>
-	<div class="admin_content-header-text">Create a New Page</div>
-</div>
 
-<div class="admin_page-content">
-    <div id="page-result"></div>
-    <form class="admin-form" id="page-form" onsubmit="return create_page();">
-        <div class="admin-formheader">Page Title</div>
-        <div class="admin-formrow">
-            <div class="admin-forminput">
-                <input type="text" style="width:800px" name="title" placeholder="e.g.: Home Page" />
+    <!-- Content -->
+    <h2 class='form-header'>Page Content</h2>
+    <div class='form-group'>
+        <div class='col-12'><?php new tEditor(array("id"=>"content")); ?></div>
+    </div>
+
+    <!-- Options -->
+    <h2 class='form-header'>Page Options</h2>
+    <div class='col-12'>
+        <div class='col-6'>
+            <!-- Theme/Layout -->
+            <div class='form-group'>
+                <label class='control-label' for='layouts'>Use Theme Layout</label>
+                <?php echo $Pages->get_selectable_layouts(); ?>
+            </div>
+
+            <!-- Permissions -->
+            <div class='form-group'>
+                <label class='control-label' for='groups'>Permissable Groups</label>
+                <select class='form-control' name='groups' id='groups' size='10' multiple='multiple'>
+                <?php
+                    // Query the database for groups
+                    $query = $tData->select_from_table($tData->prefix."groups", array("alias", "name"));
+
+                    // Loop through all groups, showing as options
+                    $results = $tData->fetch_rows($query);
+                    foreach ($results as $group) {
+                        $selected = $group['alias'] == "everyone" ? "selected" : "";
+                        echo "<option ".$selected." value='".$group['alias']."'>".$group['name']."</option>";
+                    }
+                ?>
+                </select>
+            </div>
+
+            <!-- Link -->
+            <h2 class='form-header'>Link</h2>
+            <div class='form-group col-12'>
+                <label class='checkbox'>
+                    <input type='checkbox' name='create_link' id='create_link'>
+                    Create a link along with this page
+                </label>
             </div>
         </div>
 
-        <div class="admin-formheader">Page Content</div>
-        <div class="admin-formrow">
-            <?php $tEditor = new tEditor(array("id"=>"content")); ?>
-        </div>
+        <div class='col-6' id='nav-links' style='display: none;'>
+            <input type='hidden' id='navigation' name='navigation' value=''>
 
-        <div class="admin-formheader">Page Options</div>
-        <div class="admin-formcolumn" style="width: 350px;">
-            <div class="admin-formrow">
-                <div class="admin-formlabel">Use Theme Layout</div>
-                <div class="admin-forminput">
-                    <?=$Pages->get_selectable_layouts()?>
-                </div>
+            <h2 class='form-header' style='margin-top: 0;'>This layout allows navigation!</h2>
+            <div class='form-group'>
+                <div id='link-area'></div>
             </div>
-            <div class="admin-formrow">
-                <div class="admin-formlabel afl-float">Permissable Groups</div>
-                <div class="admin-forminput">
-                    <select name="groups" multiple="multiple" size="7">
-                    <?php
-                        // Query the database for groups
-                        $query = $tData->select_from_table($tData->prefix."groups", array("alias", "name"));
 
-                        // Loop through all groups, showing as options
-                        $results = $tData->fetch_rows($query);
-                        foreach ($results as $group) {
-                            $selected = $group['alias'] == "everyone" ? "selected" : "";
-                            echo "<option ".$selected." value='".$group['alias']."'>"
-                                    .$group['name']."</option>";
-                        }
-                    ?>
-                    </select>
-                </div>
+            <hr class='form-split'>
+
+            <div class='form-group'>
+                <a href='#' onclick='return add_new_link();'>Add Another</a>
             </div>
         </div>
-        <div class="admin-formcolumn" id="nav-links" style="display: none;">
-            <input type="hidden" id="navigation" name="navigation" value="" />
-            <div class="admin-formheader" style="margin: 0;">This layout allows navigation</div>
-            <div id="link-area"></div>
-            <div class="admin-formrow" style="padding-left:90px; margin-top:20px;">
-                <a href="#" onclick="return add_new_link();">Add Another</a>
-            </div>
-        </div>
-        <div class="clearfix"></div>
+    </div>
 
-        <div class="admin-formheader">Link</div>
-        <div class="admin-formrow">
-            <div class="admin-formlabel afl-float">Create a Link</div>
-            <div class="admin-forminput">
-                <div class="admin-cboxwrapper">
-                    <input type="checkbox" class="admin-switchcbox" name="create_link"
-                        id="create_link">
-                    <label class="admin-switchlabel yn" for="create_link">
-                      <span class="admin-switchinner"></span>
-                      <span class="admin-switchswitch"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="admin-forminfo">
-                This will create a link to go along with the page.  It will be
-                placed in your sites default navigation area.
-            </div>
-        </div>
+    <hr class='form-split'>
 
-        <hr />
+    <div class='form-button-group'>
+        <button type='submit' class='btn btn-success'>Create Page</button>
+    </div>
+</form>
 
-        <div class="admin-formsubmitrow">
-            <input type="submit" value="Save" class="admin-greenbtn" />
-            <input type="button" value="Cancel" onclick="admin_go('pages', 'pages/');" class="admin-redbtn" />
-        </div>
-    </form>
-</div>
+<script>
+    admin_window_run_on_load('change_pages_tab');
+</script>

@@ -22,6 +22,8 @@ $tUser->deny_non_admins($file, $admin_files);
 $feature['class']['file'] = "pages.class.php";
 $feature['class']['init'] = "Pages";
 
+define('FILE', $file);
+
 switch ($file) {
     case "index.php":
         $feature['js']['file'][] = "pages-index.js";

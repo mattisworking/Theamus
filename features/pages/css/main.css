@@ -1,3 +1,54 @@
+#pages_list {
+    margin: 10px 0;
+    width: 600px;
+}
+#pages_list > ul,
+#pages_list > ul li ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#pages_list > ul li {
+    display: block;
+    padding: 10px;
+    transition: background-color .3s ease-in-out;
+    -webkit-transition: background-color .3s ease-in-out;
+    -moz-transition: background-color .3s ease-in-out;
+    -ms-transition: background-color .3s ease-in-out;
+}
+#pages_list > ul li:hover {
+    background-color: #ddd;
+}
+#pages_list > ul > li:nth-child(even) {
+    background-color: #eee;
+}
+#pages_list > ul li .page-title {
+    display: inline-block;
+    margin: 0 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
+}
+#pages_list > ul li .page-view {
+    display: inline-block;
+    margin: 0 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 150px;
+}
+#pages_list > ul li ul {
+    float: right;
+    margin-top: -9px;
+}
+#pages_list > ul li ul li {
+    display: inline-block;
+}
+#pages_list > ul li ul li a {
+    color: #222;
+}
+
 #link-area .link_row:not(:first-child) {
     border-top: 1px solid #EEE;
     padding-top: 10px;
@@ -5,48 +56,4 @@
 }
 #link-area .admin-formrow {
     margin-top: 10px;
-}
-
-.page_windows {
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 150px;
-}
-
-.pages-window {
-    background-color: #FFF;
-    border: 1px solid #CCC;
-    box-shadow: 0px 0px 10px #CCC;
-    display: none;
-    margin: 0px auto;
-    max-height: 400px;
-    overflow-y: auto;
-    width: 450px;
-    z-index: 2000000;
-}
-.pages-window > .window-header {
-    border-bottom: 1px solid #EEE;
-    font-family: Raleway, sans-serif;
-    font-size: 12pt;
-    margin: 0 0 10px;
-    padding: 10px 0;
-    text-align: center;
-}
-.pages-window > .window-content {
-    padding: 5px 20px 20px;
-}
-.pages-window > .window-content > .window-options {
-    border-top: 1px solid #CCC;
-    margin: 20px 0 0;
-    padding: 10px 10px 0;
-    text-align: right;
-}
-.pages-window > .window-content h2 {
-    border-bottom: 1px solid #EEE;
-    font-family: Raleway, sans-serif;
-    font-size: 14pt;
-    font-weight: normal;
-    margin: 25px 0 10px;
-    padding: 5px 0;
 }

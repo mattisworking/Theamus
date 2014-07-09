@@ -73,7 +73,7 @@ if (isset($post['create_link'])) {
 
 // Show errors
 if (!empty($error)) {
-    notify("admin", "failure", $error[0]);
+    alert_notify("danger", $error[0]);
 } else {
     $query_create_page = $tData->insert_table_row($tData->prefix."pages", array(
         "alias"     => $alias,
@@ -86,9 +86,9 @@ if (!empty($error)) {
     ));
 
     if ($query_create_page != false) {
-        notify("admin", "success", "This page has been created.<br />".js_countdown());
+        alert_notify("success", "This page has been created. - ".js_countdown());
         run_after_ajax("back_to_pagelist");
     } else {
-        notify("admin", "failure", "There was an issue creating this page.");
+        alert_notify('danger', "There was an issue creating this page.");
     }
 }

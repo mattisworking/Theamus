@@ -29,24 +29,18 @@ function add_new_link() {
     var count = $("#link-area").children().length + 1,
             remove = "";
     if (count > 1) {
-        remove = "<div class='admin-forminfo'>"+
+        remove = "<div class='form-control-static'>"+
                      "<a href='#' onclick=\"return remove_link('"+count+"');\">Remove</a>"+
                  "</div>";
     }
     var link = "<div class='link_row' id='link_row"+count+"'>"+
-                    "<div class='admin-formrow'>"+
-                        "<div class='admin-formlabel'>Link Text</div>"+
-                            "<div class='admin-forminput'>"+
-                                "<input type='text' id='linktext-"+count+"' />"+
-                            "</div>"+
+                    "<div class='form-group'>"+
+                        "<div class='col-12'>"+
+                            "<input type='text' class='form-control' autocomplete='off' placeholder='Link Text' id='linktext-"+count+"' />"+
+                            "<input type='text' class='form-control' autocomplete='off' placeholder='Link Path' id='linkpath-"+count+"' />"+
                         "</div>"+
-                        "<div class='admin-formrow'>"+
-                            "<div class='admin-formlabel'>Link Path</div>"+
-                            "<div class='admin-forminput'>"+
-                                "<input type='text' id='linkpath-"+count+"' />"+
-                            "</div>"+
-                        "</div>"+ remove +
-                    "</div>";
+                    "</div>"+ remove +
+                "</div>";
     $("#link-area").append(link);
     return false;
 }
@@ -72,13 +66,17 @@ function aggregate_links() {
 
 function create_page() {
     aggregate_links();
-    admin_scroll_top();
-    $("#page-result").html(working());
+    $('#theamus-pages').scrollTop(0);
+    $("#page-result").html(alert_notify('spinner', 'Creating this page...'));
     theamus.ajax.run({
         url: "pages/create/",
         result: "page-result",
         form: "page-form",
-        extra_fields: "content"
+        extra_fields: "content",
+        after: function() {
+            $('#page-result').css('padding-top', '15px');
+            $('#theamus-pages').find('button').attr('disabled', 'disabled');
+        }
     });
 
     return false;
@@ -95,13 +93,16 @@ function remove_image_editing() {
 function save_page() {
     remove_image_editing();
     aggregate_links();
-    admin_scroll_top();
-    $("#page-result").html(working());
+    $('#theamus-pages').scrollTop(0);
+    $("#page-result").html(alert_notify('spinner', 'Saving information...'));
     theamus.ajax.run({
         url: "pages/save/",
         result: "page-result",
         form: "page-form",
-        extra_fields: "content"
+        extra_fields: "content",
+        after: function() {
+            $('#page-result').css('padding-top', '15px');
+        }
     });
 
     return false;
@@ -110,7 +111,8 @@ function save_page() {
 function back_to_pagelist() {
 	countdown("Back to pages list in", 3);
     setTimeout(function() {
-        admin_go("pages", "pages/");
+        change_admin_window_title('theamus-pages', 'Theamus Pages');
+        update_admin_window_content('theamus-pages', 'pages/index/');
     }, 3000);
 }
 

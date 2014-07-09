@@ -7,125 +7,106 @@ if (isset($get['id'])) {
     $id = $get['id'];
 
     // Check the ID has a value
-    if ($id != "") {
+    if ($id != '') {
         // Query the database for the page
-        $query = $tData->select_from_table($tData->prefix."pages", array(), array(
-            "operator"  => "",
-            "conditions"=> array("id" => $id)
+        $query = $tData->select_from_table($tData->prefix.'pages', array(), array(
+            'operator'  => '',
+            'conditions'=> array('id' => $id)
         ));
 
         // Check for a valid query
         if ($query != false) {
             $page = $tData->fetch_rows($query); // Define the database informations
         } else {
-            $error = "There was an error querying the database for the page.";
+            $error = 'There was an error querying the database for the page.';
         }
     } else {
-        $error = "Invalid ID value.";
+        $error = 'Invalid ID value.';
     }
 } else {
-    $error = "No page ID was found.";
+    $error = 'No page ID was found.';
 }
 ?>
 
-<div class="admin_content-header">
-    <span class="admin_content-header-img">
-        <img id="admin_content-header-img" src="features/pages/img/edit-pages.png" alt="" />
-    </span>
-    <div class="right" style="margin-top: -2px;">
-        <input type="button" onclick="admin_go('pages', 'pages/');" value="Go Back" />
+<!-- Pages Tabs -->
+<div class='admin-tabs'><?php echo $Pages->pages_tabs(FILE); ?></div>
+
+<!-- Create Page Result -->
+<div id='page-result'></div>
+
+<?php if ($error != false) die(alert_notify('danger', $error)); ?>
+
+<!-- Edit Page Form -->
+<form class='form' id='page-form' onsubmit='return save_page();' style='width: 800px;'>
+    <input type='hidden' name='page_id' value='<?=$id?>' />
+
+    <!-- Title -->
+    <h2 class='form-header'>Page Title</h2>
+    <div class='form-group col-12'>
+        <input type='text' class='form-control' id='title' name='title' autocomplete='off' placeholder='e.g. About My Site' value='<?php echo $page['title']; ?>'>
     </div>
-    <div class="admin_content-header-text">
-        <?php if ($error == false): ?>
-            Edit Page
-        <?php else: ?>
-            Something's wrong here...
-        <?php endif ?>
+
+    <!-- Content -->
+    <h2 class='form-header'>Page Content</h2>
+    <div class='form-group'>
+        <div class='col-12'><?php new tEditor(array('id'=>'content','text'=>$page['content'])); ?></div>
     </div>
-</div>
 
-<div class="admin_page-content">
-    <?php
-    if ($error != false):
-        notify("admin", "failure", $error);
-    else:
-        ?>
-        <div id="page-result"></div>
-        <form class="admin-form" id="page-form" onsubmit="return save_page();">
-            <div class="admin-formheader">Page Title</div>
-            <div class="admin-formrow">
-                <div class="admin-forminput">
-                    <input type="hidden" name="page_id" value="<?=$id?>" />
-                    <input type="text" style="width:800px" name="title"
-                           value="<?= $page['title'] ?>"
-                           placeholder="e.g.: Home Page" />
-                </div>
+    <!-- Options -->
+    <h2 class='form-header'>Page Options</h2>
+    <div class='col-12'>
+        <div class='col-6'>
+            <!-- Theme/Layout -->
+            <div class='form-group'>
+                <label class='control-label' for='layouts'>Use Theme Layout</label>
+                <?=$Pages->get_selectable_layouts($page['theme'])?>
             </div>
 
-            <div class="admin-formheader">Page Content</div>
-            <div class="admin-formrow">
-                <?php $tEditor = new tEditor(array("id"=>"content","text"=>$page['content'])); ?>
-            </div>
+            <!-- Permissions -->
+            <div class='form-group'>
+                <label class='control-label' for='groups'>Permissable Groups</label>
+                <select class='form-control' name='groups' id='groups' size='10' multiple='multiple'>
+                <?php
+                    // Define the page groups
+                    $pageGroups = explode(',', $page['groups']);
 
-            <div class="admin-formheader">Page Options</div>
-            <div class="admin-formcolumn" style="width: 350px;">
-                <div class="admin-formrow">
-                    <div class="admin-formlabel">Use Theme Layout</div>
-                    <div class="admin-forminput">
-                        <?=$Pages->get_selectable_layouts($page['theme'])?>
-                    </div>
-                </div>
-                <div class="admin-formrow">
-                    <div class="admin-formlabel afl-float">Permissable Groups</div>
-                    <div class="admin-forminput">
-                        <select name="groups" multiple="multiple" size="7">
-                            <?php
-                            // Define the page groups
-                            $pageGroups = explode(",", $page['groups']);
+                    // Query the database for groups
+                    $query = $tData->select_from_table($tData->prefix.'groups', array('alias', 'name'));
 
-                            // Query the database for groups
-                            $query = $tData->select_from_table($tData->prefix."groups", array("alias", "name"));
-                            
-                            // Loop through all groups, showing as options
-                            $results = $tData->fetch_rows($query);
-                            foreach ($results as $group) {
-                                $selected = in_array($group['alias'], $pageGroups) ? "selected" : "";
-                                echo "<option " . $selected . " value='" . $group['alias'] . "'>"
-                                . $group['name'] . "</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
-                </div>
+                    // Loop through all groups, showing as options
+                    $results = $tData->fetch_rows($query);
+                    foreach ($results as $group) {
+                        $selected = in_array($group['alias'], $pageGroups) ? 'selected' : '';
+                        echo '<option '.$selected.' value=\''.$group['alias'].'\'>'.$group['name'].'</option>';
+                    }
+                ?>
+                </select>
             </div>
-            <div class="admin-formcolumn" id="nav-links" style="display: none;">
-                <input type="hidden" id="navigation" name="navigation" value="" />
-                <div class="admin-formheader" style="margin: 0;">This layout allows navigation</div>
-                <div id="link-area">
+        </div>
+
+        <div class='col-6' id='nav-links' style='display: none;'>
+            <input type='hidden' id='navigation' name='navigation' value=''>
+
+            <h2 class='form-header' style='margin-top: 0;'>This layout allows navigation!</h2>
+            <div class='form-group'>
+                <div id='link-area'>
                     <?php
-                    $themeLinks = explode(",", $page['navigation']);
+                    $themeLinks = explode(',', $page['navigation']);
 
                     $i = 1;
                     foreach ($themeLinks as $linkInfo) {
-                        $link = explode("::", $linkInfo);
-                        if ($link[0] == "") $link = array("", "");
+                        $link = explode('::', $linkInfo);
+                        if ($link[0] == '') $link = array('', '');
                         ?>
                         <div class='link_row' id='link_row<?=$i?>'>
-                            <div class='admin-formrow'>
-                                <div class='admin-formlabel'>Link Text</div>
-                                <div class='admin-forminput'>
-                                    <input type='text' id='linktext-<?=$i?>' value="<?=$link[0] ?>" />
-                                </div>
+                            <div class='form-group'>
+                                <input type='text' class='form-control' autocomplete='off' placeholder='Link Text' id='linktext-<?=$i?>' value='<?=$link[0] ?>' />
+                                <input type='text' class='form-control' autocomplete='off' placeholder='Link Path' id='linkpath-<?=$i?>' value='<?=$link[1] ?>' />
                             </div>
-                            <div class='admin-formrow'>
-                                <div class='admin-formlabel'>Link Path</div>
-                                <div class='admin-forminput'>
-                                    <input type='text' id='linkpath-<?=$i?>' value="<?=$link[1] ?>" />
-                                </div>
-                            </div>
+
                             <?php if ($i > 1): ?>
-                            <div class='admin-forminfo'>
-                                <a href='#' onclick="return remove_link('<?=$i?>');">Remove</a>
+                            <div class='form-control-static'>
+                                <a href='#' onclick="return remove_link('<?php echo $i; ?>');">Remove</a>
                             </div>
                             <?php endif; ?>
                         </div>
@@ -134,18 +115,23 @@ if (isset($get['id'])) {
                     }
                     ?>
                 </div>
-                <div class="admin-formrow" style="padding-left:90px; margin-top:20px;">
-                    <a href="#" onclick="return add_new_link();">Add Another</a>
-                </div>
             </div>
-            <div class="clearfix"></div>
 
-            <hr />
+            <hr class='form-split'>
 
-            <div class="admin-formsubmitrow">
-                <input type="submit" value="Save" class="admin-greenbtn" />
-                <input type="button" value="Cancel" onclick="admin_go('pages', 'pages/');" class="admin-redbtn" />
+            <div class='form-group'>
+                <a href='#' onclick='return add_new_link();'>Add Another</a>
             </div>
-        <?php endif ?>
-    </form>
-</div>
+        </div>
+    </div>
+
+    <hr class='form-split'>
+
+    <div class='form-button-group'>
+        <button type='submit' class='btn btn-success'>Save Information</button>
+    </div>
+</form>
+
+<script>
+    admin_window_run_on_load('change_pages_tab');
+</script>
