@@ -82,7 +82,7 @@ function update_admin_window_content(window_id, url) {
             type:       "include",
             result:     window_id,
             after:      function() {
-                $('#'+window_id).children('.refresh').attr('data-url', url);
+                $('#'+window_id).parentsUntil('.admin-windows').find('.refresh').attr('data-url', url);
                 admin_add_extras();
                 resize_admin_window();
                 if (resize !== null) {
