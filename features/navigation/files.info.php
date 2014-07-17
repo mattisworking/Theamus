@@ -24,6 +24,8 @@ $tUser->deny_non_admins($file, $admin_files);
 $feature['class']['file'] = "navigation.class.php";
 $feature['class']['init'] = "Navigation";
 
+define('FILE', $file);
+
 // Define specific file information
 switch ($file) {
 	case "index.php":

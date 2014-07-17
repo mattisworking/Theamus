@@ -64,6 +64,14 @@ function next_page(page) {
     return false;
 }
 
+function change_navigation_tab() {
+    $('[name="navigation-tab"]').click(function(e) {
+        e.preventDefault();
+        update_admin_window_content('theamus-navigation', $(this).attr('data-file'));
+        change_admin_window_title('theamus-navigation', $(this).attr('data-title'));
+    });
+}
+
 $(document).ready(function() {
     load_nav();
 });

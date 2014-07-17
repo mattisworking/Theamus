@@ -21,6 +21,31 @@ class Navigation {
         return;
     }
 
+    /**
+     * Define the navigation tabs and show the 'current' tab respectively
+     *
+     * @param string $file
+     * @return string
+     */
+    public function navigation_tabs($file = '') {
+        // Define the tabs and their options
+        $tabs = array(
+            array('List of Navigation Links', 'index.php', 'Theamus Navigation'),
+            array('Create a New Link', 'create.php', 'Create a New Link')
+        );
+
+        $return_tabs = array(); // Empty return array to add to
+
+        // Loop through all of the tabs defined above and assign them to li items/links
+        foreach ($tabs as $tab) {
+            $class = $tab[1] == $file ? 'class=\'current\'' : ''; // Define the current tab
+            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'navigation-tab\' data-file=\'navigation/'.trim($tab[1], '.php').'/\' data-title=\''.$tab[2].'\'>'.$tab[0].'</a></li>';
+        }
+
+        // Return the tabs to the page
+        return '<ul>'.implode('', $return_tabs).'</ul>';
+    }
+
     private function get_current_theme() {
         $q = $this->tData->query("SELECT * FROM `".$this->tDataClass->prefix."themes` WHERE `active`=1");
         return $q->fetch_assoc();
