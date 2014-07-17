@@ -36,7 +36,7 @@ if ($query != false) {
         echo '<ul>';
         $tPages->print_list();
         echo '</ul>';
-        $tPages->print_pagination('groups_next_page', 'admin-pagination');
+        $tPages->print_pagination('next_page', 'admin-pagination');
     } else {
         alert_notify("info", "There are no pages to show.");
     }
