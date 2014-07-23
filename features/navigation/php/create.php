@@ -97,7 +97,7 @@ if ($post['groups'] != "") {
 
 // Show errors
 if (!empty($error)) {
-	notify("admin", "failure", $error[0]);
+	alert_notify("danger", $error[0]);
 } else {
     $query_data['data'] = array(
         "alias"     => $alias,
@@ -115,9 +115,9 @@ if (!empty($error)) {
     // Check for a good query
     if ($query != false) {
         // Notify user and get out
-        notify("admin", "success", "The link <b>$text</b> has been created.<br />".js_countdown());
-        run_after_ajax("back_to_list");
+        alert_notify("success", "The link <b>$text</b> has been created - ".js_countdown());
+        run_after_ajax("back_to_navigation_list");
     } else {
-        notify("admin", "failure", "There was an error saving this information.");
+        alert_notify("danger", "There was an error saving this information.");
     }
 }

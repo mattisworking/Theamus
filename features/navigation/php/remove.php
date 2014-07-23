@@ -23,7 +23,7 @@ if ($query_find_link != false && $tData->count_rows($query_find_link) == 0) {
 
 // Show errors
 if (!empty($error)) {
-    notify("admin", "failure", $error[0]);
+    alert_notify("danger", $error[0]);
 } else {
     $query = $tData->delete_table_row($query_data['table'], array(
         "operator"  => "",
@@ -33,8 +33,8 @@ if (!empty($error)) {
 
     // Check the query and respond accordingly
     if ($query != false) {
-        notify("admin", "success", "This link has been removed successfully.");
+        alert_notify("success", "This link has been removed successfully.");
     } else {
-        notify("admin", "failure", "There was an error deleting this link.");
+        alert_notify("danger", "There was an error deleting this link.");
     }
 }

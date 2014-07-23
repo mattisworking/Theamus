@@ -1,53 +1,43 @@
 function load_nav() {
-    $("#navigation-list").html(working());
+    $("#navigation-list").html(alert_notify('spinner', 'Loading...'));
     theamus.ajax.run({
         url: "navigation/navigation-list/",
         result: "navigation-list",
-        type: "include"
+        type: "include",
+        after: function() {
+            list_listeners();
+        }
     });
     return false;
 }
 
 function search_nav() {
-    $("#navigation-list").html(working());
+    $("#navigation-list").html(alert_notify('spinner', 'Searching...'));
     theamus.ajax.run({
         url: "navigation/navigation-list/&search=" + $("#search").val(),
         result: "navigation-list",
-        type: "include"
+        type: "include",
+        after: function() {
+            list_listeners();
+        }
     });
-    return false;
-}
-
-// Removes a link
-function remove_link(id) {
-    admin_scroll_top();
-    $("#remove-window").show();
-	$("#remove-window").html(working());
-    theamus.ajax.run({
-        url: "navigation/remove-link&id=" + id,
-        result: "remove-window",
-        type: "include"
-    });
-
-	return false;
-}
-
-function close_remove_link() {
-    $("#remove-window").html("");
-    $("#remove-window").hide();
-
     return false;
 }
 
 function submit_remove_link() {
-    $("#remove_result").html(working());
+    $("#remove-result").html(alert_notify('spinner', 'Removing Link...'));
+    $("#remove-link-form").find('button').attr('disabled', 'disabled');
     theamus.ajax.run({
         url: "navigation/remove/",
-        result: "remove_result",
+        result: "remove-result",
         extra_fields: "link_id",
         hide_result: 3,
-        after: {
-            do_function: ["close_remove_link", "search_nav"]
+        after: function() {
+            setTimeout(
+                function() {
+                    change_admin_window_title('theamus-navigation', 'Theamus Navigation');
+                    update_admin_window_content('theamus-navigation', 'navigation/');
+                }, 1500);
         }
     });
 
@@ -55,7 +45,7 @@ function submit_remove_link() {
 }
 
 function next_page(page) {
-    $("#navigation-list").html(working());
+    $("#navigation-list").html(alert_notify('spinner', 'Loading...'));
     theamus.ajax.run({
         url: "navigation/navigation-list&search=" + $("#search").val() + "&page=" + page,
         result: "navigation-list",
@@ -69,6 +59,22 @@ function change_navigation_tab() {
         e.preventDefault();
         update_admin_window_content('theamus-navigation', $(this).attr('data-file'));
         change_admin_window_title('theamus-navigation', $(this).attr('data-title'));
+    });
+}
+
+function list_listeners() {
+    $('[name="edit-navigation-link"]').click(function(e) {
+        e.preventDefault();
+
+        change_admin_window_title('theamus-navigation', 'Edit Link');
+        update_admin_window_content('theamus-navigation', 'navigation/edit?id='+$(this).data('id'));
+    });
+
+    $('[name="remove-navigation-link"]').click(function(e) {
+        e.preventDefault();
+
+        change_admin_window_title('theamus-navigation', 'Remove Link');
+        update_admin_window_content('theamus-navigation', 'navigation/remove-link?id='+$(this).data('id'));
     });
 }
 

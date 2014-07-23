@@ -105,31 +105,34 @@ function add_listeners() {
         e.preventDefault();
 
         // Scroll up!
-        admin_scroll_top();
+        $('#theamus-navigation').scrollTop(0);
 
         // Get the type of form we need to submit
         var type = $("[name='page-type']").val();
 
+        $(this).find('button').attr('disabled', 'disabled');
+
         theamus.ajax.run({
             url:    "navigation/"+type+"/",
-            result: "link-result",
-            form:   "link-form"
+            result: "navigation-result",
+            form:   "link-form",
+            after: function() {
+                if (type === 'save') {
+                    $("#link-form").find('button').removeAttr('disabled');
+                }
+            }
         });
     });
 }
 
-function back_to_list() {
+function back_to_navigation_list() {
     // Start a countdown timer
 	countdown("Back to the list in", 3);
 
     // Go back to the list after three seconds
 	setTimeout(
 		function() {
-			admin_go('pages', 'navigation/');
+			change_admin_window_title('theamus-navigation', 'Theamus Navigation');
+            update_admin_window_content('theamus-navigation', 'navigation/');
 		}, 3000);
 }
-
-$(document).ready(function() {
-    // Load the appropriate form type
-    load_form();
-});
