@@ -40,7 +40,7 @@ $displayErrors = filter_var($_POST['errors'], FILTER_VALIDATE_BOOLEAN);
 
 // Show errors
 if (!empty($error)) {
-	notify("admin", "failure", $error[0]);
+	alert_notify("danger", $error[0]);
 } else {
 	$displayErrors = $displayErrors == true ? "1" : "0";
 
@@ -64,9 +64,9 @@ if (!empty($error)) {
     ));
 
     if ($query != false) {
-        notify("admin", "success", "These settings have been saved!");
+        alert_notify("success", "These settings have been saved!");
     } else {
-        notify("admin", "failure", "There was an error saving this information.");
+        alert_notify("danger", "There was an error saving this information.");
     }
 }
 

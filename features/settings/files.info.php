@@ -8,6 +8,8 @@ if (!$tUser->is_admin() && $ajax == false) {
 } elseif ($ajax != "api") {
     $feature['class']['file'] = "settings.class.php";
     $feature['class']['init'] = "Settings";
+    
+    define('FILE', $file);
 }
 
 // Allowed API 'files' to be called

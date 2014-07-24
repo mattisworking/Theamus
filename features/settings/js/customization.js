@@ -80,16 +80,16 @@ function toggle_notify_login() {
 }
 function login_notify() {
     if ($("#reqlogin")[0].checked) {
-        $("#login-notify").addClass("admin-faded");
+        $("#login-notify").show();
         $("#required-login").val("true");
     } else {
-        $("#login-notify").removeClass("admin-faded");
+        $("#login-notify").hide();
         $("#required-login").val("false");
     }
 }
 
 function set_session_page(type) {
-    $('#session-notify').addClass('admin-faded');
+    $('#session-notify').show();
     $('#setting-session')[0].value = type;
     $('#setsesstype').text(type);
     $('#sessSave')[0].setAttribute('onclick', 'save_session("' + type + '")');
@@ -97,7 +97,7 @@ function set_session_page(type) {
 }
 
 function cancel_session_set(saved) {
-    $('#session-notify').removeClass('admin-faded');
+    $('#session-notify').hide();
     var saved = saved !== undefined ? saved : 'false';
     $('#setting-session')[0].value = saved;
 }
@@ -125,7 +125,7 @@ function save_session(io) {
             set_session_page('out');
         } else {
             cancel_session_set('true');
-            $('#sessionsAreSet').addClass('admin-faded');
+            $('#sessionsAreSet').show();
         }
     }
 }
@@ -135,7 +135,7 @@ function reset_session() {
     $('#in').val("");
     $('#out').val("");
     switch_type('session');
-    $('#sessionsAreSet').removeClass('admin-faded');
+    $('#sessionsAreSet').hide();
 
     return false;
 }
@@ -178,6 +178,14 @@ function compile_home() {
     el.value = ret;
 
     return el;
+}
+
+function change_settings_tab() {
+    $('[name="settings-tab"]').click(function(e) {
+        e.preventDefault();
+        update_admin_window_content('theamus-settings', $(this).attr('data-file'));
+        change_admin_window_title('theamus-settings', $(this).attr('data-title'));
+    });
 }
 
 $(document).ready(function() {

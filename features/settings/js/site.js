@@ -55,15 +55,9 @@ function saveSettings() {
  * Toggles the email configuration area
  */
 function showEmailConfig() {
-	// Define the area element
-	var email = document.getElementById("email-container");
-
-	// Check for element's presence
-	if (email.classList.contains("grown")) {
-		// Hide the area
-		email.classList.remove("grown");
-	} else {
-		// Show the area
-		email.classList.add("grown");
-	}
+	if ($('#config-email')[0].checked) {
+        $('#email-container').show();
+    } else {
+        $('#email-container').hide();
+    }
 }

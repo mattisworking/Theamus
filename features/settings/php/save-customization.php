@@ -2,7 +2,7 @@
 
 try {
     $Settings->save_customization();
-    notify("admin", "success", "Information saved.");
+    alert_notify('success', 'Information saved.');
 } catch (Exception $ex) {
-    die(notify("admin", "failure", $ex->getMessage()));
+    die(alert_notify('danger', $ex->getMessage()));
 }

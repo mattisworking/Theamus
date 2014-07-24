@@ -68,12 +68,12 @@ class Settings {
         try { $ps = $this->get_db_rows("pages"); }
         catch (Exception $ex) { echo $ex->getMessage(); }
 
-        $ret[] = "<label class='admin-selectlabel'><select name='page-id'>";
+        $ret[] = "<select class='form-control' name='page-id'>";
         foreach ($ps as $p) {
             $s = $p['id'] == $id ? "selected" : "";
             $ret[] = "<option value='".$p['id']."' $s>".$p['title']."</option>";
         }
-        $ret[] = "</select></label>";
+        $ret[] = "</select>";
         return implode("", $ret);
     }
 
@@ -82,12 +82,12 @@ class Settings {
         try { $fs = $this->get_db_rows("features"); }
         catch (Exception $ex) { echo $ex->getMessage(); }
 
-        $ret[] = "<label class='admin-selectlabel'><select name='feature-id'>";
+        $ret[] = "<select class='form-control' name='feature-id'>";
         foreach ($fs as $f) {
             $s = $f['id'] == $id ? "selected" : "";
             $ret[] = "<option value='".$f['id']."' $s>".$f['name']."</option>";
         }
-        $ret[] = "</select></label>";
+        $ret[] = "</select>";
         return implode("", $ret);
     }
 
@@ -97,7 +97,7 @@ class Settings {
         catch (Exception $ex) { echo $ex->getMessage(); }
         $path = path(ROOT."/features/".$f[0]['alias']."/views");
         $files = $this->tFiles->scan_folder($path, $path);
-        $ret[] = "<label class='admin-selectlabel'><select name='feature-file'>";
+        $ret[] = "<select class='form-control' name='feature-file'>";
         foreach ($files as $f) {
             $name = ucwords(str_replace(".php", "", str_replace("/", " / ", str_replace("_", " ", str_replace("-", " ", $f)))));
             if (array_key_exists("file", $h) && $h['file'] != "") $s = $h['file'].".php" == $f ? "selected" : "";
@@ -106,7 +106,7 @@ class Settings {
 
             $ret[] = "<option value='".trim($f, ".php")."' $s>$name</option>";
         }
-        $ret[] = "</select></label>";
+        $ret[] = "</select>";
         return implode("", $ret);
     }
 
@@ -157,7 +157,7 @@ class Settings {
 
 
     protected function response_error($message) {
-        $this->return['error'] = array("status" => 1, "message" => notify("admin", "failure", $message, "", true));
+        $this->return['error'] = array("status" => 1, "message" => alert_notify("danger", $message, "", true));
     }
 
 
@@ -356,7 +356,7 @@ class Settings {
      */
     public function abort_update($ex) {
         $this->clean_temp_folder();
-        notify("admin", "failure", "<b>Update Error:</b> ".$ex->getMessage());
+        alert_notify("danger", "<b>Update Error:</b> ".$ex->getMessage());
         die();
     }
 
@@ -446,6 +446,33 @@ class Settings {
 
         // Clean the temp folder and notify the user
         $this->clean_temp_folder();
-        notify("admin", "success", "Everything went smoothly.  In order for things to take effect, you need to <a href='./'>refresh the page</a>.");
+        alert_notify("success", "Everything went smoothly.  In order for things to take effect, you need to <a href='./'>refresh the page</a>.");
+    }
+
+
+    /**
+     * Define the settings tabs and show the 'current' tab respectively
+     *
+     * @param string $file
+     * @return string
+     */
+    public function settings_tabs($file = '') {
+        // Define the tabs and their options
+        $tabs = array(
+            array('Settings', 'settings.php', 'Theamus Settings'),
+            array('Customization', 'index.php', 'Site Customization'),
+            array('Manual Update', 'update-manually.php', 'Manual Update')
+        );
+
+        $return_tabs = array(); // Empty return array to add to
+
+        // Loop through all of the tabs defined above and assign them to li items/links
+        foreach ($tabs as $tab) {
+            $class = $tab[1] == $file ? 'class=\'current\'' : ''; // Define the current tab
+            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'settings-tab\' data-file=\'settings/'.trim($tab[1], '.php').'/\' data-title=\''.$tab[2].'\'>'.$tab[0].'</a></li>';
+        }
+
+        // Return the tabs to the page
+        return '<ul>'.implode('', $return_tabs).'</ul>';
     }
 }
