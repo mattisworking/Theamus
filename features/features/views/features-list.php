@@ -4,27 +4,17 @@ $get = filter_input_array(INPUT_GET);
 $search = isset($get['search']) ? $get['search'] : "";
 $page = isset($get['page']) ? $get['page'] : 1;
 
-$template_header = <<<TEMPLATE
-        <ul class="header">
-            <li style="width: 175px;">Name</li>
-            <li style="text-align:center; width: 200px;">Enabled</li>
-            <li style="text-align:center; width: 200px;">Version</li>
-        </ul>
-TEMPLATE;
-
-$template = <<<TEMPLATE
-<ul>
-    <li class="admin-listoptions">
-        ::\$tUser->has_permission("edit_features") ? "<a href='#' onclick=\"return admin_go('features', 'features/edit&id=%id%');\">Edit</a>" : ""::
-        ::\$tUser->has_permission("remove_features") && %permanent% == 0 ? "<a href='#' onclick=\"return remove_feature('%id%');\">Remove</a>" : ""::
-    </li>
-    <li style="width: 175px;">
-        ::strlen("%name%") >= 20 ? substr("%name%", 0, 20)."..." : "%name%"::
-    </li>
-    <li style="text-align:center; width: 200px;">::%enabled% == 1 ? "Yes" : "No"::</li>
-    <li style="text-align:center; width: 200px;">%version%</li>
-</ul>
-TEMPLATE;
+$template = implode('', array(
+    '<li>',
+    '<ul class=\'feature-options\'>',
+    $this->tUser->has_permission('edit_features') ? '<li><a href=\'#\' name=\'edit-feature-link\' data-id=\'%id%\'><span class=\'glyphicon ion-edit\'></span></a></li>' : '',
+    $this->tUser->has_permission('remove_features') ? '::%permanent% == 0 ? "<li><a href=\'#\' name=\'remove-feature-link\' data-id=\'%id%\'><span class=\'glyphicon ion-close\'></span></a></li>" : ""::' : '',
+    '</ul>',
+    '<span class=\'feature-name\'>%name%</span>',
+    '<span class=\'feature-enabled\'>::"%enabled%" == 1 ? "Enabled" : "Disabled";::</span>',
+    '<span class=\'feature-version\'>%version%</span>',
+    '</li>'
+));
 
 $query = $tData->select_from_table($tData->prefix."features", array("id", "alias", "name", "permanent", "enabled"), array(
     "operator"  => "",
@@ -45,7 +35,7 @@ if ($query != false) {
             if (file_exists($config_file)) {
                 include_once $config_file;
                 if (isset($feature['version'])) {
-                    $version = $feature['version'];
+                    $version = 'v'.$feature['version'];
                 }
             }
 
@@ -57,15 +47,17 @@ if ($query != false) {
             "data"              => $features,
             "per_page"          => 25,
             "current"           => $page,
-            "template_header"   => $template_header,
             "list_template"     => $template
         ));
 
+        echo '<ul>';
         $tPages->print_list();
-        $tPages->print_pagination();
+        echo '</ul>';
+
+        $tPages->print_pagination('features_next_page', 'admin-pagination');
     } else {
-        notify("admin", "info", "There are no features to show.");
+        alert_notify("info", "There are no features to show.");
     }
 } else {
-    notify("admin", "failure", "There was an error querying the database for features.");
+    alert_notify("danger", "There was an error querying the database for features.");
 }

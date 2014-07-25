@@ -21,6 +21,11 @@ $admin_files = array(
 // Deny bad users
 $tUser->deny_non_admins($file, $admin_files);
 
+$feature['class']['file'] = 'features.class.php';
+$feature['class']['init'] = 'Features';
+
+define('FILE', $file);
+
 // File specification
 switch ($file) {
 	case "index.php":
@@ -30,6 +35,7 @@ switch ($file) {
 
 	case "install.php":
         $feature['js']['file'][] = "install.js";
+        $feature['css']['file'][] = "main.css";
         $tUser->check_permissions("install_features");
 		break;
 
@@ -45,18 +51,18 @@ switch ($file) {
     // Scripts
     case "save.php":
         if ($ajax != "script" || !$tUser->has_permission("edit_features")) die("Error.");
-        
+
         $feature['class']['file'] = "features.class.php";
         $feature['class']['init'] = "Features";
         break;
-        
+
     case "remove.php":
         if ($ajax != "script" || !$tUser->has_permission("remove_features")) die("Error.");
-        
+
         $feature['class']['file'] = "features.class.php";
         $feature['class']['init'] = "Features";
         break;
-    
+
     case "install/prelim.php":
         if ($ajax != "script" || !$tUser->has_permission("install_features")) die("Error.");
 
@@ -64,7 +70,7 @@ switch ($file) {
         $feature['class']['init'] = "Features";
 
         break;
-        
+
     case "install/install.php":
         if ($ajax != "script" || !$tUser->has_permission("install_features")) die("Error.");
 

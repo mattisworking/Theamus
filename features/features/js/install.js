@@ -1,15 +1,15 @@
 function install_feature() {
-    $("#install-result").html(working());
+    $("#install-result").html(alert_notify('spinner', 'Working...'));
     theamus.ajax.run({
         url:    "features/install/install/",
         result: "install-result",
         form:   "feature_install-form",
         after:  function() {
             $("#feature_install-button").attr("disabled", true);
-            countdown("Back to list of features in", 3);
             setTimeout(function() {
-                admin_go("features", "features/");
-            }, 3000);
+                update_admin_window_content('theamus-features', 'features/');
+                change_admin_window_title('theamus-features', 'Theamus Features');
+            }, 1500);
         }
     });
 }
@@ -30,16 +30,13 @@ function upload_listen() {
 
 function back_to_list() {
     countdown("Back to list in", 3);
-    setTimeout(function() {
-        admin_go("features", "features/");
-    }, 3000);
+            setTimeout(function() {
+                update_admin_window_content('theamus-features', 'features/');
+                change_admin_window_title('theamus-features', 'Theamus Features');
+            }, 1500);
 }
 
 $(document).ready(function() {
-    $("[name='cancel']").click(function() {
-        admin_go('features', 'features/');
-    });
-
     $("#feature_install-form").submit(function(e) {
         e.preventDefault();
         install_feature();

@@ -443,7 +443,7 @@ class Features {
             $this->clean_temp_folder();
 
             // Notify the user
-            notify("admin", "success", "This feature was updated successfully.");
+            alert_notify("success", "This feature was updated successfully.");
         }
     }
 
@@ -464,7 +464,7 @@ class Features {
             $this->developer_message = "Database error information: ".print_r($this->tData->error, true);
             throw new Exception("There was an error saving this information.");
         }
-        notify("admin", "success", "This information has been saved.");
+        alert_notify("success", "This information has been saved.");
     }
 
     public function remove_feature() {
@@ -486,6 +486,32 @@ class Features {
         $this->tFiles->remove_folder(path(ROOT."/features/".$feature['alias']));
 
         // Notify the user
-        notify("admin", "success", "This feature has been removed.");
+        alert_notify("success", "This feature has been removed.");
+    }
+
+
+    /**
+     * Define the features tabs and show the 'current' tab respectively
+     *
+     * @param string $file
+     * @return string
+     */
+    public function features_tabs($file = '') {
+        // Define the tabs and their options
+        $tabs = array(
+            array('List of Features', 'index.php', 'Theamus Features'),
+            array('Install a New Feature', 'install.php', 'Install a New Feature')
+        );
+
+        $return_tabs = array(); // Empty return array to add to
+
+        // Loop through all of the tabs defined above and assign them to li items/links
+        foreach ($tabs as $tab) {
+            $class = $tab[1] == $file ? 'class=\'current\'' : ''; // Define the current tab
+            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'features-tab\' data-file=\'features/'.trim($tab[1], '.php').'/\' data-title=\''.$tab[2].'\'>'.$tab[0].'</a></li>';
+        }
+
+        // Return the tabs to the page
+        return '<ul>'.implode('', $return_tabs).'</ul>';
     }
 }

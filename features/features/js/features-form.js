@@ -1,4 +1,5 @@
 function load_groups_select() {
+    console.log($("#groups").val());
     theamus.ajax.run({
         url:    "features/selects/groups/&groups="+$("#groups").val(),
         result: "group-select",
@@ -7,7 +8,7 @@ function load_groups_select() {
 }
 
 function save_feature() {
-    $("#edit-result").html(working());
+    $("#edit-result").html(alert_notify('Spinner', 'Working...'));
     theamus.ajax.run({
         url:    "features/save/",
         result: "edit-result",
@@ -19,11 +20,6 @@ function save_feature() {
 }
 
 $(document).ready(function() {
-    $("[name='cancel']").click(function(e) {
-        e.preventDefault();
-        admin_go("features", "features/");
-    });
-
     $("#edit-form").submit(function(e) {
         e.preventDefault();
         save_feature();

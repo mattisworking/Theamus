@@ -27,32 +27,34 @@ if (isset($get['id'])) {
 }
 
 ?>
-<div class="window-header">
-    <?php if (empty($error)): ?>
-    Are you sure?
-    <?php else: ?>
-    Hmmm...
-    <?php endif; ?>
-</div>
-<div class="window-content">
-    <?php
-    if (!empty($error)):
-        notify("admin", "failure", $error[0]);
-    ?>
-    <div class="window-options">
-        <input type="button" class="admin-purpbtn" onclick="close_remove_feature();" value="Close" />
+<!-- Features Tabs -->
+<div class='admin-tabs'><?php echo $Features->features_tabs(FILE); ?></div>
+
+<!-- Form Results -->
+<div id='remove-result' style='margin-top: 15px;'></div>
+
+<?php
+if (!empty($error)):
+    alert_notify('danger', $error[0]);
+else:
+?>
+<form class='form-horizontal' id='remove-group-form' style='width: 500px;'>
+    <div class='col-12'>
+        <input type="hidden" name="feature_id" id="feature_id" value="<?=$feature['id']?>" />
+        Are you sure you want to remove the feature <b><?=$feature['name']?></b>?
+        <br/><br/>Removing a feature cannot be undone.<br /><br />
+        <span style="color:#888; font-size:9pt;">
+            This will remove any information ever associated with this feature.
+            If you want to keep that information, you should back up your database now.
+        </span>
     </div>
-    <?php else: ?>
-    <input type="hidden" name="feature_id" id="feature_id" value="<?=$feature['id']?>" />
-    Are you sure you want to remove the feature <b><?=$feature['name']?></b>?
-    <br/><br/>Removing a feature cannot be undone.<br /><br />
-    <span style="color:#888; font-size:9pt;">
-        This will remove any information ever associated with this feature.
-        If you want to keep that information, you should back up your database now.
-    </span>
-    <div class="window-options">
-        <input type="button" value="OK" onclick="return submit_remove_feature();" class="admin-greenbtn" />
-        <input type="button" class="admin-redbtn" onclick="close_remove_feature();" value="Cancel" />
+
+    <div class='form-button-group'>
+        <button type='submit' class='btn btn-success' onclick="return submit_remove_feature();">Remove</button>
     </div>
-    <?php endif; ?>
-</div>
+</form>
+<?php endif; ?>
+
+<script>
+    admin_window_run_on_load('change_features_tab');
+</script>

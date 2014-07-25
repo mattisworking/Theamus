@@ -14,7 +14,7 @@ if ($extension != "zip") $error[] = "This file type isn't accepted here.";
 
 // Show errors
 if (!empty($error)) {
-	notify("admin", "failure", $error[0]);
+	alert_notify("danger", $error[0]);
 } else {
 	// Define the features and upload temp folder path
 	$featurePath = path(ROOT."/features/");
@@ -49,7 +49,7 @@ if (!empty($error)) {
 		$check = "The 'views' folder doesn't exist!";
 
 	if ($check != "") {
-		notify("admin", "failure", $check);
+		alert_notify("danger", $check);
 	} else {
 		// Include the config file
 		include $tempPath.$tempFolder."/config.php";
@@ -77,7 +77,7 @@ if (!empty($error)) {
 		}
 
 		if (!empty($error)) {
-			notify("admin", "failure", $error[0]);
+			alert_notify("danger", $error[0]);
 		} else {
 			if (isset($feature['groups'])) {
 				$groups = $tData->real_escape_string(implode(",", $feature['groups']));
@@ -119,7 +119,7 @@ if (!empty($error)) {
 			$zip->extractTo($featurePath.$feature['folder']);
 
 			// Success user and go back to list
-			notify("admin", "success", "Feature installed!<br>".js_countdown());
+			alert_notify("success", "Feature installed!<br>".js_countdown());
 			run_after_ajax("back_to_list");
 		}
 

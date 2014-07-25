@@ -9,6 +9,8 @@ if (isset($get['groups']) && $get['groups'] != "") {
     $groups = array();
 }
 
+Pre($groups);
+
 // Query the database for groups
 $query = $tData->select_from_table($tData->prefix."groups", array("alias", "name"));
 $results = $tData->fetch_rows($query);

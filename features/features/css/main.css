@@ -1,35 +1,65 @@
-.feature_windows {
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 150px;
+#feature-list {
+    margin: 10px 0;
+    width: 600px;
+}
+#feature-list > ul,
+#feature-list > ul li ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+#feature-list > ul li {
+    display: block;
+    padding: 10px;
+    transition: background-color .3s ease-in-out;
+    -webkit-transition: background-color .3s ease-in-out;
+    -moz-transition: background-color .3s ease-in-out;
+    -ms-transition: background-color .3s ease-in-out;
+}
+#feature-list > ul li:hover {
+    background-color: #ddd;
+}
+#feature-list > ul > li:nth-child(even) {
+    background-color: #eee;
+}
+#feature-list > ul li .feature-name {
+    display: inline-block;
+    margin: 0 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
+}
+#feature-list > ul li .feature-enabled,
+#feature-list > ul li .feature-version {
+    display: inline-block;
+    margin: 0 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 150px;
+}
+#feature-list > ul li ul {
+    float: right;
+    margin-top: -9px;
+}
+#feature-list > ul li ul li {
+    display: inline-block;
+}
+#feature-list > ul li ul li a {
+    color: #222;
 }
 
-.feature-window {
-    background-color: #FFF;
-    border: 1px solid #CCC;
-    box-shadow: 0px 0px 10px #CCC;
-    display: none;
-    margin: 0px auto;
-    max-height: 400px;
-    overflow-y: auto;
-    width: 450px;
-    z-index: 2000000;
+.feature-notes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
-.feature-window > .window-header {
-    border-bottom: 1px solid #EEE;
-    font-family: Raleway, sans-serif;
-    font-size: 12pt;
-    margin: 0 0 10px;
-    padding: 10px 0;
-    text-align: center;
+.feature-notes .version {
+    display: block;
+    font-weight: bold;
 }
-.feature-window > .window-content {
-    padding: 5px 20px 20px;
-}
-.feature-window > .window-content > .window-options {
-    border-top: 1px solid #CCC;
-    margin: 20px 0 0;
-    padding: 10px 10px 0;
-    text-align: right;
+.feature-notes ul {
+    margin: 10px 0 20px 20px;
+    padding: 0 10px;
 }

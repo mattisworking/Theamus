@@ -1,38 +1,32 @@
-<div class="admin_content-header">
-    <span class="admin_content-header-img">
-        <img id="admin_content-header-img" src="features/features/img/install-features.png" alt="" />
-    </span>
-    <div class="right" style="margin-top: -2px;">
-        <input type="button" name="cancel" value="Go Back" />
+<!-- Features Tabs -->
+<div class='admin-tabs'><?php echo $Features->features_tabs(FILE); ?></div>
+
+<!-- Feature installation result -->
+<div id='install-result' style='margin-top: 15px;'></div>
+
+<!-- Feature installation form -->
+<form class='form' id='feature_install-form'>
+    <div class='form-group'>
+        <h2 class='form-header'>Feature Files</h2>
+        <input type='file' class='form-control' name='file'>
+        <p class='form-control-feedback'>
+            Features should come in the form of zip archives.<br />
+            Select the feature you want to install and everything will be handled automatically from there.
+        </p>
     </div>
-    <div class="admin_content-header-text">Install a New Feature</div>
-</div>
 
-<div class="admin_page-content">
-    <div id="install-result"></div>
-    <form class="admin-form" id="feature_install-form">
-        <div class="admin-formrow">
-            <div class="admin-formlabel">Feature Files</div>
-            <div class="admin-forminput">
-                <input type="file" name="file" />
-            </div>
-            <div class="admin-forminfo">
-                Features should come in the form of zip archives.<br />
-                Select the feature you want to install and everything will be handled
-                automatically from there.
-            </div>
-        </div>
+    <div id='feature_prelim-info-wrapper' style='display: none; margin-top: 50px;'>
+        <h2 class='form-header'>Preliminary Installation Information</h2>
+        <div id='prelim-notes'></div>
+    </div>
 
-        <div id="feature_prelim-info-wrapper" style="display: none; margin-top: 50px;">
-            <div class="admin-formheader">Preliminary Installation Information</div>
-            <div id="prelim-notes"></div>
-        </div>
+    <hr class='form-split'>
 
-        <hr />
+    <div class='form-button-group'>
+        <button type='submit' class='btn btn-success' id='feature_install-button'>Install</button>
+    </div>
+</form>
 
-        <div class="admin-formsubmitrow">
-            <input type="submit" value="Install" id="feature_install-button" class="admin-greenbtn" />
-            <input type="button" value="Cancel" name="cancel" class="admin-redbtn" />
-        </div>
-    </form>
-</div>
+<script>
+    admin_window_run_on_load('change_features_tab');
+</script>
