@@ -9,53 +9,53 @@ try {
 ?>
 <input type="hidden" name="filename" value="<?=$config['upload']?>" />
 
-<div class="admin-formrow">
-    <div class="admin-formlabel">Total Theme Layouts</div>
-    <div class="admin-formtext"><?=count($config['layouts'])?></div>
+<div class='form-group'>
+    <label class='control-label col-4'>Total Theme Layouts</label>
+    <div class='col-8'><?php echo count($config['layouts']); ?></div>
 </div>
-<div class="admin-formrow">
-    <div class="admin-formlabel">Total Areas</div>
-    <div class="admin-formtext"><?=count($config['areas'])?></div>
+<div class='form-group'>
+    <label class='control-label col-4'>Total Areas</label>
+    <div class='col-8'><?php echo count($config['areas']); ?></div>
 </div>
-<div class="admin-formrow">
-    <div class="admin-formlabel">Theme Settings</div>
-    <div class="admin-formtext"><?php echo $config['settings'] == "true" ? "Yes" : "No"; ?></div>
+<div class='form-group'>
+    <label class='control-label col-4'>Theme Settings</label>
+    <div class='col-8'><?php echo $config['settings'] == 'true' ? 'Yes' : 'No'; ?></div>
 </div>
-<div class="admin-formrow">
-    <div class="admin-formlabel">Navigation Areas</div>
-    <div class="admin-formtext"><?=count($config['navigation'])?></div>
-</div>
-
-<hr />
-
-<div class="admin-formrow">
-    <div class="admin-formlabel">Theme Folder</div>
-    <div class="admin-formtext"><?=$config['theme']['folder']?></div>
-</div>
-<div class="admin-formrow">
-    <div class="admin-formlabel">Theme Name</div>
-    <div class="admin-formtext"><?=$config['theme']['name']?></div>
-</div>
-<div class="admin-formrow">
-    <div class="admin-formlabel">Theme Version</div>
-    <div class="admin-formtext"><?=$config['theme']['version']?></div>
+<div class='form-group'>
+    <label class='control-label col-4'>Navigation Areas</label>
+    <div class='col-8'><?php echo count($config['navigation']); ?></div>
 </div>
 
-<hr />
+<hr class='form-split'>
 
-<div class="admin-formrow">
-    <div class="admin-formlabel">Author Name</div>
-    <div class="admin-formtext"><?=$config['author']['name']?></div>
+<div class='form-group'>
+    <label class='control-label col-3'>Theme Folder</label>
+    <div class='col-9'><?php echo $config['theme']['folder']; ?></div>
 </div>
-<div class="admin-formrow">
-    <div class="admin-formlabel">Author Alias</div>
-    <div class="admin-formtext"><?=$config['author']['alias']?></div>
+<div class='form-group'>
+    <label class='control-label col-3'>Theme Name</label>
+    <div class='col-9'><?php echo $config['theme']['name']; ?></div>
 </div>
-<div class="admin-formrow">
-    <div class="admin-formlabel">Author Company</div>
-    <div class="admin-formtext"><?=$config['author']['company']?></div>
+<div class='form-group'>
+    <label class='control-label col-3'>Theme Version</label>
+    <div class='col-9'><?php echo $config['theme']['version']; ?></div>
 </div>
-<div class="admin-formrow">
-    <div class="admin-formlabel">Author Email</div>
-    <div class="admin-formtext"><?=$config['author']['email']?></div>
+
+<hr class='form-split'>
+
+<div class='form-group'>
+    <label class='control-label col-4'>Author Name</label>
+    <div class='col-8'><?php echo $config['author']['name']; ?></div>
+</div>
+<div class='form-group'>
+    <label class='control-label col-4'>Author Alias</label>
+    <div class='col-8'><?php echo $config['author']['alias']; ?></div>
+</div>
+<div class='form-group'>
+    <label class='control-label col-4'>Author Company</label>
+    <div class='col-8'><?php echo $config['author']['company']; ?></div>
+</div>
+<div class='form-group'>
+    <label class='control-label col-4'>Author Email</label>
+    <div class='col-8'><?php echo $config['author']['email']; ?></div>
 </div>

@@ -18,7 +18,7 @@ class Appearance {
     private function initialize() {
         $this->tDataClass = new tData();
         $this->tData = $this->tDataClass->connect();
-        $this->tDataClass->prefix = $this->tDataClass->get_system_prefix();
+        $this->tDataClass->prefix = $this->tDataClass->get_system_prefix().'_';
         $this->tFiles = new tFiles();
         return;
     }
@@ -188,7 +188,7 @@ class Appearance {
                 "('".$c['theme']['folder']."', '".$c['theme']['name']."', 0, 0)");
         if (!$q) {
             $this->clean_theme_folder($c['theme']['folder']);
-            throw new Exception("There was an error adding this theme to the database.");
+            throw new Exception("There was an error adding this theme to the database.". $this->tData->error);
         }
     }
 
@@ -277,7 +277,7 @@ class Appearance {
             $table = $this->tDataClass->prefix."themes";
             $this->tData->query("UPDATE `$table` SET `active`=0");
             $this->tData->query("UPDATE `$table` SET `active`=1 WHERE `id`='$id'");
-            notify("admin", "success", "Active theme updated.");
+            alert_notify("success", "Active theme updated.");
         } else throw new Exception("Cannot find the Theme ID to make active.");
     }
 
@@ -285,13 +285,39 @@ class Appearance {
         $theme = $this->get_db_theme();
         $from = path(ROOT."/features/appearance/temp/".$f);
         $to = path(ROOT."/themes/".$theme['alias']);
-        if ($this->tFiles->extract_zip($from, $to)) notify("admin", "success", "This theme has been updated successfully.");
+        if ($this->tFiles->extract_zip($from, $to)) alert_notify("success", "This theme has been updated successfully.");
         else throw new Exception("There was an issue extracting the upload to the final destination.");
         $this->clean_temp_folder();
     }
 
     public function print_exception($ex) {
         $this->clean_temp_folder();
-        notify("admin", "failure", "<strong>Appearance Theme Error:</strong> ".$ex->getMessage());
+        alert_notify("danger", "<strong>Appearance Theme Error:</strong> ".$ex->getMessage());
+    }
+
+
+    /**
+     * Define the appearance tabs and show the 'current' tab respectively
+     *
+     * @param string $file
+     * @return string
+     */
+    public function appearance_tabs($file = '') {
+        // Define the tabs and their options
+        $tabs = array(
+            array('List of Themes', 'index.php', 'Theamus Themes'),
+            array('Install a Theme', 'install.php', 'Install a Theme')
+        );
+
+        $return_tabs = array(); // Empty return array to add to
+
+        // Loop through all of the tabs defined above and assign them to li items/links
+        foreach ($tabs as $tab) {
+            $class = $tab[1] == $file ? 'class=\'current\'' : ''; // Define the current tab
+            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'appearance-tab\' data-file=\'appearance/'.trim($tab[1], '.php').'/\' data-title=\''.$tab[2].'\'>'.$tab[0].'</a></li>';
+        }
+
+        // Return the tabs to the page
+        return '<ul>'.implode('', $return_tabs).'</ul>';
     }
 }

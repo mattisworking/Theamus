@@ -14,7 +14,7 @@ if ($extension != "zip") $error[] = "This file type isn't accepted here.";
 
 // Show errors
 if (!empty($error)) {
-	notify("admin", "failure", $error[0]);
+	alert_notify("danger", $error[0]);
 } else {
 	// Define the themes and upload temp folder path
 	$path['themes'] = path(ROOT."/themes/");
@@ -48,7 +48,7 @@ if (!empty($error)) {
 
 	// Show the check results
 	if ($check != "") {
-		notify("admin", "failure", $check);
+		alert_notify("danger", $check);
 	} else {
 		// Include the config file
 		include $path['temp'].$tempfolder."/config.php";
@@ -64,7 +64,7 @@ if (!empty($error)) {
 
 		// Show the errors
 		if (!empty($error)) {
-			notify("admin", "failure", $error[0]);
+			alert_notify("danger", $error[0]);
 		} else {
 			// Define the theme database table
 			$table = $tDataClass->prefix."themes";
@@ -83,7 +83,7 @@ if (!empty($error)) {
 			// Success user and go back to the list
 			$message = "'".$theme['name']."' has been installed!";
 			$message .= "<br />".js_countdown();
-			notify("admin", "success", $message);
+			alert_notify("success", $message);
 			run_after_ajax("back_to_list");
 		}
 	}

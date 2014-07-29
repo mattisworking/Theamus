@@ -22,7 +22,7 @@ if ($query_find_theme == false || $tData->count_rows($query_find_theme) == 0) {
 
 // Show errors
 if (!empty($error)) {
-	notify("admin", "failure", $error[0]);
+	alert_notify("danger", $error[0]);
 } else {
 	// Get the theme information
 	$theme = $tData->fetch_rows($query_find_theme);
@@ -45,12 +45,12 @@ if (!empty($error)) {
     if ($query_remove_theme != false && $query_remove_data != false) {
         if ($tFiles->remove_folder($path)) {
             $this->tData->db->commit();
-            notify("admin", "success", "This theme has been removed.");
+            alert_notify("success", "This theme has been removed.");
         } else {
             $this->tData->use_pdo == false ? $this->tData->db->rollback() : $this->tData->db->rollBack();
-            notify("admin", "failure", "There was an issue when removing this theme.");
+            alert_notify("danger", "There was an issue when removing this theme.");
         }
     } else {
-        notify("admin", "failure", "There was an issue when removing this theme from the database.");
+        alert_notify("danger", "There was an issue when removing this theme from the database.");
     }
 }

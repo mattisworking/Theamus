@@ -4,26 +4,18 @@ $get = filter_input_array(INPUT_GET);
 $search = isset($get['search']) ? $get['search'] : "";
 $page = isset($get['page']) ? $get['page'] : 1;
 
-$template_header = <<<TEMPLATE
-        <ul class="header">
-            <li style="width: 200px;">Name</li>
-            <li style="width: 200px;">Folder</li>
-            <li style="width: 100px;">Active</li>
-        </ul>
-TEMPLATE;
-
-$template = <<<TEMPLATE
-<ul>
-    <li style="width: 200px;">::strlen("%name%") > 25 ? substr("%name%", 0, 25)."..." : "%name%"::<li>
-    <li style="width: 200px;">%alias%<li>
-    <li style="width: 100px;">::%active% > 0 ? "Yes" : "No"::</li>
-    <li class="admin-listoptions">
-        ::\$tUser->has_permission("edit_themes") ? "<a href='#' onclick=\"return admin_go('settings', 'appearance/edit&id=%id%');\">Edit</a>" : ""::
-        ::\$tUser->has_permission("edit_themes") && %active% != 1 ? "<a href='#' name='make-active' data-id='%id%'>Make Active</a>" : ""::
-        ::\$tUser->has_permission("remove_themes") && %permanent% == 0 ? "<a href='#' onclick=\"return remove_theme('%id%');\">Remove</a>" : ""::
-    </li>
-</ul>
-TEMPLATE;
+$template = implode('', array(
+    '<li>',
+    '<ul class=\'theme-options\'>',
+    $this->tUser->has_permission('edit_themes') ? '::%active% == 0 ? "<li><a href=\'\' data-id=\'%id%\' name=\'activate-theme-link\'>Enable</a></li>" : ""::' : '',
+    $this->tUser->has_permission('edit_themes') ? '<li><a href=\'#\' name=\'edit-theme-link\' data-id=\'%id%\'><span class=\'glyphicon ion-edit\'></span></a></li>' : '',
+    $this->tUser->has_permission('remove_themes') ? '::%permanent% == 0 ? "<li><a href=\'#\' name=\'remove-theme-link\' data-id=\'%id%\'><span class=\'glyphicon ion-close\'></span></a></li>" : ""::' : '',
+    '</ul>',
+    '<span class=\'theme-name\'>%name%</span>',
+    '<span class=\'theme-alias\'>%alias%</span>',
+    '<span class=\'theme-active\'>::%active% > 0 ? "Enabled" : ""::</span>',
+    '</li>'
+));
 
 $query = $tData->select_from_table($tData->prefix."themes", array("name", "id", "permanent", "active", "alias"), array(
     "operator"  => "OR",
@@ -42,12 +34,13 @@ if ($query != false) {
             "data"              => $themes,
             "per_page"          => 25,
             "current"           => $page,
-            "template_header"   => $template_header,
             "list_template"     => $template
         ));
 
+        echo '<ul>';
         $tPages->print_list();
-        $tPages->print_pagination();
+        echo '</ul>';
+        $tPages->print_pagination('themes_next_page', 'admin-pagination');
     } else {
         notify("admin", "info", "There are no themes to show.");
     }

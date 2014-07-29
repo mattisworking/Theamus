@@ -1,9 +1,17 @@
 function install_theme() {
-    $("#upload-result").html(working());
+    $("#upload-result").html(alert_notify('spinner', 'Installing...'));
     theamus.ajax.run({
         url:    "appearance/install/",
         result: "upload-result",
-        form:   "appearance_install-form"
+        form:   "appearance_install-form",
+        after: function() {
+            $('#theamus-appearance').scrollTop(0);
+
+            setTimeout(function() {
+                update_admin_window_content('theamus-appearance', 'appearance/');
+                change_admin_window_title('theamus-appearance', 'Theamus Themes');
+            }, 1500);
+        }
     });
 }
 
@@ -23,6 +31,7 @@ function upload_listen() {
             after:  function() {
                 $("#appearance_prelim-info-wrapper").show();
                 $("[name='file']").prop("disabled", "true");
+                resize_admin_window();
             }
         });
     });
@@ -30,7 +39,7 @@ function upload_listen() {
 
 $(document).ready(function() {
     upload_listen();
-    
+
     $("[name='cancel']").click(function() {
         admin_go("settings", "appearance/");
     });

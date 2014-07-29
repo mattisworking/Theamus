@@ -27,28 +27,30 @@ if (isset($get['id'])) {
 }
 
 ?>
-<div class="window-header">
-    <?php if (empty($error)): ?>
-    Are you sure?
-    <?php else: ?>
-    Hmmm...
-    <?php endif; ?>
-</div>
-<div class="window-content">
-    <?php
-    if (!empty($error)):
-        notify("admin", "failure", $error[0]);
-    ?>
-    <div class="window-options">
-        <input type="button" class="admin-purpbtn" onclick="close_remove_theme();" value="Close" />
+<!-- Appearance Tabs -->
+<div class='admin-tabs'><?php echo $Appearance->appearance_tabs(FILE); ?></div>
+
+<!-- Form Results -->
+<div id='remove-result' style='margin-top: 15px;'></div>
+
+<?php
+if (!empty($error)):
+    alert_notify('danger', $error[0]);
+else:
+?>
+<form class='form-horizontal' id='remove-group-form' style='width: 500px;'>
+    <div class='col-12'>
+        <input type="hidden" name="theme_id" id="theme_id" value="<?=$theme['id']?>" />
+        Are you sure you want to remove the theme <b><?=$theme['name']?></b>?
+        <br/><br/>Removing a theme cannot be undone.
     </div>
-    <?php else: ?>
-    <input type="hidden" name="theme_id" id="theme_id" value="<?=$theme['id']?>" />
-    Are you sure you want to remove the theme <b><?=$theme['name']?></b>?
-    <br/><br/>Removing a theme cannot be undone.
-    <div class="window-options">
-        <input type="button" value="OK" onclick="return submit_remove_theme();" class="admin-greenbtn" />
-        <input type="button" class="admin-redbtn" onclick="close_remove_theme();" value="Cancel" />
+
+    <div class='form-button-group'>
+        <button type='submit' class='btn btn-success' onclick="return submit_remove_theme();">Remove</button>
     </div>
-    <?php endif; ?>
-</div>
+</form>
+<?php endif; ?>
+
+<script>
+    admin_window_run_on_load('change_themes_tab');
+</script>

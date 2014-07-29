@@ -10,6 +10,8 @@ if (!isset($_POST['ajax'])) back_up();
 $feature['class']['file'] = "appearance.class.php";
 $feature['class']['init'] = "Appearance";
 
+define('FILE', $file);
+
 // Customize files
 switch ($file) {
 	case "index.php":
