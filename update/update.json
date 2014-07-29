@@ -30,7 +30,8 @@
             "Changed where the script loaded for the default theme - https://github.com/Eyraahh/Theamus/issues/45",
             "Compressed the system Javascript files into one file, each with their own ling - https://github.com/Eyraahh/Theamus/issues/46",
             "Added more compression to the default theme CSS files - https://github.com/Eyraahh/Theamus/issues/47",
-            "Fixed the issue where refreshing admin windows would change all of the ones that were open - https://github.com/Eyraahh/Theamus/issues/48"
+            "Fixed the issue where refreshing admin windows would change all of the ones that were open - https://github.com/Eyraahh/Theamus/issues/48",
+            "Updated the Administration Theme - https://github.com/Eyraahh/Theamus/issues/43"
         ]
     },
     "authors": [
