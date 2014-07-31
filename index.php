@@ -4,7 +4,7 @@
  * Theamus -- a modular content management system that makes websites easy.
  *
  * PHP Version 5.5.3
- * Version 1.3
+ * Version 0.6
  * @package Theamus
  * @link http://www.theamus.com/
  * @author Eyrah Temet (Eyraahh) <info@theamus.com>
@@ -23,19 +23,12 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-$time_start = microtime(true);
-
 // Define any ini_set variables
 ini_set("session.gc_maxlifetime", 7*24*60*60);
 
 session_start(); // Start the session!
 define("ROOT", dirname(__FILE__)); // Define the root of the system
 
-require 'system/Theamus.php';
+$params = isset($_GET['params']) ? $_GET['params'] : ""; // Define the given parameters
 
-try {
-    $Theamus = new Theamus();
-    $Theamus->Call->handle_call(isset($_GET['params']) ? $_GET['params'] : "");
-} catch (Exception $e) {
-    echo '<h2 style="color: #555; font-family: sans-serif; font-weight: normal; margin: 0; padding: 0;">'.$e->getMessage().'</h2>';
-}
+require "system/bootstrap.php"; // Require the bootstrap to load the page

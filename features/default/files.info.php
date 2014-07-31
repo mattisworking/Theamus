@@ -3,7 +3,22 @@
 $feature['js']['file'] = array();
 $feature['css']['file'] = array();
 
-$HomePage = new HomePage($Theamus);
+// Files to deny basic users
+$admin_files = array(
+    // Script files
+    "admin/save-home.php",
+    "admin/save-positions.php",
+    "admin/update-apps.php",
+
+    // View files
+    "adminHome.php",
+    "admin/apps.php",
+    "admin/choice-window.php"
+    );
+// Deny bad users
+$tUser->deny_non_admins($file, $admin_files);
+
+$HomePage = new HomePage();
 if ($file == "index.php") {
     $i = $HomePage->redirect();
 }
