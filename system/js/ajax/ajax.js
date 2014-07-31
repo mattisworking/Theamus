@@ -513,7 +513,20 @@ var ajax = new function() {
                         data.response.headers = xhr.getAllResponseHeaders();
                         data.response.text = text;
                         data.response.status = xhr.status;
-                    } catch (e) {}
+                    } catch (e) {
+                        var data = {
+                            error: {
+                                status: 1,
+                                message: 'Failed to decode API return data.'
+                            },
+                            response: {
+                                headers: xhr.getAllResponseHeaders,
+                                text: text,
+                                status: xhr.status,
+                                data: data
+                            }
+                        };
+                    }
 
                     // Run the defined success function with the data
                     api_return = api_vars.success(data);

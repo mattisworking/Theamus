@@ -31,7 +31,8 @@
             "Compressed the system Javascript files into one file, each with their own ling - https://github.com/Eyraahh/Theamus/issues/46",
             "Added more compression to the default theme CSS files - https://github.com/Eyraahh/Theamus/issues/47",
             "Fixed the issue where refreshing admin windows would change all of the ones that were open - https://github.com/Eyraahh/Theamus/issues/48",
-            "Updated the Administration Theme - https://github.com/Eyraahh/Theamus/issues/43"
+            "Updated the Administration Theme - https://github.com/Eyraahh/Theamus/issues/43",
+            "Not going to lie, I did some fancy stuff with the classes.  From cluttered to beauty. - https://github.com/Eyraahh/Theamus/issues/40"
         ]
     },
     "authors": [
