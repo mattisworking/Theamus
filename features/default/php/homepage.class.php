@@ -2,40 +2,23 @@
 
 class HomePage {
     public $page_content = "";
-    public function __construct() {
-        $this->initialize();
-        return;
-    }
-
-    public function __destruct() {
-        $this->tData->disconnect();
-        return;
-    }
-
-    private function initialize() {
-        $this->tData = new tData();
-        $this->tData->db = $this->tData->connect();
-        $this->tData->prefix = DB_PREFIX;
-        $this->tUser = new tUser();
+    public function __construct($t) {
+        $this->Theamus = $t;
         return;
     }
 
     private function get_system_home() {
-        $q = $this->tData->db->query("SELECT `home` FROM `".$this->tData->prefix."settings`");
-        if (!$q) throw new Exception("Cannot find the home page in the settings table.");
-        if ($q->num_rows == 0) throw new Exception("There is no home page column in the settings table.");
-        $r = $q->fetch_assoc();
-        return $r['home'];
+        return $this->Theamus->settings['home'];
     }
 
     private function decode_home($given = false) {
-        $d = $this->tData->t_decode(!$given ? $this->get_system_home() : $given);
+        $d = $this->Theamus->DB->t_decode(!$given ? $this->get_system_home() : $given);
         if ($d[0] != "homepage") throw new Exception("Invalid home page information.");
         else return $d;
     }
 
     private function check_user_login() {
-        if ($this->tUser->user != false) return true;
+        if ($this->Theamus->User->user != false) return true;
         return false;
     }
 
@@ -43,22 +26,25 @@ class HomePage {
         $ret = array();
         $gs = explode(",", $g);
         foreach ($gs as $g) {
-            $g = $this->tData->db->real_escape_string($g);
-            $q = $this->tData->db->query("SELECT `home_override` FROM `".$this->tData->prefix."groups` WHERE `alias`='$g'");
+            $q = $this->Theamus->DB->select_from_table(
+                $this->Theamus->DB->system_table('groups'),
+                array('home_override'),
+                array('operator'  => '',
+                    'conditions'  => array('alias' => $g)));
             if (!$q) continue;
-            if ($q->num_rows == 0) continue;
-            $r = $q->fetch_assoc();
+            if ($this->Theamus->DB->count_rows($q) == 0) continue;
+            $r = $this->Theamus->DB->fetch_rows($q);
             $ret[] = $r['home_override'];
         }
         return $ret;
     }
 
     private function check_group_home() {
-        if (!$this->tUser->user) return false;
+        if (!$this->Theamus->User->user) return false;
         else {
             $ret = array();
-            foreach ($this->get_user_groups($this->tUser->user['groups']) as $g) {
-                if ($g !== "false") $ret[] = $this->tData->t_decode($g);
+            foreach ($this->get_user_groups($this->Theamus->User->user['groups']) as $g) {
+                if ($g !== "false") $ret[] = $this->Theamus->DB->t_decode($g);
             }
             return $ret;
         }
@@ -85,10 +71,15 @@ class HomePage {
     private function handle_page($given = false) {
         $h = $given == false ? $this->decode_home() : $given;
         if (!array_key_exists("id", $h)) throw new Exception("No page ID defined.");
-        $q = $this->tData->db->query("SELECT * FROM `".$this->tData->prefix."pages` WHERE `id`='".$h['id']."'");
+        $q = $this->Theamus->DB->select_from_table(
+            $this->Theamus->DB->system_table('pages'),
+            array(),
+            array(
+                'operator'   => '',
+                'conditions' => array('id' => $h['id'])));
         if (!$q) throw new Exception("Error querying the database for the home page.");
-        if ($q->num_rows == 0) throw new Exception("Cannot find the home page in the database.");
-        $p = $q->fetch_assoc();
+        if ($this->Theamus->DB->count_rows($q) == 0) throw new Exception("Cannot find the home page in the database.");
+        $p = $this->Theamus->DB->fetch_rows($q);
         $this->page_content = $p['content'];
         if ($p['navigation'] == "") $navigation = "";
         else {
@@ -107,9 +98,13 @@ class HomePage {
         $h = $given == false ? $this->decode_home() : $given;
         if (!array_key_exists("id", $h)) throw new Exception("No feature ID defined.");
         if (!array_key_exists("file", $h)) throw new Exception("No feature file defined.");
-        $q = $this->tData->db->query("SELECT * FROM `".$this->tData->prefix."features` WHERE `id`='".$h['id']."'");
+        $q = $this->Theamus->DB->select_from_table(
+            $this->Theamus->DB->system_table('features'),
+            array(),
+            array('operator' => '',
+                'conditions' => array('id' => $h['id'])));
         if (!$q) throw new Exception("Error querying the database for the home feature.");
-        if ($q->num_rows == 0) throw new Exception("Cannot find the home feature in the database.");
+        if ($this->Theamus->DB->count_rows($q) == 0) throw new Exception("Cannot find the home feature in the database.");
         $f = $q->fetch_assoc();
         header("Location: ".$f['alias']."/".$h['file']);
     }

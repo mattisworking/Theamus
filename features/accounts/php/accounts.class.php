@@ -2,45 +2,12 @@
 
 class Accounts {
     /**
-     * Theamus data manipulation class
-     *
-     * @var object $tData
-     */
-    protected $tData;
-
-
-   /**
-     * Theamus user class
-     *
-     * @var object $tUser
-     */
-    protected $tUser;
-
-
-    /**
      * Starts the class connecting to classes that will be needed throughout
      *
      * @return
      */
-    public function __construct() {
-        $this->initialize_variables();
-        return;
-    }
-
-
-    /**
-     * Connects to the database, defines the user and pagniation classes as well
-     *
-     * @return
-     */
-    private function initialize_variables() {
-        // Connect to the database
-        $this->tData            = new tData();
-        $this->tData->db        = $this->tData->connect(true);
-        $this->tData->prefix    = DB_PREFIX;
-
-        $this->tUser            = new tUser();  // User data class
-        $this->tPages           = new tPages(); // Pagination class
+    public function __construct($t) {
+        $this->Theamus = $t;
         return;
     }
 
@@ -364,7 +331,7 @@ class Accounts {
         // Check for a valid query
         if ($user_query != false) {
             // Define the user results
-            $user_results = $this->tData->fetch_rows($user_query);
+            $user_results = $this->Theamus->DB->fetch_rows($user_query);
             $users = $this->convert_keyval_to_associative($user_results);
         }
 
