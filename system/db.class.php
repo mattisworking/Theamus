@@ -75,6 +75,14 @@ class DB {
 
 
     /**
+     * Array of all the query errors
+     *
+     * @var array $query_errors
+     */
+    public $query_errors = array();
+
+
+    /**
      * Initializes the class, defines the configuration given by the system
      *
      * @return boolean
@@ -315,15 +323,20 @@ class DB {
                 // If MySQLi is being used
                 if ($this->use_pdo == false) {
                     $return['columns'][] = "`$key`";
-                    $return['prepare_keys'][] = "'".$this->connection->real_escape_string($value)."'";
+                    if ($value == 'now()') $return['prepare_keys'] = $this->connection->real_escape_string($value);
+                    else $return['prepare_keys'][] = "'".$this->connection->real_escape_string($value)."'";
                     $return['prepare_values'] = array();
 
                 // If PDO is being used
                 } else {
                     $random_key = ":".$key.$return['random_number'];            // random_key for shorter code
                     $return['columns'][]                    = "`$key`";
-                    $return['prepare_keys'][]               = $random_key;
-                    $return['prepare_values'][$random_key]  = $value;
+                    if ($value == 'now()') {
+                        $return['prepare_keys'][] = $value;
+                    } else {
+                        $return['prepare_keys'][]               = $random_key;
+                        $return['prepare_values'][$random_key]  = $value;
+                    }
                 }
             }
         }
@@ -427,6 +440,24 @@ class DB {
 
 
     /**
+     * Returns query errors
+     *
+     * @param boolean $all
+     * @return string
+     */
+    public function get_last_error($all = false) {
+        // Return nothing if there arent any query errors
+        if (empty($this->query_errors)) return '';
+
+        // Return the last array item error
+        elseif (!$all) return $this->query_errors[count($this->query_errors) - 1];
+
+        // Return all of the errors
+        else return $this->query_errors;
+    }
+
+
+    /**
      * Gathers provided data and generates a SQL query to perform based on that data.
      *
      * @param string $table_name
@@ -483,6 +514,8 @@ class DB {
                 if ($query) {
                     return $query;
                 } else {
+                    $this->query_errors[] = $this->connection_error;
+
                     if ($this->show_query_errors == true) {
                         $this->Theamus->pre("The query failed to execute. Code: ".$this->connection->errno." - Message: ".$this->connection->error);
                     }
@@ -495,8 +528,10 @@ class DB {
                 if ($query->execute($sql['prepare_values'])) {
                     return $query;
                 } else {
+                    $query_error = $query->errorInfo();
+                    $this->query_errors[] = $query_error[2];
+
                     if ($this->show_query_errors == true) {
-                        $query_error = $query->errorInfo();
                         $this->Theamus->pre("The query failed to execute. Code: ".$query_error[1]." - Message: ".$query_error[2]);
                     }
                     return false;
@@ -599,6 +634,8 @@ class DB {
                     while ($this->connection->next_result()) continue;
                     return $return;
                 } else {
+                    $this->query_errors[] = $this->connection_error;
+
                     if ($this->show_query_errors == true) {
                         $this->Theamus->pre("The query failed to execute. Code: ".$this->connection->errno." - Message: ".$this->connection->error);
                     }
@@ -611,8 +648,10 @@ class DB {
                 if ($query->execute($sql['prepare_values'])) {
                     return $query;
                 } else {
+                    $query_error = $query->errorInfo();
+                    $this->query_errors[] = $query_error[2];
+
                     if ($this->show_query_errors == true) {
-                        $query_error = $query->errorInfo();
                         $this->Theamus->pre("The query failed to execute. Code: ".$query_error[1]." - Message: ".$query_error[2]);
                     }
                     return false;
@@ -683,6 +722,8 @@ class DB {
                 if ($query) {
                     return $query;
                 } else {
+                    $this->query_errors[] = $this->connection_error;
+
                     if ($this->show_query_errors == true) {
                         $this->Theamus->pre("The query failed to execute. Code: ".$this->connection->errno." - Message: ".$this->connection->error);
                     }
@@ -695,8 +736,10 @@ class DB {
                 if ($query->execute($sql['prepare_values'])) {
                     return $query;
                 } else {
+                    $query_error = $query->errorInfo();
+                    $this->query_errors[] = $query_error[2];
+
                     if ($this->show_query_errors == true) {
-                        $query_error = $query->errorInfo();
                         $this->Theamus->pre("The query failed to execute. Code: ".$query_error[1]." - Message: ".$query_error[2]);
                     }
                     return false;
@@ -777,6 +820,8 @@ class DB {
                 if ($query) {
                     return $query;
                 } else {
+                    $this->query_errors[] = $this->connection_error;
+
                     if ($this->show_query_errors == true) {
                         $this->Theamus->pre("The query failed to execute. Code: ".$this->connection->errno." - Message: ".$this->connection->error);
                     }
@@ -789,8 +834,10 @@ class DB {
                 if ($query->execute($sql['prepare_values'])) {
                     return $query;
                 } else {
+                    $query_error = $query->errorInfo();
+                    $this->query_errors[] = $query_error[2];
+
                     if ($this->show_query_errors == true) {
-                        $query_error = $query->errorInfo();
                         $this->Theamus->pre("The query failed to execute. Code: ".$query_error[1]." - Message: ".$query_error[2]);
                     }
                     return false;
@@ -813,6 +860,8 @@ class DB {
      * @return array
      */
     public function fetch_rows($object, $mysqli_fetch = "fetch_assoc", $pdo_fetch = PDO::FETCH_ASSOC) {
+        if (!$object) return array(); // Return empty array if there's no valid query
+
         // If using MySQLi
         if ($this->use_pdo == false) {
             // If there are multiple rows to return

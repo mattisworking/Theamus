@@ -17,7 +17,7 @@ class Call {
      *
      * @var string $base_url
      */
-    private $base_url;
+    public $base_url;
 
 
     /**
@@ -25,7 +25,7 @@ class Call {
      *
      * @var array $parameters
      */
-    private $parameters;
+    public $parameters;
 
 
     /**
@@ -194,9 +194,6 @@ class Call {
         // Display errors, if desired by the site admin
         $this->display_errors();
 
-        // Define the base url (http://localhost)
-        $this->base_url = $this->define_url();
-
         // Define the parameters given by the URL
         $this->parameters = $this->define_parameters($params);
 
@@ -350,7 +347,7 @@ class Call {
         if (!isset($post['ajax']) && !isset($get['ajax'])) {
             if ($this->Theamus->DB->try_installer) {
                 require $this->Theamus->file_path(ROOT."/system/install.class.php");
-                $install = new Install($this->Theamus, $this->base_url);
+                $install = new Install($this->Theamus, $this->Theamus->base_url);
                 $installed = $install->run_installer();
 
                 $this->install = $installed ? true : false;
@@ -691,7 +688,7 @@ class Call {
      */
     private function define_theme_data($name) {
         $data['name']       = $name;
-        $data['base']       = $this->base_url;
+        $data['base']       = $this->Theamus->base_url;
         $data['css']        = $this->get_css();
         $data['js']         = $this->get_javascript();
         $data['title']      = @$this->feature['files']['title'];
@@ -815,20 +812,6 @@ class Call {
             $this->check_ajax_hash($ret);
         }
         return $ret;
-    }
-
-
-    /**
-     * Defines the URL that was used to make the current call
-     *
-     * @return string
-     */
-    private function define_url() {
-        $protocol = isset($_SERVER['HTTPS']) ? "https://" : "http://";
-        $domain = $_SERVER['HTTP_HOST'];
-        $directory = dirname($_SERVER['PHP_SELF']) . "/";
-
-        return trim($protocol.$domain.$directory, "/")."/";
     }
 
 
@@ -989,7 +972,7 @@ class Call {
      */
     private function define_javascript_info() {
         $info = array(
-            "site_base"    => $this->base_url,
+            "site_base"    => $this->Theamus->base_url,
             "feature"      => $this->feature_folder,
             "feature_file" => $this->feature_file
         );
@@ -1168,7 +1151,7 @@ class Call {
 
         // Define the theme data
         $data['name']       = $settings['name'];
-        $data['base']       = $this->base_url;
+        $data['base']       = $this->Theamus->base_url;
         $data['title']      = $data['header'] = "Error";
         $data['theme']      = $this->define_theme_path();
         $data['template']   = "error";

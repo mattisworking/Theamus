@@ -87,30 +87,28 @@ class User {
                 $this->Theamus->DB->system_table("users"),
                 array(),
                 array("operator" => "",
-                    "conditions" => array("selector" => $this->cookies['userid'])));
+                    "conditions" => array("id" => $this->cookies['userid'])));
 
             if ($query == false) {
                 $this->user = false;
                 return false;
             }
 
-            $results = $this->Theamus->DB->fetch_rows($query);
-            $user_data = isset($results[0]) ? $results : array($results);
+            $this->user = $this->Theamus->DB->fetch_rows($query);
 
-            foreach ($user_data as $item) {
-                $this->user[$item['key']] = $item['value'];
-            }
+            $this->get_user_sessions();
 
             // Get the user's session and IP address
-            $user_sessions = defined('USER_SESSIONS') ? unserialize(USER_SESSIONS) : $this->get_user_sessions(false, $this->user['id']);
             $user_ip = $_SERVER['REMOTE_ADDR'];
 
             // Force a logout and go to the default page if the user isn't logged in
-            if (!isset($user_sessions[$user_ip]) || empty($user_sessions[$user_ip])) {
-                $this->force_logout();
-            } elseif ($user_sessions[$user_ip]['session_key'] != $_COOKIE['session']) {
-                $this->force_logout();
+            $logout = array();
+            foreach ($this->user_sessions as $user_session) {
+                if (!isset($user_session['ip_address'])) continue;
+                if ($user_session['ip_address'] == $user_ip && $user_session['session_key'] == $_COOKIE['session']) $logout[] = false;
             }
+
+            if (!in_array(false, $logout)) $this->force_logout();
             return $this->user;
         }
         return false;
@@ -125,7 +123,7 @@ class User {
      */
     public function get_specific_user($id = 0) {
         $q = $this->Theamus->DB->select_from_table(
-            $this->Theamus->DB->system_table("users"), array(), array("operator" => "", "conditions" => array("selector" => $id)));
+            $this->Theamus->DB->system_table("users"), array(), array("operator" => "", "conditions" => array("id" => $id)));
         if ($this->Theamus->DB->count_rows($q) > 0) return $this->Theamus->DB->fetch_rows($q);
         return false;
     }
@@ -201,14 +199,12 @@ class User {
      * @return boolean
      */
     private function force_logout() {
-        if (session_id() == "") {
-            session_start();
-        }
+        if (session_id() == "") session_start();
 
         session_destroy();
         setcookie("session", null, -1, "/");
         setcookie("userid", null, -1, "/");
-        header("Location: ".base_url);
+        header("Location: ./");
 
         return true;
     }
@@ -251,90 +247,44 @@ class User {
      * @return array
      */
     public function get_user_sessions($all_sessions = false, $user_id = 0) {
+        $user_sessions = array();
+
         // Check and return the user
         if ($this->user == false && $user_id == 0) {
-            return array();
+            $this->user_sessions = $user_sessions;
+            return $user_sessions;
         }
 
-        if ($user_id == 0) {
-            $user_id = $this->user['id'];
-        }
+        // Define the user id to look for sessions with
+        if ($user_id == 0) $user_id = $this->user['id'];
 
         // Query the database for the current users IP address and check it
-        $query = $this->Theamus->DB->select_from_table(
-            $this->Theamus->DB->system_table("user-sessions"),
-            array(),
-            array("operator" => "",
-                "conditions" => array("user_id" => $user_id)));
-
-        if (!$query) {
-            return array();
-        }
-
-        // Define the user's IP addresses
-        $ip_addresses = array(); // blank for default
-        if ($this->Theamus->DB->count_rows($query) > 0) {
-            $user = $this->Theamus->DB->fetch_rows($query);
-            $user = !isset($user[0]) ? array($user) : $user;
-            foreach ($user as $u) {
-                if (in_array($u['ip_address'], $ip_addresses)) continue;
-                $ip_addresses[] = $u['ip_address'];
-            }
-        }
-
-        // Check and return the IP addresses
-        if (empty($ip_addresses)) {
-            return array();
-        }
-
-        // Define the return, temp and the ignore key array
-        $return = array("user_id" => $user_id);
-        $temp = array();
-        $i = 0;
-
-        // Loop through all of the IP addresses, gathering information
-        foreach ($ip_addresses as $address) {
-            // Query the database for information related to this IP address and check it
+        if (!$all_sessions) {
             $query = $this->Theamus->DB->select_from_table(
-                $this->Theamus->DB->system_table("user-sessions"),
+                $this->Theamus->DB->system_table('user-sessions'),
                 array(),
-                array("operator" => "AND",
-                    "conditions" => array(
-                        "ip_address" => $address,
-                        "user_id"    => $user_id)));
-
-            // Grab the information related to the IP
-            $user_rows = $this->Theamus->DB->fetch_rows($query);
-            foreach ($user_rows as $row) {
-                $temp[$address][$row['key']] = $row['value'];
-                $temp[$address]['ip_address'] = $address;
-            }
-
-            $i++; // count!
+                array('operator' => '',
+                    'conditions' => array(
+                        'user_id'   => $user_id)));
+        } else {
+            $query = $this->Theamus->DB->select_from_table(
+                $this->Theamus->DB->system_table('user-sessions'));
         }
 
-        // Filter out any unwanted sessions
-        foreach ($temp as $item) {
-            if (isset($item['expires'])) {
-                // Define the ip address and remove it from the return array
-                $ip = $item['ip_address'];
-                unset($item['ip_address']);
-
-                if ($all_sessions == true) {
-                    $return[$ip] = $item;
-                } elseif ($item['expires'] > time()) {
-                    // Add the data to the return
-                    $return[$ip] = $item;
-                } else {
-                    // define a blank array to return
-                    $return[$ip] = array();
-                }
-            }
+        // Check if the query failes
+        if (!$query) {
+            echo 3;
+            $this->user_sessions = $user_sessions;
+            return $user_sessions;
         }
+
+        // Define the sessions related to this user
+        $session_results = $this->Theamus->DB->fetch_rows($query);
+        $user_sessions = isset($session_results[0]) ? $session_results : array($session_results);
 
         // Return the information
-        define('USER_SESSIONS', serialize($return));
-        return $return;
+        $this->user_sessions = $user_sessions;
+        return $user_sessions;
     }
 
 
@@ -347,60 +297,24 @@ class User {
      * @param string $ip
      * @return boolean
      */
-    public function update_user_session($user_id = 0, $session_key = "", $expire = 0, $ip = "") {
-        // Get the session for this user
-        $user_sessions = defined('USER_SESSIONS') ? unserialize(USER_SESSIONS) : $this->get_user_sessions(true, $user_id);
-        $session = $user_sessions[$ip];
-
+    public function update_user_session($user_id = 0, $session_key = '', $expire = 0, $ip = '', $session = array()) {
         // Get the user browser information
         $browser = $this->Theamus->Call->get_browser();
         $user_browser   = $browser['name']." ".$browser['version'];
 
         // Define the update queries
         $query_data['data'] = array(
-            array("value" => $session_key),
-            array("value" => $expire),
-            array("value" => time()),
-            array("value" => $user_browser)
-        );
+            array(
+                'session_key' => $session_key,
+                'expires'     => date('Y-m-d H:i:s', strtotime($expire)),
+                'last_seen'   => 'now()',
+                'browser'     => $user_browser));
+
         $query_data['clause'] = array(
-            array(
-                "operator"      => "AND",
-                "conditions"    => array(
-                    "key"       => "session_key",
-                    "value"     => $session['session_key'],
-                    "ip_address"=> $ip,
-                    "user_id"   => $user_id
-                )
-            ),
-            array(
-                "operator"      => "AND",
-                "conditions"    => array(
-                    "key"       => "expires",
-                    "value"     => $session['expires'],
-                    "ip_address"=> $ip,
-                    "user_id"   => $user_id
-                )
-            ),
-            array(
-                "operator"      => "AND",
-                "conditions"    => array(
-                    "key"       => "last_seen",
-                    "value"     => $session['last_seen'],
-                    "ip_address"=> $ip,
-                    "user_id"   => $user_id
-                )
-            ),
-            array(
-                "operator"      => "AND",
-                "conditions"    => array(
-                    "key"       => "browser",
-                    "value"     => $session['browser'],
-                    "ip_address"=> $ip,
-                    "user_id"   => $user_id
-                )
-            )
-        );
+            array('operator' => 'AND',
+                'conditions' => array(
+                    'ip_address' => $ip,
+                    'user_id'    => $user_id)));
 
         // Query the database updating the user session information
         if ($this->Theamus->DB->update_table_row(
@@ -456,18 +370,22 @@ class User {
         $ip             = $_SERVER['REMOTE_ADDR'];
         $user_browser   = $browser['name']." ".$browser['version'];
 
-        // Check if the user already has a session on this computer, it's just expired
-        $user_sessions = defined('USER_SESSIONS') ? unserialize(USER_SESSIONS) : $this->get_user_sessions(true, $user_id);
-        if (isset($user_sessions[$ip])) {
-            if ($user_sessions[$ip]['expires'] > time()) {
-                // Define the session key, set the cookies and return
-                $session_key = $user_sessions[$ip]['session_key'];
-                $this->set_cookies($user_id, $session_key, $expire);
+        // Get the user information, if possible
+        $this->get_user_sessions(true, $user_id);
 
-                return true;
-            } else {
-                // Update the user session information and return
-                return $this->update_user_session($user_id, $session_key, $expire, $ip);
+        // Check if the user already has a session on this computer, it's just expired
+        foreach ($this->user_sessions as $user_session) {
+            if (!isset($user_session['ip_address'])) continue;
+            if ($user_session['ip_address'] == $ip) {
+                if (strtotime($user_session['expires']) > time()) {
+                    // Define the session key, set the cookies and return
+                    $this->set_cookies($user_id, $user_session['session_key'], $expire);
+
+                    return true;
+                } else {
+                    // Update the user session information and return
+                    return $this->update_user_session($user_id, $session_key, $expire, $ip, $user_session);
+                }
             }
         }
 
@@ -475,30 +393,12 @@ class User {
         $query = $this->Theamus->DB->insert_table_row(
             $this->Theamus->DB->system_table("user-sessions"),
             array(
-                array(
-                    "key"           => "session_key",
-                    "value"         => $session_key,
-                    "ip_address"    => $ip,
-                    "user_id"       => $user_id
-                ),
-                array(
-                    "key"           => "expires",
-                    "value"         => $expire,
-                    "ip_address"    => $ip,
-                    "user_id"       => $user_id
-                ),
-                array(
-                    "key"           => "last_seen",
-                    "value"         => time(),
-                    "ip_address"    => $ip,
-                    "user_id"       => $user_id
-                ),
-                array(
-                    "key"           => "browser",
-                    "value"         => $user_browser,
-                    "ip_address"    => $ip,
-                    "user_id"       => $user_id
-                )));
+                'session_key' => $session_key,
+                'ip_address'  => $ip,
+                'expires'     => date('Y-m-d H:i:s', $expire),
+                'last_seen'   => 'now()',
+                'browser'     => $user_browser,
+                'user_id'     => $user_id));
 
         if ($query) {
             // Set the cookies
@@ -515,7 +415,7 @@ class User {
    public function send_to_login() {
        $protocol = isset($_SERVER['HTTPS']) ? "https://" : "http://";
        $url = urlencode($protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-       $login_url = base_url."accounts/login?redirect=$url";
+       $login_url = $this->Theamus->base_url."accounts/login?redirect=$url";
        header("Location: $login_url");
    }
 

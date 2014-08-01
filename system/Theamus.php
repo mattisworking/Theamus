@@ -29,6 +29,8 @@ class Theamus {
     public function __construct() {
         $this->load_system_classes(); // Load the system classes to be initialized
 
+        $this->define_url(); // Define the base of the URL
+
         $this->DB           = new DB($this);            // Database access and management class
 
         // Get the system settings!
@@ -228,4 +230,17 @@ class Theamus {
        if ($return == false) echo $ret;
        else return $ret;
    }
+
+    /**
+     * Defines the URL that was used to make the current call
+     *
+     * @return string
+     */
+    private function define_url() {
+        $protocol = isset($_SERVER['HTTPS']) ? "https://" : "http://";
+        $domain = $_SERVER['HTTP_HOST'];
+        $directory = dirname($_SERVER['PHP_SELF']) . "/";
+
+        $this->base_url = trim($protocol.$domain.$directory, "/")."/";
+    }
 }
