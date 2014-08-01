@@ -1,4 +1,4 @@
-<?php $redirect = isset($_GET['redirect']) ? filter_input(INPUT_GET, "redirect") : base_url; ?>
+<?php $redirect = isset($_GET['redirect']) ? filter_input(INPUT_GET, "redirect") : $Theamus->Call->base_url; ?>
 
 <div id="login-result"></div>
 
@@ -34,5 +34,5 @@
 </form>
 
 <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function(){$("#login-form").submit(function(e){e.preventDefault();var t=$("#login-result");theamus.ajax.api({type:"get",url:"accounts/",method:["Accounts","login"],data:{form:$("#login-form")},success:function(e){if(typeof e!=="object"){t.html(alert_notify("danger","There was an issue logging in."))}else{if(e.error.status===1){t.html(alert_notify("danger",e.error.message))}else{var n=e.response.data;if(n===true){window.location=$("#redirect_url").val()}else{t.html(alert_notify("danger",n.error.message))}}}}})})})
+    document.addEventListener('DOMContentLoaded', function(){$("#login-form").submit(function(e){e.preventDefault();var t=$("#login-result");Theamus.Ajax.api({type:"get",url:"accounts/",method:["Accounts","login"],data:{form:$("#login-form")},success:function(e){if(typeof e!=="object"){t.html(alert_notify("danger","There was an issue logging in."))}else{if(e.error.status===1){console.log(e);t.html(alert_notify("danger",e.error.message))}else{var n=e.response.data;if(n===true){window.location=$("#redirect_url").val()}else{t.html(alert_notify("danger",n.error.message))}}}}})})})
 </script>

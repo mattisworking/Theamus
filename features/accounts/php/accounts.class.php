@@ -44,10 +44,10 @@ class Accounts {
      */
     protected function check_unused_username($username) {
         // Make the string sql safe and query the database for the username
-        $query = $this->tData->select_from_table($this->tData->prefix.'users', array(), array('operator' => 'AND', 'conditions' => array('key' => 'username', 'value' => $username)));
+        $query = $this->Theamus->DB->select_from_table($this->Theamus->DB->prefix.'users', array(), array('operator' => 'AND', 'conditions' => array('key' => 'username', 'value' => $username)));
 
         // Check for results and return
-        return $this->tData->count_rows($query) == 0 ? true : false;
+        return $this->Theamus->DB->count_rows($query) == 0 ? true : false;
     }
 
 
@@ -127,8 +127,8 @@ class Accounts {
      */
     private function email_registered_user($email, $activation_code) {
         // Get the site settings, for personalization
-        $query = $this->tData->select_from_table($this->tData->prefix.'settings', array('name'));
-        $settings = $this->tData->fetch_rows($query);
+        $query = $this->Theamus->DB->select_from_table($this->Theamus->DB->prefix.'settings', array('name'));
+        $settings = $this->Theamus->DB->fetch_rows($query);
 
         // Create the email message
         $activation_addy = base_url.'accounts/activate/&email='.$email.'&code='.$activation_code;
@@ -150,26 +150,26 @@ class Accounts {
      */
     protected function activate_a_user($email, $activation_code) {
         // Define the query data defaults
-        $query_data = array('table_name' => $this->tData->prefix.'users', 'data' => array());
+        $query_data = array('table_name' => $this->Theamus->DB->prefix.'users', 'data' => array());
 
         // Query the database to find the user with the actvation code provided
-        $selector_query = $this->tData->select_from_table($query_data['table_name'], array('selector'), array('operator' => 'AND', 'conditions' => array('key' => 'activation_code', 'value' => $activation_code)));
-        if ($selector_query == false || $this->tData->count_rows($selector_query) == 0 || $this->tData->count_rows($selector_query) > 1) {
+        $selector_query = $this->Theamus->DB->select_from_table($query_data['table_name'], array('selector'), array('operator' => 'AND', 'conditions' => array('key' => 'activation_code', 'value' => $activation_code)));
+        if ($selector_query == false || $this->Theamus->DB->count_rows($selector_query) == 0 || $this->Theamus->DB->count_rows($selector_query) > 1) {
             return array('error' => true, 'message' => 'Couldn\'t find this user in the database.');
         }
 
         // Define the selector related to the activation code
-        $selector_results = $this->tData->fetch_rows($selector_query);
+        $selector_results = $this->Theamus->DB->fetch_rows($selector_query);
         $selector = $selector_results['selector'];
 
         // Try to find the user in the database
-        $find_user_query = $this->tData->select_from_table($query_data['table_name'], array(), array('operator' => '', 'conditions' => array('selector' => $selector)), 'ORDER BY `id` DESC');
-        if ($find_user_query == false || $this->tData->count_rows($find_user_query) == 0) {
+        $find_user_query = $this->Theamus->DB->select_from_table($query_data['table_name'], array(), array('operator' => '', 'conditions' => array('selector' => $selector)), 'ORDER BY `id` DESC');
+        if ($find_user_query == false || $this->Theamus->DB->count_rows($find_user_query) == 0) {
             return array('error' => true, 'message' => 'Couldn\'t find this user in the database.');
         }
 
         // Define the user information based on the selector found from the activation code
-        $user = $this->convert_keyval_to_associative($this->tData->fetch_rows($find_user_query));
+        $user = $this->convert_keyval_to_associative($this->Theamus->DB->fetch_rows($find_user_query));
 
         // Check the email address against the email address related to the selector found from the activation code in the database
         if ($email != $user[$selector]['email']) {
@@ -182,7 +182,7 @@ class Accounts {
         }
 
         // Update the user's active status
-        $update_user_query = $this->tData->update_table_row($query_data['table_name'], array('value' => 1), array('operator' => 'AND', 'conditions'=> array('key' => 'active', 'selector' => $selector)));
+        $update_user_query = $this->Theamus->DB->update_table_row($query_data['table_name'], array('value' => 1), array('operator' => 'AND', 'conditions'=> array('key' => 'active', 'selector' => $selector)));
 
         // Check the activation query
         if ($update_user_query == false) {
@@ -248,14 +248,14 @@ class Accounts {
     protected function get_accounts() {
         // Define the query data that will find the users in the database
         $query_data = array(
-            'table_name'    => $this->tData->prefix.'users',
+            'table_name'    => $this->Theamus->DB->prefix.'users',
             'clause'        => array('operator' => '', 'conditions' => array()));
 
         // Query the database for all of the users
-        $query = $this->tData->select_from_table($query_data['table_name'], array(), array(), 'ORDER BY `selector`');
+        $query = $this->Theamus->DB->select_from_table($query_data['table_name'], array(), array(), 'ORDER BY `selector`');
 
         // Define the user information
-        $user_results = $this->tData->fetch_rows($query);
+        $user_results = $this->Theamus->DB->fetch_rows($query);
 
         // Return the users
         return $this->convert_keyval_to_associative($user_results);
@@ -276,7 +276,7 @@ class Accounts {
 
         // Define the query information that will be used to find the user in the database based on the search query provided
         $query_data = array(
-            'table'     => $this->tData->prefix.'users',
+            'table'     => $this->Theamus->DB->prefix.'users',
             'clause'    => array(
                 'operator'      => 'OR',
                 'conditions'    => array(
@@ -297,15 +297,15 @@ class Accounts {
         );
 
         // Query the database for results
-        $selector_query = $this->tData->select_from_table($query_data['table'], array('selector'), $query_data['clause']);
+        $selector_query = $this->Theamus->DB->select_from_table($query_data['table'], array('selector'), $query_data['clause']);
 
         // Check the results and for results, return respectively
-        if ($selector_query == false || $this->tData->count_rows($selector_query) == 0) {
+        if ($selector_query == false || $this->Theamus->DB->count_rows($selector_query) == 0) {
             return alert_notify('info', 'No accounts were found.', '', true);
         }
 
         // Define the selectors related to the user's found in the database based on the search query
-        $selector_results = $this->tData->fetch_rows($selector_query);
+        $selector_results = $this->Theamus->DB->fetch_rows($selector_query);
         $selectors = isset($selector_results[0]) ? $selector_results : array($selector_results);
 
         // Define empty arrays to add to
@@ -323,7 +323,7 @@ class Accounts {
         }
 
         // Query the database for the user information
-        $user_query = $this->tData->select_from_table($query_data['table'], array('key', 'value', 'selector'), array(
+        $user_query = $this->Theamus->DB->select_from_table($query_data['table'], array('key', 'value', 'selector'), array(
             'operator'      => 'OR',
             'conditions'    => $user_clauses
         ), 'ORDER BY `id` ASC');
@@ -492,7 +492,7 @@ class Accounts {
                     return alert_notify('danger', 'The passwords provided do not match.', '', true);
                 } else {
                     // Define the encrypted password
-                    $salt = $this->tData->get_config_salt('password');
+                    $salt = $this->Theamus->DB->get_config_salt('password');
                     $user_variables['password'] = hash('SHA256', $data['password'].$salt);
                 }
             }
@@ -543,7 +543,7 @@ class Accounts {
      */
     protected function create_account($data, $registration = false) {
         // Check for an administrator
-        if (!$registration && (!$this->tUser->is_admin() || !$this->tUser->has_permission('add_users'))) {
+        if (!$registration && (!$this->Theamus->User->is_admin() || !$this->Theamus->User->has_permission('add_users'))) {
             die('You must be an administrator to do this.');
         }
 
@@ -556,23 +556,23 @@ class Accounts {
         }
 
         // Find the system's email host in the database
-        $system_query = $this->tData->select_from_table($this->tData->prefix.'settings', array('email_host'));
-        $system = $this->tData->fetch_rows($system_query);
+        $system_query = $this->Theamus->DB->select_from_table($this->Theamus->DB->prefix.'settings', array('email_host'));
+        $system = $this->Theamus->DB->fetch_rows($system_query);
 
         // Query the database for all of the user's selectors
-        $selector_query = $this->tData->select_from_table($this->tData->prefix.'users', array('selector'), array(), 'GROUP BY `selector` ORDER BY `selector` DESC LIMIT 1');
+        $selector_query = $this->Theamus->DB->select_from_table($this->Theamus->DB->prefix.'users', array('selector'), array(), 'GROUP BY `selector` ORDER BY `selector` DESC LIMIT 1');
 
         // Define a new selector for the new user
         if ($selector_query == false) {
             $selector = time();
         } else {
-            $selector_data = $this->tData->fetch_rows($selector_query);
+            $selector_data = $this->Theamus->DB->fetch_rows($selector_query);
             $selector = $selector_data['selector'] + 1;
         }
 
         // Create the user in the database
-        $this->tData->use_pdo == true ? $this->tData->db->beginTransaction() : $this->tData->db->autocommit(true);
-        $query = $this->tData->insert_table_row($this->tData->prefix.'users', array(
+        $this->Theamus->DB->use_pdo == true ? $this->Theamus->DB->db->beginTransaction() : $this->Theamus->DB->db->autocommit(true);
+        $query = $this->Theamus->DB->insert_table_row($this->Theamus->DB->prefix.'users', array(
             array('key' => 'id', 'value' => $selector, 'selector' => $selector),
             array('key' => 'username', 'value' => $user_variables['username'], 'selector' => $selector),
             array('key' => 'password', 'value' => $user_variables['password'], 'selector' => $selector),
@@ -594,7 +594,7 @@ class Accounts {
         // Check the query and continue
         if ($query == false) {
             // Rollback the new rows and return an error
-            $this->tData->use_pdo == true ? $this->tData->db->rollBack() : $this->tData->db->rollback();
+            $this->Theamus->DB->use_pdo == true ? $this->Theamus->DB->db->rollBack() : $this->Theamus->DB->db->rollback();
             return alert_notify('danger', 'There was an error registering you in the database. Please try again later.', '', true);
         } else {
             // Check if it's a registered user and there is an email host defined
@@ -602,13 +602,13 @@ class Accounts {
                 // Try to email the new user their activation code
                 if (!$this->email_registered_user($user_variables['email'], $user_variables['activation-code'])) {
                     // Rollback the new user rows and return an error if the email failed to send
-                    $this->tData->use_pdo == true ? $this->tData->db->rollBack() : $this->tData->db->rollback();
+                    $this->Theamus->DB->use_pdo == true ? $this->Theamus->DB->db->rollBack() : $this->Theamus->DB->db->rollback();
                     return alert_notify('danger', 'There was an error registering you. Please try again later.', '', true);
                 }
             }
 
             // Commit the new user to the database and return positively
-            $this->tData->use_pdo == true ? $this->tData->db->commit() : $this->tData->db->commit();
+            $this->Theamus->DB->use_pdo == true ? $this->Theamus->DB->db->commit() : $this->Theamus->DB->db->commit();
             return true;
         }
     }
@@ -622,7 +622,7 @@ class Accounts {
      */
     public function save_account($data) {
         // Check for an administrator
-        if (!$this->tUser->is_admin() || !$this->tUser->has_permission('edit_users')) die('You must be an administrator to do this.');
+        if (!$this->Theamus->User->is_admin() || !$this->Theamus->User->has_permission('edit_users')) die('You must be an administrator to do this.');
 
         // Sanitize and check the given variables
         $user_variables = $this->sanitize_account_variables($data, true);
@@ -634,7 +634,7 @@ class Accounts {
 
         // Define the query data that will properly update the user information
         $query_data = array(
-            'table'     => $this->tData->prefix.'users',
+            'table'     => $this->Theamus->DB->prefix.'users',
             'data'      => array(
                 array('value' => $user_variables['email']),
                 array('value' => $user_variables['firstname']),
@@ -666,7 +666,7 @@ class Accounts {
         }
 
         // Query the database, updating the information provided
-        $query = $this->tData->update_table_row($query_data['table'], $query_data['data'], $query_data['clause']);
+        $query = $this->Theamus->DB->update_table_row($query_data['table'], $query_data['data'], $query_data['clause']);
 
         // Check the query and return respectively
         if ($query == false) {
@@ -684,7 +684,7 @@ class Accounts {
      */
     public function remove_account($id) {
         // Check for an administrator
-        if (!$this->tUser->is_admin() || !$this->tUser->has_permission('remove_users')) die('You must be an administrator to do this.');
+        if (!$this->Theamus->User->is_admin() || !$this->Theamus->User->has_permission('remove_users')) die('You must be an administrator to do this.');
 
         // Check the given ID and return respectively
         if ($id == '') {
@@ -692,7 +692,7 @@ class Accounts {
         }
 
         // Remove the user's information from the database
-        $query = $this->tData->delete_table_row($this->tData->prefix.'users', array('operator' => '', 'conditions' => array('selector' => Accounts::decode($id))));
+        $query = $this->Theamus->DB->delete_table_row($this->Theamus->DB->prefix.'users', array('operator' => '', 'conditions' => array('selector' => Accounts::decode($id))));
 
         // Check the query and return respectively
         if ($query == false) {
@@ -709,7 +709,7 @@ class Accounts {
      * @return boolean
      */
     private function check_user() {
-        return $this->tUser->user != false ? true : false;
+        return $this->Theamus->User->user != false ? true : false;
     }
 
 
@@ -748,7 +748,7 @@ class Accounts {
                 $query_data['data'][]   = array('value' => $filename);
                 $query_data['clause'][] = array(
                     'operator'      => 'AND',
-                    'conditions'    => array('key' => 'picture', 'selector' => $this->tUser->user['id']));
+                    'conditions'    => array('key' => 'picture', 'selector' => $this->Theamus->User->user['id']));
             } else {
                 alert_notify('danger', 'There was an error uploading your picture. This may be because of file permissions.', '', true);
             }
@@ -777,18 +777,18 @@ class Accounts {
             }
 
             // Define the salt to encrypt the password with
-            $salt = $this->tData->get_config_salt('password');
+            $salt = $this->Theamus->DB->get_config_salt('password');
 
             // Update the database
             $query_data['data'][] = array('value' => hash('SHA256', $user['password'].$salt));
             $query_data['clause'][] = array(
                     'operator'      => 'AND',
-                    'conditions'    => array('key' => 'password', 'selector' => $this->tUser->user['id']));
+                    'conditions'    => array('key' => 'password', 'selector' => $this->Theamus->User->user['id']));
         }
 
         // Update the database
         if (isset($query_data['data']) && isset($query_data['clause'])) {
-            $update_query = $this->tData->update_table_row($this->tData->prefix.'users', $query_data['data'], $query_data['clause']);
+            $update_query = $this->Theamus->DB->update_table_row($this->Theamus->DB->prefix.'users', $query_data['data'], $query_data['clause']);
 
             // Check the update query
             if(!$update_query) {
@@ -810,21 +810,21 @@ class Accounts {
         if (!$this->check_user()) die('You must be logged in to remove account profile pictures.');
 
         // Check the user's profile picture for the default picture
-        if ($this->tUser->user['picture'] != 'default-user-picture.png') {
+        if ($this->Theamus->User->user['picture'] != 'default-user-picture.png') {
             return alert_notify('danger', 'You cannot remove the default profile picture.', '', true);
         }
 
         // Remove the user's picture from the folder
-        if (!unlink(path(ROOT.'/media/profiles/'.$this->tUser->user['picture']))) {
+        if (!unlink(path(ROOT.'/media/profiles/'.$this->Theamus->User->user['picture']))) {
             return alert_notify('danger', 'There was an error deleting the picture from the pictures folder.', '', true);
         }
 
         // Update the table row to reflect the change
-        $query = $this->tData->update_table_row($this->tData->prefix.'users',
+        $query = $this->Theamus->DB->update_table_row($this->Theamus->DB->prefix.'users',
             array('value' => 'default-user-picture.png'),
             array(
                 'operator'      => 'AND',
-                'conditions'    => array('key' => 'picture', 'selector' => $this->tUser->user['id'])));
+                'conditions'    => array('key' => 'picture', 'selector' => $this->Theamus->User->user['id'])));
 
         // Check the query
         if (!$query) {
@@ -859,7 +859,7 @@ class Accounts {
         $user['birthday'] = $user['bday_y'].'-'.$user['bday_m'].'-'.$user['bday_d'];
 
         // Update the database with this new information
-        $query = $this->tData->update_table_row($this->tData->prefix.'users',
+        $query = $this->Theamus->DB->update_table_row($this->Theamus->DB->prefix.'users',
             array(
                 array('value' => $user['firstname']),
                 array('value' => $user['lastname']),
@@ -868,16 +868,16 @@ class Accounts {
             array(
                 array(
                     'operator'      => 'AND',
-                    'conditions'    => array('key' => 'firstname', 'selector' => $this->tUser->user['id'])),
+                    'conditions'    => array('key' => 'firstname', 'selector' => $this->Theamus->User->user['id'])),
                 array(
                     'operator'      => 'AND',
-                    'conditions'    => array('key' => 'lastname', 'selector' => $this->tUser->user['id'])),
+                    'conditions'    => array('key' => 'lastname', 'selector' => $this->Theamus->User->user['id'])),
                 array(
                     'operator'      => 'AND',
-                    'conditions'    => array('key' => 'gender', 'selector' => $this->tUser->user['id'])),
+                    'conditions'    => array('key' => 'gender', 'selector' => $this->Theamus->User->user['id'])),
                 array(
                     'operator'      => 'AND',
-                    'conditions'    => array('key' => 'birthday', 'selector' => $this->tUser->user['id']))));
+                    'conditions'    => array('key' => 'birthday', 'selector' => $this->Theamus->User->user['id']))));
 
         // Check the query
         if (!$query) {
@@ -909,17 +909,17 @@ class Accounts {
         }
 
         // Update the database with this information
-        $query = $this->tData->update_table_row($this->tData->prefix.'users',
+        $query = $this->Theamus->DB->update_table_row($this->Theamus->DB->prefix.'users',
             array(
                 array('value' => $user['email']),
                 array('value' => $this->check_phone($user['phone']))),
             array(
                 array(
                     'operator'      => 'AND',
-                    'conditions'    => array('key' => 'email', 'selector' => $this->tUser->user['id'])),
+                    'conditions'    => array('key' => 'email', 'selector' => $this->Theamus->User->user['id'])),
                 array(
                     'operator'      => 'AND',
-                    'conditions'    => array('key' => 'phone', 'selector' => $this->tUser->user['id']))));
+                    'conditions'    => array('key' => 'phone', 'selector' => $this->Theamus->User->user['id']))));
 
         // Check the query
         if (!$query) {
@@ -964,7 +964,7 @@ class Accounts {
      */
     public function login($args) {
         // Define the configured salts
-        $session_salt = $this->tData->get_config_salt('session');
+        $session_salt = $this->Theamus->DB->get_config_salt('session');
 
         // Validate the username
         if (isset($args['username'])) {
@@ -986,53 +986,41 @@ class Accounts {
 
         // Define the username and password
         $username = urldecode($args['username']);
-        $password = hash('SHA256', urldecode($args['password']).$this->tData->get_config_salt('password'));
+        $password = hash('SHA256', urldecode($args['password']).$this->Theamus->DB->get_config_salt('password'));
 
-
-        // Query the database to check the existance of the given username
-        $selector_query = $this->tData->select_from_table($this->tData->prefix.'users', array('selector'), array(
-            'operator'      => 'AND',
-            'conditions'    => array('key' => 'username', 'value' => $username)
-        ));
+        $query = $this->Theamus->DB->select_from_table(
+            $this->Theamus->DB->system_table('users'),
+            array('id', 'username', 'password', 'active'),
+            array('operator' => 'AND',
+                'conditions' => array(
+                    'username' => $username,
+                    'password' => $password)));
 
         // Check for query results
-        if ($this->tData->count_rows($selector_query) == 0) {
-            return $this->api_error('Invalid username.');
+        if ($this->Theamus->DB->count_rows($query) == 0) {
+            return $this->api_error('Invalid credentials.');
         }
 
         // Define the selectors related to the provided username
-        $selector = $this->tData->fetch_rows($selector_query);
-
-        // Query the database for all of the information related to the found selector
-        $user_query = $this->tData->select_from_table($this->tData->prefix.'users', array(), array(
-            'operator'      => '',
-            'conditions'    => array('selector' => $selector['selector'])
-        ));
-
-        // Define the user information
-        $user = $this->convert_keyval_to_associative($this->tData->fetch_rows($user_query));
-
-        // Check the user's password against the database
-        if ($user[$selector['selector']]['password'] != $password) {
-            return $this->api_error('Invalid credentials');
-        }
+        $user = $this->Theamus->DB->fetch_rows($query);
 
         // Check the user's active status
-        if ($user[$selector['selector']]['active'] == 0) {
+        if ($user['active'] == 0) {
             return $this->api_error('This account is not active. Please contact an adminsitrator to have it activated.');
         }
 
         // Define a new session value and the cookie expiration time
         $session = md5(time().$session_salt);
         $expire = time() + 3600;
+
         if (isset($args['keep_session'])) {
-            if ($args['keep_session'] == 'true') {
+            if ($args['keep_session'] == true) {
                 $expire = time() + (60 * 60 * 24 * 14); // Two weeks from NOW
             }
         }
 
         // Update the user's session in the database
-        if (!$this->tUser->add_user_session($user[$selector['selector']]['id'], $session, $expire)) {
+        if (!$this->Theamus->User->add_user_session($user['id'], $session, $expire)) {
             return $this->api_error('There was an error updating/creating the session.');
         }
 
@@ -1152,8 +1140,8 @@ class Accounts {
         return implode('', array(
             '<li>',
             '<ul class=\'user-options\'>',
-            $this->tUser->has_permission('edit_users') ? '<li><a href=\'#\' name=\'edit-account-link\' data-id=\'%id%\'><span class=\'glyphicon ion-edit\'></span></a></li>' : '',
-            $this->tUser->has_permission('remove_users') ? '::%permanent% == 0 ? "<li><a href=\'#\' name=\'remove-account-link\' data-id=\'%id%\'><span class=\'glyphicon ion-close\'></span></a></li>" : ""::' : '',
+            $this->Theamus->User->has_permission('edit_users') ? '<li><a href=\'#\' name=\'edit-account-link\' data-id=\'%id%\'><span class=\'glyphicon ion-edit\'></span></a></li>' : '',
+            $this->Theamus->User->has_permission('remove_users') ? '::%permanent% == 0 ? "<li><a href=\'#\' name=\'remove-account-link\' data-id=\'%id%\'><span class=\'glyphicon ion-close\'></span></a></li>" : ""::' : '',
             '</ul>',
             '<span class=\'full-name\'>::stripslashes(trim(urldecode(\'%firstname% %lastname%\')))::</span>',
             '<span class=\'username\'>%username%</span>',
@@ -1170,7 +1158,7 @@ class Accounts {
      */
     public function get_user_accounts_list($args) {
         // Check for an administrator
-        if (!$this->tUser->is_admin()) die('You must be an administrator to do this.');
+        if (!$this->Theamus->User->is_admin()) die('You must be an administrator to do this.');
 
         // Define the page data information that will set up the return data
         $this->tPages->set_page_data(array(
@@ -1194,7 +1182,7 @@ class Accounts {
      */
     public function search_accounts($args) {
         // Check for an administrator
-        if (!$this->tUser->is_admin()) die('You must be an administrator to do this.');
+        if (!$this->Theamus->User->is_admin()) die('You must be an administrator to do this.');
 
         // Validate the search query, making sure it exists
         if (!isset($args['search_query'])) {

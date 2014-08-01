@@ -1,6 +1,6 @@
 <?php
 
-if ($folders[0] == 'admin' && $ajax != 'api' && $ajax != 'include' && $tUser->is_admin() == false) {
+if ($folders[0] == 'admin' && $ajax != 'api' && $ajax != 'include' && $Theamus->User->is_admin() == false) {
     if ($location != 'admin') back_up();
     if ($location != 'admin' && $ajax != 'include') die('You don\'t have permission to this file.');
 }
@@ -13,21 +13,21 @@ define('FILE', $file);
 switch ($file) {
     // Public files
     case 'login.php' :
-        if ($tUser->user) back_up();
+        if ($Theamus->User->user) back_up();
         $feature['title'] = 'Log In';
         $feature['header'] = 'Log In';
         $feature['theme'] = 'login';
         break;
 
     case 'register.php':
-        if ($tUser->user) back_up();
+        if ($Theamus->User->user) back_up();
         $feature['title'] = 'Register';
         $feature['header'] = 'Register';
         $feature['theme'] = 'register';
         break;
 
     case 'activate.php':
-        if ($tUser->user) back_up();
+        if ($Theamus->User->user) back_up();
         $feature['title'] = 'Activate Your Account';
         $feature['header'] = 'Activate Your Account';
         break;
@@ -41,7 +41,7 @@ switch ($file) {
     case 'user/edit-personal.php':
     case 'user/edit-contact.php':
     case 'user/other-information.php':
-        if (!$tUser->user) { back_up(); }
+        if (!$Theamus->User->user) { back_up(); }
         $feature['title'] = $feature['header'] = 'Edit Your Account';
         switch ($file) {
             case 'user/edit-account.php':
