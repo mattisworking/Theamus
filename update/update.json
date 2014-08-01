@@ -34,7 +34,8 @@
             "Updated the Administration Theme - https://github.com/Eyraahh/Theamus/issues/43",
             "Not going to lie, I did some fancy stuff with the classes.  From cluttered to beauty. - https://github.com/Eyraahh/Theamus/issues/40",
             "Updated the btn-primary class styling from a light color to a darker one - https://github.com/Eyraahh/Theamus/issues/51",
-            "Fixed an issue where multiple HR's in the Feature defined navigation weren't all showing. https://github.com/Eyraahh/Theamus/issues/57"
+            "Fixed an issue where multiple HR's in the Feature defined navigation weren't all showing. https://github.com/Eyraahh/Theamus/issues/57",
+            "Added a nice pretty message that will show up on a blank page when Theamus can't connect to a database - https://github.com/Eyraahh/Theamus/issues/50"
         ]
     },
     "authors": [

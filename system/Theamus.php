@@ -31,7 +31,8 @@ class Theamus {
 
         $this->DB           = new DB($this);            // Database access and management class
 
-        $this->settings = $this->get_system_settings(); // Get the system settings!
+        // Get the system settings!
+        if (!$this->DB->try_installer) $this->settings = $this->get_system_settings();
 
         $this->User         = new User($this);          // User control class
         $this->API          = new API($this);

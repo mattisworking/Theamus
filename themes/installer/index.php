@@ -4,25 +4,25 @@
         <meta charset="UTF-8">
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <?php echo $tTheme->get_page_variable("base"); ?>
-        <title><?php echo $tTheme->get_page_variable("title"); ?></title>
-        <?php echo $tTheme->get_page_variable("css"); ?>
-        <link href="<?php echo $tTheme->get_page_variable("theme_path"); ?>style/css/main.css" rel="stylesheet" type="text/css">
-        <?php echo $tTheme->get_page_variable("js"); ?>
+        <?php echo $Theamus->Theme->get_page_variable("base"); ?>
+        <title><?php echo $Theamus->Theme->get_page_variable("title"); ?></title>
+        <?php echo $Theamus->Theme->get_page_variable("css"); ?>
+        <link href="<?php echo $Theamus->Theme->get_page_variable("theme_path"); ?>style/css/main.css" rel="stylesheet" type="text/css">
+        <?php echo $Theamus->Theme->get_page_variable("js"); ?>
     </head>
 
     <body>
         <div class="header">
             <div class="logo">
-                <img src="<?php echo $tTheme->get_page_variable("theme_path"); ?>images/theamus-logo.svg" alt="theamus">
+                <img src="<?php echo $Theamus->Theme->get_page_variable("theme_path"); ?>images/theamus-logo.svg" alt="theamus">
             </div>
             <div class="page-header">
-                <?php echo $tTheme->get_page_variable("header"); ?>
+                <?php echo $Theamus->Theme->get_page_variable("header"); ?>
                 <a href="#" id="step-chooser"><span class="caret"></span></a>
             </div>
         </div>
 
-        <?php $tTheme->content(); ?>
+        <?php $Theamus->Theme->content(); ?>
 
         <script type="text/javascript">
             $(function() {
@@ -61,13 +61,13 @@
 
                         // Define the links available to the user
                         var links = [
-                                {"text": "Welcome", "path": theamus.base_url, "step": "welcome"},
-                                {"text": "Dependencies Check", "path": theamus.base_url+"install/dependencies-check/", "step": "dependencies-check"},
-                                {"text": "Database Configuration", "path": theamus.base_url+"install/database-configuration", "step": "database-configuration"},
-                                {"text": "Site Customization and Security", "path": theamus.base_url+"install/customization-and-security/", "step": "customization-and-security"},
-                                {"text": "First User Setup", "path": theamus.base_url+"install/first-user-setup/", "step": "first-user-setup"},
-                                {"text": "Advanced Install Options", "path": theamus.base_url+"install/advanced-options", "step": "advanced-options"},
-                                {"text": "Review and Install", "path": theamus.base_url+"install/review-and-install", "step": "review-and-install"}
+                                {"text": "Welcome", "path": Theamus.base_url, "step": "welcome"},
+                                {"text": "Dependencies Check", "path": Theamus.base_url+"install/dependencies-check/", "step": "dependencies-check"},
+                                {"text": "Database Configuration", "path": Theamus.base_url+"install/database-configuration", "step": "database-configuration"},
+                                {"text": "Site Customization and Security", "path": Theamus.base_url+"install/customization-and-security/", "step": "customization-and-security"},
+                                {"text": "First User Setup", "path": Theamus.base_url+"install/first-user-setup/", "step": "first-user-setup"},
+                                {"text": "Advanced Install Options", "path": Theamus.base_url+"install/advanced-options", "step": "advanced-options"},
+                                {"text": "Review and Install", "path": Theamus.base_url+"install/review-and-install", "step": "review-and-install"}
                             ],
                             step_links  = [],
                             passed_steps = localStorage.getItem("step"),

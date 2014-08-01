@@ -102,9 +102,7 @@ class Install {
      * @return boolean
      */
     public function run_installer() {
-        if ($this->config_file == false || $this->db_exists == false || $this->installed == false) {
-            return true;
-        }
+        if (!$this->config_file || !$this->Theamus->DB->connection || !$this->installed) return true;
         return false;
     }
 }

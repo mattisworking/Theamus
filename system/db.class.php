@@ -67,6 +67,14 @@ class DB {
 
 
     /**
+     * Tells the call class to try the installer if required
+     *
+     * @var boolean $try_installer
+     */
+    public $try_installer = false;
+
+
+    /**
      * Initializes the class, defines the configuration given by the system
      *
      * @return boolean
@@ -85,6 +93,11 @@ class DB {
         if ($t != false) {
             // Connect to the database right here and now
             $db_connection = $this->connect(true);
+
+            if (empty($this->config)) {
+                $this->try_installer = true;
+                return;
+            }
 
             // Throw an exception to Theamus if the database wasn't connected to
             if (!$db_connection) throw new Exception('Failure connecting to the database.');

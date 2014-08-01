@@ -140,6 +140,14 @@ class Call {
 
 
     /**
+     * Boolean that will run the installer or not
+     *
+     * @var boolean $install
+     */
+    private $install = false;
+
+
+    /**
      * Connect this class to Theamus
      *
      * @return
@@ -204,6 +212,7 @@ class Call {
      */
     private function define_complete_path($call) {
         $post = filter_input_array(INPUT_POST);
+
         if ($post['ajax'] != 'system') {
             // Define the feature folder
             $this->feature_folder = $this->define_feature();
@@ -337,12 +346,15 @@ class Call {
 
         $post = filter_input_array(INPUT_POST);
         $get = filter_input_array(INPUT_GET);
-        if (!isset($post['ajax']) && !isset($get['ajax'])) {
-            require $this->Theamus->file_path(ROOT."/system/install.class.php");
-            $install = new Install($this->Theamus, $this->base_url);
-            $installed = $install->run_installer();
 
-            $this->install = $installed ? true : false;
+        if (!isset($post['ajax']) && !isset($get['ajax'])) {
+            if ($this->Theamus->DB->try_installer) {
+                require $this->Theamus->file_path(ROOT."/system/install.class.php");
+                $install = new Install($this->Theamus, $this->base_url);
+                $installed = $install->run_installer();
+
+                $this->install = $installed ? true : false;
+            }
 
             $ret['type'] = "regular";
             $ret['look_folder'] = "view";
@@ -352,7 +364,7 @@ class Call {
             $ajax = $api_from = false;
             if (isset($post['ajax'])) $ajax = $post['ajax'];
             if (isset($get['ajax']) && $ajax == false) $ajax = $get['ajax'];
-            if ($ajax == false) die("AJAX type cannot be found.");
+            if ($ajax == false) throw new Exception("AJAX type cannot be found.");
 
             switch ($ajax) {
                 case "script":
@@ -665,7 +677,7 @@ class Call {
             $data['init-class'] = false;
         }
 
-        unset($settings, $q);
+        unset($settings);
         $this->Theamus->Theme->load_theme($data);
         return;
     }
