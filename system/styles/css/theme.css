@@ -960,7 +960,7 @@ select[multiple], select[size] {
 .btn-primary {
 	background-color: #ccf;
 	border-bottom: 3px solid #bbe;
-	color: #FFF;
+	color: #444;
 }
 .btn-primary:active {
 	background-color: #aad;
