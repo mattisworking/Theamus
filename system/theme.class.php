@@ -415,7 +415,7 @@ class Theme {
             $nav = "<ul $class>";
             foreach ($navigation as $text => $path) {
                 if ($text != "path") {
-                    if ($text == "hr") $nav .= "<li class='nav-hr'><hr /></li>";
+                    if ($path == "hr") $nav .= "<li class='nav-hr'><hr /></li>";
                     elseif (is_array($navigation[$text])) {
                         $nav .= "<li><a href='".$navigation[$text]['path']."'>".$text."</a>";
                         $nav .= extra_page_navigation($navigation[$text]);
