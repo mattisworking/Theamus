@@ -166,9 +166,6 @@ class Call {
         // Define the path to the file being requested
         $path = $this->define_complete_path($call);
 
-        // Show the page info, if desired
-        $this->show_page_info(array("call" => $call));
-
         // Do the call that will handle the page
         if (($path == true && $call['do_call'] != false) || $call['type'] == "system") {
             $this->$call['do_call']();
@@ -966,7 +963,6 @@ class Call {
             "<script src='system/js/jquery.js'></script>",
             "<script src='system/js/theamus.js'></script>",
             "<script src='system/external/prettify/prettify.js'></script>",
-            "<script src='system/external/rangy/rangy.js'></script>",
             $this->Theamus->User->user && $this->Theamus->User->is_admin() ? "<script src='themes/admin/js/admin.min.js'></script>" : "",
             "<script>Theamus.info = ".$this->define_javascript_info()."</script>",
         );
