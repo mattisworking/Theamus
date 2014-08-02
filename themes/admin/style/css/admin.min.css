@@ -1,6 +1,6 @@
 @font-face{font-family:Roboto;src:url(../fonts/roboto/roboto.eot?#iefix) format(embedded-opentype), url(../fonts/roboto/roboto.woff) format(woff), url(../fonts/roboto/roboto.ttf) format(truetype), url(../fonts/roboto/roboto.svg#roboto) format(svg);font-weight:400;font-style:normal}
 .admin{left:0;opacity:0;position:fixed;right:0;top:0;transition:opacity .3s ease-in-out;-webkit-transition:opacity .3s ease-in-out;-moz-transition:opacity .3s ease-in-out;-ms-transition:opacity .3s ease-in-out;z-index:99999}
-.admin-panel-open{height:100%;overflow:auto}
+.admin-panel-open{height:100%;overflow:auto;}
 .admin-mobile{position:absolute}
 .admin-header{border-bottom:1px solid #ccc;opacity:0.9;position:absolute;top:0;transition:opacity .3s ease-in-out, box-shadow .3s ease-in-out;-webkit-transition:opacity .3s ease-in-out, box-shadow .3s ease-in-out;-moz-transition:opacity .3s ease-in-out, box-shadow .3s ease-in-out;-ms-transition:opacity .3s ease-in-out, box-shadow .3s ease-in-out;z-index:10}
 .admin-header-left{left:0;border-right:1px solid #ccc;border-radius:0 0 5px 0}
@@ -79,7 +79,7 @@
 .admin-window .window-content .form-horizontal .form-group .control-label{font-size:.8em}
 .admin-window .window-content .form-button-group{text-align:right}
 .admin-window .window-content .form-group .checkbox{margin:0 20px}
-.admin-on,.admin-header-on{opacity:1}
+.admin-on,.admin-header-on{opacity:1;}
 .admin-header-left > .nav-inline,.admin-navigation-open-left .nav-vertical li:last-child,.admin-navigation .nav-vertical li:last-child{border-radius:0 0 3px 0}
 .admin-header-right > .nav-inline,.admin-navigation-open-right .nav-vertical li:last-child{border-radius:0 0 0 3px}
 .admin-header-left > .nav-inline li ul,.admin-navigation-open-left{left:0}
