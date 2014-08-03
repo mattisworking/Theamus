@@ -14,6 +14,7 @@ class Theamus {
      * All of the Theamus system objects that will be usable to eachother
      */
     public $DB;
+    public $Log;
     public $Call;
     public $User;
     public $Theme;
@@ -36,6 +37,7 @@ class Theamus {
         // Get the system settings!
         if (!$this->DB->try_installer) $this->settings = $this->get_system_settings();
 
+        $this->Log          = new Log($this);           // Error logging class
         $this->User         = new User($this);          // User control class
         $this->API          = new API($this);
         $this->Call         = new Call($this);          // Page call handling class
@@ -57,6 +59,7 @@ class Theamus {
         // for Theamus to work properly
         $system_class_files = array(
             'db.class.php',
+            'log.class.php',
             'api.class.php',
             'call.class.php',
             'user.class.php',

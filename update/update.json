@@ -38,7 +38,8 @@
             "Added a nice pretty message that will show up on a blank page when Theamus can't connect to a database - https://github.com/Eyraahh/Theamus/issues/50",
             "Changed the users table back to the way it was. - https://github.com/Eyraahh/Theamus/issues/58",
             "Changes the user-sessions table to the way DB tables should be - https://github.com/Eyraahh/Theamus/issues/53",
-            "Fixed the admin panel styling issues when a page was loaded. - https://github.com/Eyraahh/Theamus/issues/52"
+            "Fixed the admin panel styling issues when a page was loaded. - https://github.com/Eyraahh/Theamus/issues/52",
+            "Added a system logging class - https://github.com/Eyraahh/Theamus/issues/55"
         ]
     },
     "authors": [
