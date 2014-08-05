@@ -1324,9 +1324,9 @@ class Call {
         if ($this->api_fail == false) {
             // Determine the method and class (if applicable)
             if (isset($inp['method_class']) && $inp['method_class'] != "") {
-                if (isset($this->feature['config']['api']['class_file'])) {
+                if (isset($this->feature['config']['load_files']['api'])) {
                     // If the class file isn't already an array, make it one
-                    $feature_class_files = $this->feature['config']['api']['class_file'];
+                    $feature_class_files = $this->feature['config']['load_files']['api'];
                     if (!is_array($feature_class_files)) {
                         $class_files = array($feature_class_files);
                     } else {
