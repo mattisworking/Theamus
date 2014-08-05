@@ -835,10 +835,11 @@ class Call {
      */
     private function get_custom_folder($type) {
         $config = $this->feature['config'];
-        if (array_key_exists($type, $config)) {
-            if (array_key_exists("folder", $config[$type])) {
-                $path = $this->Theamus->file_path(ROOT."/features/".$this->feature_folder."/".$config[$type]['folder']);
-                if (is_dir($path)) return $config[$type]['folder'];
+
+        if (isset($config['custom_folders']) && is_array($config['custom_folders'])) {
+            if (array_key_exists($type, $config['custom_folders'])) {
+                $path = $this->Theamus->file_path(ROOT."/features/".$this->feature_folder."/".$config['custom_folders'][$type]);
+                if (is_dir($path)) return $config['custom_folders'][$type];
             }
         }
         if (is_dir($this->Theamus->file_path(ROOT."/".$this->feature_folder."/js"))) return $type;
@@ -1221,8 +1222,6 @@ class Call {
             $init_class = $this->init_class;
             ${$init_class} = new $init_class($this->Theamus);
         }
-
-        $url_params = $this->parameters;
 
         echo $this->get_javascript(true);
         echo $this->get_css(true);
