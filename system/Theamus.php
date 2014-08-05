@@ -246,4 +246,15 @@ class Theamus {
 
         $this->base_url = trim($protocol.$domain.$directory, "/")."/";
     }
+
+    /**
+     * Prints out an input that requests the site to include an extra javascript file
+     *
+     * @param string $path
+     * @return boolean
+     */
+    function load_js_file($path) {
+       echo "<input type='hidden' name='addscript' value='".$path."?x=".time()."' />";
+       return true;
+    }
 }
