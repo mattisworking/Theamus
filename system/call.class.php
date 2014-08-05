@@ -214,8 +214,11 @@ class Call {
             // Define the feature folder
             $this->feature_folder = $this->define_feature();
 
-            // Define the feature configuration information
-            $this->feature['config'] = $this->feature_configuration();
+            // Load the feature configuration information
+            $this->feature_configuration();
+
+            // Load the functions that were defined in the configuration file
+            $this->load_config_functions();
 
             // Define the folders to the file
             $this->look_in_folder = $this->look_in_folder($call['look_folder']);
@@ -749,18 +752,25 @@ class Call {
      * @return array
      */
     private function feature_configuration() {
+        $Theamus = $this->Theamus;
+
         $feature_path = $this->Theamus->file_path(ROOT."/features/$this->feature_folder/");
 
-        $ret = array();
         if (file_exists($feature_path."config.php")) {
             include $feature_path."config.php";
-            if (isset($feature) && is_array($feature)) {
-                $ret = $feature;
-                if (isset($feature['functions'])) $this->load_config_functions($feature['functions']);
-            }
         }
+    }
 
-        return $ret;
+
+    /**
+     * Sets the configuration information for a feature
+     *
+     * @param array $config
+     * @return
+     */
+    private function set_feature_config($config = array()) {
+        $this->feature['config'] = $config;
+        return;
     }
 
 
@@ -771,10 +781,10 @@ class Call {
      * @param array $config
      * @return
      */
-    private function load_config_functions($config) {
+    private function load_config_functions() {
         $feature_path = $this->Theamus->file_path(ROOT."/features/$this->feature_folder/");
-        if (isset($config['file'])) {
-            $arr = !is_array($config['file']) ? array($config['file']) : $config['file'];
+        if (isset($this->feature['config']['load_files']) && isset($this->feature['config']['load_files']['function'])) {
+            $arr = !is_array($this->feature['config']['load_files']['function']) ? array($this->feature['config']['load_files']['function']) : $this->feature['config']['load_files']['function'];
             foreach ($arr as $a) {
                 if (file_exists($feature_path."/".$a)) include $feature_path."/".$a;
             }
