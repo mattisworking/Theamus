@@ -25,7 +25,7 @@
     <div class='admin-navigation'>
         <ul class='nav nav-vertical'>
             <li>
-                <a href='#' name='admin-nav-item' data-id='theamus-dashboard' data-title='Theamus Dashboard' data-url='default/adminHome/'>
+                <a href='#' name='admin-nav-item' data-id='theamus-dashboard' data-title='Theamus Dashboard' data-url='default/admin-index/'>
                     <span class='glyphicon ion-speedometer'></span>
                     <span class='text'>Dashboard</span>
                 </a>

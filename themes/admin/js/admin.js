@@ -29,7 +29,7 @@ function create_admin_window(window_id, window_title, window_url) {
         return false;
     }
 
-    if (theamus.mobile === false) {
+    if (Theamus.Mobile === false) {
         if ($('.admin-navigation').hasClass('admin-navigation-left')) {
             $('.admin-navigation').addClass('admin-navigation-open-'+admin_position);
         } else {
@@ -40,7 +40,7 @@ function create_admin_window(window_id, window_title, window_url) {
     var ad_window = document.createElement('div');
     $(ad_window).addClass('admin-window');
     $(ad_window).addClass('admin-window-init');
-    if (theamus.mobile === true) {
+    if (Theamus.Mobile === true) {
         $(ad_window).addClass('admin-window-mobile');
     }
 
@@ -77,8 +77,8 @@ function update_admin_window_content(window_id, url) {
     admin_window_loading(window_id);
 
     setTimeout(function() {
-        theamus.ajax.run({
-            url:        theamus.base_url+url,
+        Theamus.Ajax.run({
+            url:        Theamus.base_url+url,
             type:       "include",
             result:     window_id,
             after:      function() {
@@ -97,7 +97,7 @@ function update_admin_window_content(window_id, url) {
 function resize_admin_window() {
     for (var i = 0; i < $('.admin-window').length; i++) {
         var ad_window = $('.admin-window')[i];
-        if ($(ad_window).height() > $(window).height() && theamus.mobile === false) {
+        if ($(ad_window).height() > $(window).height() && Theamus.Mobile === false) {
             $(ad_window).addClass('admin-window-maxheight');
         }
     }
@@ -119,7 +119,7 @@ function bring_admin_window_to_front(ad_window) {
 }
 
 function admin_window_listeners() {
-    if (theamus.mobile === false) {
+    if (Theamus.Mobile === false) {
         $('.admin-window').draggable({
             handle: '.window-chrome',
             cancel: '.close',
@@ -181,7 +181,7 @@ $(document).ready(function() {
 
     add_css('themes/admin/style/css/admin.css');
 
-    if (theamus.mobile === true) {
+    if (Theamus.Mobile === true) {
         $('.admin').addClass('admin-mobile');
     }
 
@@ -215,7 +215,7 @@ $(document).ready(function() {
     $('[name="admin-nav-item"]').click(function(e) {
         e.preventDefault();
 
-        if (theamus.mobile === true) {
+        if (Theamus.Mobile === true) {
             $('.admin-navigation').removeClass('admin-navigation-open');
             $('.admin-navigation').removeClass('admin-navigation-open-left');
             $('.admin-navigation').removeClass('admin-navigation-open-right');
@@ -228,7 +228,7 @@ $(document).ready(function() {
         create_admin_window(window_id, window_title, window_url);
 
         for (var i = 0; i < $('.admin-window').length; i++) {
-            if (theamus.mobile === false) {
+            if (Theamus.Mobile === false) {
                 var ad_window_pos = $($('.admin-window')[i]).position(),
                     expected_left = 200 + (20 * i),
                     expected_top = 10 + (20 * i);

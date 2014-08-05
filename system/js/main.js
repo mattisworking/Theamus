@@ -176,9 +176,9 @@ function reload(timer) {
 }
 
 function user_logout() {
-    theamus.ajax.api({
+    Theamus.Ajax.api({
         type:       'post',
-        url:        theamus.base_url+'accounts/logout/',
+        url:        Theamus.base_url+'accounts/logout/',
         method:     ['Accounts', 'logout'],
         success:    go_to
     });
@@ -188,7 +188,7 @@ function user_logout() {
 
 function go_to(loc) {
     if (typeof loc !== "string") {
-        loc = theamus.base_url;
+        loc = Theamus.base_url;
     }
 
     window.location = loc;
