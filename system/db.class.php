@@ -447,7 +447,7 @@ class DB {
      */
     public function get_last_error($all = false) {
         // Return nothing if there arent any query errors
-        if (empty($this->query_errors)) return '';
+        if (empty($this->query_errors)) return 'No query errors were found.';
 
         // Return the last array item error
         elseif (!$all) return $this->query_errors[count($this->query_errors) - 1];
@@ -538,6 +538,8 @@ class DB {
                 }
             }
         }
+
+        $this->query_errors[] = 'No database connection exists.';
         return false;
     }
 
@@ -658,6 +660,8 @@ class DB {
                 }
             }
         }
+
+        $this->query_errors[] = 'No database connection exists.';
         return false;
     }
 
@@ -746,6 +750,8 @@ class DB {
                 }
             }
         }
+
+        $this->query_errors[] = 'No database connection exists.';
         return false;
     }
 
@@ -847,6 +853,8 @@ class DB {
         if ($this->show_query_errors == true) {
             $this->Theamus->pre("Nothing worked for this query.  The function ran but nothing happened.");
         }
+
+        $this->query_errors[] = 'No database connection exists.';
         return false;
     }
 
