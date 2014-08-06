@@ -942,7 +942,7 @@ class Call {
     private function get_javascript($for_ajax = false) {
         $ret[] = $for_ajax != false ? "" : $this->default_javascript();
 
-        $folder = $this->get_custom_folder("js");
+        $folder = $this->get_custom_folder("javascript");
         $path = "features/".$this->feature_folder."/".$folder;
 
         if ($folder != false) {
