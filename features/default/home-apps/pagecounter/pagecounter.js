@@ -1,3 +1,6 @@
+function init(){if(typeof show_count_chart==='undefined'){setTimeout(function(){init()},50)}else{show_count_chart()}}
+init();
+
 function get_chart_data(pages) {
     var labels = [], data = [], info = [];
 
@@ -12,29 +15,30 @@ function get_chart_data(pages) {
     return info;
 }
 
-function show_count_chart(pages) {
-    var info, chart_data, page_chart, largest, scale_override;
+function show_count_chart() {
+    var info, chart_data, page_chart = null, largest, options;
 
-    info = get_chart_data(pages);
+    info = get_chart_data(JSON.parse($('#all-pages').val()));
     chart_data = {
         labels: info[0],
         datasets: [{
-                fillColor: "rgba(220,220,220,0.5)",
-                strokeColor: "rgba(220,220,220,1)",
+                fillColor: 'rgba(180,180,180,0.5)',
+                strokeColor: 'rgba(150,150,150,0.8)',
                 data: info[1]
             }]
     };
 
     largest = Math.max.apply(Math, info[1]);
-    scale_override = {
+    options = {
         scaleOverride: true,
-        scaleSteps: 10,
-        scaleStepWidth: Math.ceil(largest / 10),
-        scaleStartValue: 0
+        scaleSteps: 8,
+        scaleStepWidth: Math.ceil(largest / 8),
+        scaleStartValue: 0,
+        maintainAspectRatio: true
     };
 
-    if (typeof(Chart) !== "undefined") {
-        page_chart = new Chart($("#page_canvas")[0].getContext("2d")).Bar(chart_data, scale_override);
+    if (typeof(Chart) !== 'undefined') {
+        page_chart = new Chart($('#page_canvas')[0].getContext('2d')).Bar(chart_data, options);
         return page_chart;
     } else {
         setTimeout(function() {

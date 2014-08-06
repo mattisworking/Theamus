@@ -1,28 +1,31 @@
 <?php
 
-$feature['js']['file'] = array();
-$feature['css']['file'] = array();
-
+// Define the homepage stuffs
 $HomePage = new HomePage($Theamus);
-if ($file == "index.php") {
-    $i = $HomePage->redirect();
+if ($file == 'index.php') $i = $HomePage->redirect();
+
+// Load the admin class if relevant
+if ($Theamus->User->is_admin() && ($folders[0] == 'admin' || $file = 'admin-index.php')) {
+    define('FILE', $file);
+
+    $feature['class']['file'] = 'admin.class.php';
+    $feature['class']['init'] = 'DefaultAdmin';
 }
 
+// Load the file related information
 switch ($file) {
-    case "index.php":
-        $feature['title'] = $i['title'];
-        $feature['header'] = $i['title'];
-        $feature['js']['file'][] = 'init.js';
-        $feature['theme'] = $i['theme'];
-        $feature['nav'] = $i['navigation'];
+    case 'index.php':
+        $feature['title']   = $i['title'];
+        $feature['header']  = $i['title'];
+
+        $feature['js']['file'][] = DFLT_DEV_MODE ? 'dev/init.js' : 'init.min.js';
+
+        $feature['theme']   = $i['theme'];
+        $feature['nav']     = $i['navigation'];
         break;
 
-    case "adminHome.php":
-        $feature['css']['file'][] = "admin/admin-home.css";
-        $feature['js']['file'][] = "admin-home.js";
-        break;
-
-    default :
-        $feature = true;
+    case 'admin-index.php':
+        $feature['css']['file'][]   = DFLT_DEV_MODE ? 'admin/admin-home.css' : 'admin/admin-home.min.css';
+        $feature['js']['file'][]    = DFLT_DEV_MODE ? 'dev/admin-home.js' : 'admin-home.min.js';
         break;
 }
