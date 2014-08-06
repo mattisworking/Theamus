@@ -32,18 +32,18 @@ class Files {
      */
     function scan_folder($path, $clean = false, $return_type = "files") {
         $ret = array();
-        $root = scandir(path($path));
+        $root = scandir($this->Theamus->file_path($path));
         foreach ($root as $value) {
             if ($value === '.' || $value === '..') continue;
-            if (is_file(path($path."/".$value)) && $return_type == "files") {
-                $ret[] = path($path."/".$value);
+            if (is_file($this->Theamus->file_path($path."/".$value)) && $return_type == "files") {
+                $ret[] = $this->Theamus->file_path($path."/".$value);
                 continue;
-            } elseif (is_dir(path($path."/".$value)) && $return_type == "folders") {
-                $ret[] = path($path."/".$value);
+            } elseif (is_dir($this->Theamus->file_path($path."/".$value)) && $return_type == "folders") {
+                $ret[] = $this->Theamus->file_path($path."/".$value);
                 continue;
             }
 
-            if (is_dir(path($path."/".$value))) foreach ($this->scan_folder($path."/".$value) as $value) $ret[] = $value;
+            if (is_dir($this->Theamus->file_path($path."/".$value))) foreach ($this->scan_folder($path."/".$value) as $value) $ret[] = $value;
         }
         if ($clean != false) $ret = $this->clean_filenames($ret, $clean);
         return $ret;
@@ -63,7 +63,7 @@ class Files {
     function clean_filenames($array, $clean = '') {
         if (is_array($array)) {
             $result = array();
-            foreach ($array as $val) $result[] = str_replace(path($clean . '/'), '', $val);
+            foreach ($array as $val) $result[] = str_replace($this->Theamus->file_path($clean . '/'), '', $val);
             return $result;
         }
         return false;
@@ -77,7 +77,7 @@ class Files {
      * @return boolean
      */
     public function remove_folder($path = "") {
-        $dir = path($path);
+        $dir = $this->Theamus->file_path($path);
         if (!file_exists($dir)) return true;
         if (!is_dir($dir) || is_link($dir)) return unlink($dir);
         foreach (scandir($dir) as $item) {
