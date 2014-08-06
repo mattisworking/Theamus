@@ -1111,9 +1111,9 @@ class Call {
         $config = $this->feature['config'];
 
         if (is_array($config)) {
-            if (array_key_exists("class", $config)) {
-                if (array_key_exists("folder", $config['class'])) {
-                    return $config['class']['folder'];
+            if (array_key_exists("custom_folders", $config)) {
+                if (array_key_exists("class", $config['custom_folders'])) {
+                    return $config['custom_folders']['class'];
                 }
             }
         }
