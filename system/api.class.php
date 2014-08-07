@@ -308,7 +308,7 @@ class API {
             $new_url = $url;
         } else {
             // We will be assuming the host address or the predefined base url
-            $new_url = base_url.$url;
+            $new_url = $this->Theamus->base_url.$url;
         }
 
         // Check for url validation and return or throw error
