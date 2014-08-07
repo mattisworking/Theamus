@@ -1201,8 +1201,6 @@ class Call {
             ${$init_class} = new $init_class($this->Theamus);
         }
 
-        $url_params = $this->parameters;
-
         include $this->complete_file_path;
 
         return true;
