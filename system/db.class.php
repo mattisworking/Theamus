@@ -330,8 +330,8 @@ class DB {
                 // If PDO is being used
                 } else {
                     $random_key = ":".$key.$return['random_number'];            // random_key for shorter code
-                    $return['columns'][]                    = "`$key`";
-                    if ($value == 'now()') {
+                    $return['columns'][] = "`$key`";
+                    if ($value == 'now()' && !is_numeric($value)) {
                         $return['prepare_keys'][] = $value;
                     } else {
                         $return['prepare_keys'][]               = $random_key;
