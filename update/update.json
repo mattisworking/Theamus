@@ -40,7 +40,8 @@
             "Changes the user-sessions table to the way DB tables should be - https://github.com/Eyraahh/Theamus/issues/53",
             "Fixed the admin panel styling issues when a page was loaded. - https://github.com/Eyraahh/Theamus/issues/52",
             "Added a system logging class - https://github.com/Eyraahh/Theamus/issues/55",
-            "Rewrote the Default feature - https://github.com/Eyraahh/Theamus/issues/61"
+            "Rewrote the Default feature - https://github.com/Eyraahh/Theamus/issues/61",
+            "Rewrote the Accounts feature - https://github.com/Eyraahh/Theamus/issues/59"
         ]
     },
     "authors": [

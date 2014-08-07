@@ -1,5 +1,7 @@
 <?php
 
+define('ACCOUNTS_DEV_MODE', FALSE);
+
 $Theamus->Call->set_feature_config(array(
     // System Required
     'theamus_version' => 1.0,

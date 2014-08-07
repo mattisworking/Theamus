@@ -1,23 +1,17 @@
 <?php
 
 // Check the user's permission against creating accounts
-if ($tUser->has_permission('add_users') == false) {
-    die('You don\'t have permission to create new users.');
-}
+if (!$Theamus->User->has_permission('add_users')) die('You don\'t have permission to create new users.');
 
 ?>
 
-<!-- Accounts Tabs -->
 <div class='admin-tabs'><?php echo $Accounts->accounts_tabs(FILE); ?></div>
 
-<!-- Form Results -->
-<div id="create-account-result"></div>
+<div id='create-account-result'></div>
 
-<!-- New Account Form -->
-<form class="form-horizontal new-account-form">
-    <div class="form-header">Login Information</div>
+<form class='form-horizontal new-account-form'>
+    <h3 class='form-header'>Login Information</h3>
 
-    <!-- Username -->
     <div class='form-group'>
         <label class='control-label col-3' for='username'>Username</label>
         <div class='col-9'>
@@ -30,7 +24,6 @@ if ($tUser->has_permission('add_users') == false) {
 
     <hr class='form-split' />
 
-    <!-- Password -->
     <div class='form-group'>
         <label class='control-label col-3' for='password'>Password</label>
         <div class='col-9'>
@@ -38,7 +31,6 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
-    <!-- Password Repeat -->
     <div class='form-group'>
         <label class='control-label col-3' for='password-again'>Password Again</label>
         <div class='col-9'>
@@ -46,9 +38,8 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
-    <div class='form-header'>Personal Information</div>
+    <h3 class='form-header'>Personal Information</h3>
 
-    <!-- First Name -->
     <div class='form-group'>
         <label class='control-label col-3' for='firstname'>First Name</label>
         <div class='col-9'>
@@ -56,7 +47,6 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
-    <!-- Last Name -->
     <div class='form-group'>
         <label class='control-label col-3' for='lastname'>Last Name</label>
         <div class='col-9'>
@@ -64,7 +54,6 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
-    <!-- Gender -->
     <div class='form-group'>
         <label class='control-label col-3' for='gender'>Gender</label>
         <div class='col-9'>
@@ -75,37 +64,35 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
-    <!-- Birthday -->
     <div class='form-group'>
         <label class='control-label col-3'>Birthday</label>
         <div class='col-9'>
             <select class='form-control form-control-inline' name='bday_month'>
                 <?php
                 for ($i=1; $i<=12; $i++) {
-                    echo "<option value='".$i."'>".date('F', strtotime('2000-'.$i.'-1'))."</option>";
+                    echo '<option value="'.$i.'">'.date('F', strtotime('2000-'.$i.'-1')).'</option>';
                 }
                 ?>
             </select> /
             <select class='form-control form-control-inline' name='bday_day'>
                 <?php
                 for ($i=1; $i<=31; $i++) {
-                    echo "<option value='".$i."'>".$i."</option>";
+                    echo '<option value="'.$i.'">'.$i.'</option>';
                 }
                 ?>
             </select> /
             <select class='form-control form-control-inline' name='bday_year'>
                 <?php
                 for ($i=2014; $i>=1940; $i--) {
-                    echo "<option value='".$i."'>".$i."</option>";
+                    echo '<option value="'.$i.'">'.$i.'</option>';
                 }
                 ?>
             </select>
         </div>
     </div>
 
-    <div class='form-header'>Contact Information</div>
+    <h3 class='form-header'>Contact Information</h3>
 
-    <!-- Email -->
     <div class='form-group'>
         <label class='control-label col-3' for='email'>Email</label>
         <div class='col-9'>
@@ -113,7 +100,6 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
-    <!-- Phone Number -->
     <div class='form-group'>
         <label class='control-label col-3' for='phone'>Phone</label>
         <div class='col-9'>
@@ -121,21 +107,35 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
-    <div class='form-header'>Permissions and Access</div>
+    <h3 class='form-header'>Permissions and Access</h3>
 
-    <!-- Groups -->
     <div class='form-group'>
         <label class='control-label col-3' for='groups'>Groups</label>
         <div class='col-9'>
-            <select name="groups" multiple="multiple" size="7">
+            <select class='form-control' name='groups' multiple='multiple' size='7'>
                 <?php
-                $query = $tData->select_from_table($tData->prefix."groups", array("alias", "name"));
+                // Query the database for groups
+                $query = $Theamus->DB->select_from_table(
+                    $Theamus->DB->system_table('groups'),
+                    array('alias', 'name'));
 
-                $results = $tData->fetch_rows($query);
-                foreach ($results as $group) {
-                    $selected = $group['alias'] == "everyone" ? "selected" : "";
-                    if ($tUser->in_group($group['alias']) || ($tUser->is_admin() && $tUser->in_group("administrators"))) {
-                        echo "<option ".$selected." value=\"".$group['alias']."\">".$group['name']."</option>";
+                // Check the query for errors
+                if (!$query) {
+                    $Theamus->Log->query($Theamus->DB->get_last_error()); // Log the query error
+                    echo '<option>Failed to find groups.</option>';
+                } else {
+                    // Define the groups from the query
+                    $results = $Theamus->DB->fetch_rows($query);
+
+                    // Loop throug all of the groups
+                    foreach (isset($results[0]) ? $results : array($results) as $group) {
+                        // Define the selected groups
+                        $selected = $group['alias'] == 'everyone' ? 'selected' : '';
+
+                        // Check the user permissions to restrict from adding to groups they aren't in
+                        if ($Theamus->User->in_group($group['alias']) || ($Theamus->User->is_admin() && $Theamus->User->in_group('administrators'))) {
+                            echo '<option '.$selected.' value="'.$group['alias'].'">'.$group['name'].'</option>';
+                        }
                     }
                 }
                 ?>
@@ -143,9 +143,8 @@ if ($tUser->has_permission('add_users') == false) {
         </div>
     </div>
 
-    <?php if ($tUser->is_admin() && $tUser->in_group("administrators")): ?>
-    <!-- Administrator User -->
-    <div class="form-group">
+    <?php if ($Theamus->User->is_admin() && $Theamus->User->in_group('administrators')): ?>
+    <div class='form-group'>
         <label class='checkbox' for='is-admin'>
             <input type='checkbox' name='is_admin' id='is-admin'>
             Administrator
@@ -158,52 +157,12 @@ if ($tUser->has_permission('add_users') == false) {
 
     <hr class='form-split'>
 
-    <div class="form-button-group">
+    <div class='form-button-group'>
         <button type='submit' class='btn btn-success'>Create User</button>
     </div>
 </form>
 
 <script>
-    $(document).ready(function() {
-        admin_window_run_on_load('change_accounts_tab'); // Listen to the tab changer
-
-        // New user form submission
-        $('.new-account-form').submit(function(e) {
-            e.preventDefault();
-
-            // Scroll to the top of the window and show a loading notification
-            $('#theamus-accounts').scrollTop(0);
-            $('#create-account-result').html(alert_notify('spinner', 'Creating...'));
-
-            // Make the call to create a new user
-            theamus.ajax.api({
-                type:       'post',
-                url:        theamus.base_url+'accounts/admin/create-account/',
-                method:     ['Accounts', 'create_new_account'],
-                data:       { form: this },
-                success:    function(data) {
-                    // Show an error if the call returned isn't what it should be
-                    if (typeof(data) !== 'object') {
-                        $('#create-account-result').html(alert_notify('danger', 'Something happened when trying to create this user. It didn\'t work. :('));
-                        return;
-                    }
-
-                    // Show the error produced by the call
-                    if (typeof(data.response.data) !== 'boolean') {
-                        $('#create-account-result').html(data.response.data);
-                        return;
-                    }
-
-                    // Show the success message for a successful result
-                    $('#create-account-result').html(alert_notify('success', 'This user was created successfully.'));
-
-                    // Go back to the list of users
-                    setTimeout(function() {
-                        update_admin_window_content('theamus-accounts', 'accounts/admin/');
-                        change_admin_window_title('theamus-accounts', 'Theamus Accounts');
-                    }, 1500);
-                }
-            });
-        });
-    });
+    admin_window_run_on_load('change_accounts_tab');
+    admin_window_run_on_load('create_account');
 </script>

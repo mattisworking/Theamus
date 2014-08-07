@@ -1,38 +1,26 @@
-<?php
-
-// Define the user information
-$user = $tUser->user;
-
-?>
-
-<!-- User Form Result -->
 <div id='user-result'></div>
 
-<!-- User Edit Form -->
 <form class='form-horizontal col-10' id='user-form'>
     <h2 class='form-header' style='margin-top: 0px;'>Your Name</h2>
 
-    <!-- First Name -->
     <div class='form-group'>
         <label class='control-label col-3' for='first-name'>First Name</label>
         <div class='col-9'>
-            <input type='text' class='form-control' id='first-name' name='firstname' value='<?php echo $user['firstname']; ?>'>
+            <input type='text' class='form-control' id='first-name' name='firstname' value='<?php echo $Theamus->User->user['firstname']; ?>'>
             <p class='help-block'>Probably the first part of your name.</p>
         </div>
     </div>
 
-    <!-- Last Name -->
     <div class='form-group'>
         <label class='control-label col-3' for='last-name'>Last Name</label>
         <div class='col-9'>
-            <input type='text' class='form-control' id='last-name' name='lastname' value='<?php echo $user['lastname']; ?>'>
+            <input type='text' class='form-control' id='last-name' name='lastname' value='<?php echo $Theamus->User->user['lastname']; ?>'>
             <p class='help-block'>Most definitely the last part of your name.</p>
         </div>
     </div>
 
     <h2 class='form-header'>Other Information</h2>
 
-    <!-- Gender -->
     <div class='form-group'>
         <label class='control-label col-3' for='gender'>Gender</label>
         <div class='col-9'>
@@ -40,7 +28,7 @@ $user = $tUser->user;
                 <?php
                 $genders = array('m' => 'Male', 'f' => 'Female');
                 foreach ($genders as $key=>$val) {
-                    $selected = $user['gender'] == $key ? 'selected' : '';
+                    $selected = $Theamus->User->user['gender'] == $key ? 'selected' : '';
                     echo '<option value=\''.$key.'\' '.$selected.'>'.$val.'</option>';
                 }
                 ?>
@@ -48,11 +36,10 @@ $user = $tUser->user;
         </div>
     </div>
 
-    <!-- Birthday -->
     <div class='form-group'>
         <label class='control-label col-3'>Birthday</label>
         <div class='col-9'>
-            <?php $birthday = explode('-', $user['birthday']); ?>
+            <?php $birthday = explode('-', $Theamus->User->user['birthday']); ?>
             <select class='form-control form-control-inline' name='bday_m'>
                 <?php
                 $months = array(
@@ -105,37 +92,5 @@ $user = $tUser->user;
 </form>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        $('#user-form').submit(function(e) {
-            e.preventDefault();
-
-            scroll_top();
-            theamus.ajax.api({
-                type:       'post',
-                url:        theamus.base_url+'accounts/user/save-personal/',
-                method:     ['Accounts', 'save_current_personal'],
-                data:       { form: this },
-                success:    function(data) {
-                    if (typeof(data) !== 'object') {
-                        $('#user-result').html(alert_notify('danger', 'There was an issue sending this data to the server.'));
-                        return;
-                    }
-
-                    if (typeof(data) === 'string') {
-                        $('#user-result').html(data.response.data);
-                        return;
-                    }
-
-                    $('#user-result').html(alert_notify('success', 'This information has been saved.'));
-
-                    setTimeout(function() {
-                        $('#user-result').html('');
-                        $('#user-result').hide();
-                    }, 2500);
-                }
-            });
-
-            return false;
-        });
-    });
+    document.addEventListener('DOMContentLoaded', function() { edit_personal(); });
 </script>
