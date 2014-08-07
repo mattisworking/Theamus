@@ -371,7 +371,7 @@ class User {
         $user_browser   = $browser['name']." ".$browser['version'];
 
         // Get the user information, if possible
-        $this->get_user_sessions(true, $user_id);
+        $this->get_user_sessions(false, $user_id);
 
         // Check if the user already has a session on this computer, it's just expired
         foreach ($this->user_sessions as $user_session) {
