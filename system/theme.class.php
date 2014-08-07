@@ -178,7 +178,7 @@ class Theme {
         if ($location == "main") {
             return $this->show_page_navigation();
         } elseif ($location == "extra") {
-            if ($this->data['nav'] != "") return extra_page_navigation($this->data['nav'], $classes);
+            if ($this->data['nav'] != "") return $this->extra_page_navigation($this->data['nav'], $classes);
             else return;
         } else {
             return $this->show_page_navigation($location);
