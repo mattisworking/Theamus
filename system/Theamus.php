@@ -29,6 +29,7 @@ class Theamus {
      */
     public function __construct() {
         $this->load_system_classes(); // Load the system classes to be initialized
+        $this->load_external_sources(); // Load the external system classes
 
         $this->define_url(); // Define the base of the URL
 
@@ -80,6 +81,35 @@ class Theamus {
             // Throw an exception to the index handler showing the issue on the page.
             } else {
                 throw new Exception('Failed to this load page.<br>The <strong>'.$file.'</strong> system file is missing.');
+            }
+        }
+    }
+
+
+    /**
+     * Loads files that were written by someone else in the world but is used in Theamus
+     *
+     * @throws Exception
+     */
+    protected function load_external_sources() {
+        // Define all of the files that were created by someone else and is required
+        // for Theamus to work properly
+        $external_files = array(
+            'phpmailer/class.phpmailer.php'
+        );
+
+        // Loop through all of the external files
+        foreach ($external_files as $file) {
+            // Define the COMPLETE PATH to the file
+            $file_path = $this->file_path(ROOT.'/system/external/'.$file);
+
+            // Check for the file's existence and require it if it does
+            if (file_exists($file_path)) {
+                require_once $file_path;
+
+            // Throw an exception to the index handler showing the issue on the page.
+            } else {
+                throw new Exception('Failed to this load page.<br>The <strong>'.$file.'</strong> external system file is missing.');
             }
         }
     }
