@@ -1,0 +1,12 @@
+#pages-list{margin:10px 0;width:600px}
+#pages-list > ul,#pages-list > ul li ul{list-style:none;margin:0;padding:0}
+#pages-list > ul li{display:block;padding:10px;transition:background-color .3s ease-in-out;-webkit-transition:background-color .3s ease-in-out;-moz-transition:background-color .3s ease-in-out;-ms-transition:background-color .3s ease-in-out}
+#pages-list > ul li:hover{background-color:#ddd}
+#pages-list > ul > li:nth-child(even){background-color:#eee}
+#pages-list > ul li .page-title{display:inline-block;margin:0 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:200px}
+#pages-list > ul li .page-view{display:inline-block;margin:0 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:150px}
+#pages-list > ul li ul{float:right;margin-top:-9px}
+#pages-list > ul li ul li{display:inline-block}
+#pages-list > ul li ul li a{color:#222}
+#link-area .link_row:not(:first-child){border-top:1px solid #EEE;padding-top:10px;margin-top:25px}
+#link-area .admin-formrow{margin-top:10px}

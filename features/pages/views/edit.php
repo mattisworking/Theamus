@@ -1,44 +1,22 @@
-<?php
-$get = filter_input_array(INPUT_GET); // Clean the URL parameters
-
-$error = false; // No errors to start out with
-// Check for the existance of a page ID
-if (isset($get['id'])) {
-    $id = $get['id'];
-
-    // Check the ID has a value
-    if ($id != '') {
-        // Query the database for the page
-        $query = $tData->select_from_table($tData->prefix.'pages', array(), array(
-            'operator'  => '',
-            'conditions'=> array('id' => $id)
-        ));
-
-        // Check for a valid query
-        if ($query != false) {
-            $page = $tData->fetch_rows($query); // Define the database informations
-        } else {
-            $error = 'There was an error querying the database for the page.';
-        }
-    } else {
-        $error = 'Invalid ID value.';
-    }
-} else {
-    $error = 'No page ID was found.';
-}
-?>
-
-<!-- Pages Tabs -->
 <div class='admin-tabs'><?php echo $Pages->pages_tabs(FILE); ?></div>
 
-<!-- Create Page Result -->
-<div id='page-result'></div>
+<?php
 
-<?php if ($error != false) die(alert_notify('danger', $error)); ?>
+// Define the page ID
+$id = filter_input(INPUT_GET, 'id');
+
+// Try to get the page information
+try { $page = $Pages->get_page($id); }
+catch (Exception $ex) { die($Theamus->notify('danger', $ex->getMessage())); }
+
+?>
+
+<div id='page-result' style='margin-top: 15px;'></div>
+
 
 <!-- Edit Page Form -->
-<form class='form' id='page-form' onsubmit='return save_page();' style='width: 800px;'>
-    <input type='hidden' name='page_id' value='<?=$id?>' />
+<form class='form' id='save-page-form' style='width: 800px;'>
+    <input type='hidden' name='id' value='<?=$id?>' />
 
     <!-- Title -->
     <h2 class='form-header'>Page Title</h2>
@@ -49,7 +27,13 @@ if (isset($get['id'])) {
     <!-- Content -->
     <h2 class='form-header'>Page Content</h2>
     <div class='form-group'>
-        <div class='col-12'><?php new tEditor(array('id'=>'content','text'=>$page['content'])); ?></div>
+        <div class='col-12'>
+            <textarea class='form-control monospaced' id='content' name='content'><?php echo $page['raw_content']; ?></textarea>
+            <p class='form-control-feedback'>
+                Theamus uses <a href='http://parsedown.org/' target='_blank'>Parsedown</a> (and ParsedownExtra) which follows the same syntax as Markdown.<br>
+                You can learn about the syntax <a href='http://daringfireball.net/projects/markdown/syntax' target='_blank'>here</a>.
+            </p>
+        </div>
     </div>
 
     <!-- Options -->
@@ -66,20 +50,7 @@ if (isset($get['id'])) {
             <div class='form-group'>
                 <label class='control-label' for='groups'>Permissable Groups</label>
                 <select class='form-control' name='groups' id='groups' size='10' multiple='multiple'>
-                <?php
-                    // Define the page groups
-                    $pageGroups = explode(',', $page['groups']);
-
-                    // Query the database for groups
-                    $query = $tData->select_from_table($tData->prefix.'groups', array('alias', 'name'));
-
-                    // Loop through all groups, showing as options
-                    $results = $tData->fetch_rows($query);
-                    foreach ($results as $group) {
-                        $selected = in_array($group['alias'], $pageGroups) ? 'selected' : '';
-                        echo '<option '.$selected.' value=\''.$group['alias'].'\'>'.$group['name'].'</option>';
-                    }
-                ?>
+                    <?php echo $Pages->get_group_options(explode(',', $page['groups'])); ?>
                 </select>
             </div>
         </div>
@@ -91,27 +62,32 @@ if (isset($get['id'])) {
             <div class='form-group'>
                 <div id='link-area'>
                     <?php
-                    $themeLinks = explode(',', $page['navigation']);
+                    $i = 0; // Initialize the element counter
 
-                    $i = 1;
-                    foreach ($themeLinks as $linkInfo) {
-                        $link = explode('::', $linkInfo);
-                        if ($link[0] == '') $link = array('', '');
-                        ?>
+                    // Loop through all of the navigation items
+                    foreach (explode(',', $page['navigation']) as $link_data) {
+                        $i++; // Add to the counter
+
+                        $link = explode('::', $link_data); // Define the link information
+
+                        if ($link[0] == '') continue; // Press on if it's blank!
+                    ?>
+
                         <div class='link_row' id='link_row<?=$i?>'>
                             <div class='form-group'>
-                                <input type='text' class='form-control' autocomplete='off' placeholder='Link Text' id='linktext-<?=$i?>' value='<?=$link[0] ?>' />
-                                <input type='text' class='form-control' autocomplete='off' placeholder='Link Path' id='linkpath-<?=$i?>' value='<?=$link[1] ?>' />
+                                <input type='text' class='form-control' autocomplete='off' placeholder='Link Text' id='linktext-<?php echo $i; ?>' value='<?php echo $link[0]; ?>' />
+                                <input type='text' class='form-control' autocomplete='off' placeholder='Link Path' id='linkpath-<?php echo $i; ?>' value='<?php echo $link[1]; ?>' />
                             </div>
 
                             <?php if ($i > 1): ?>
                             <div class='form-control-static'>
-                                <a href='#' onclick="return remove_link('<?php echo $i; ?>');">Remove</a>
+                                <a href='#' data-link='<?php echo $i; ?>' name='remove-link'>Remove</a>
                             </div>
                             <?php endif; ?>
+
                         </div>
-                        <?php
-                        $i++;
+
+                    <?php
                     }
                     ?>
                 </div>
@@ -120,7 +96,7 @@ if (isset($get['id'])) {
             <hr class='form-split'>
 
             <div class='form-group'>
-                <a href='#' onclick='return add_new_link();'>Add Another</a>
+                <a href='#' id='add-new-link'>Add Another</a>
             </div>
         </div>
     </div>
@@ -134,4 +110,7 @@ if (isset($get['id'])) {
 
 <script>
     admin_window_run_on_load('change_pages_tab');
+    admin_window_run_on_load('edit_page');
+    admin_window_run_on_load('remove_link');
+    admin_window_run_on_load('load_layout_navigation');
 </script>

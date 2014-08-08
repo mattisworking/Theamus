@@ -41,7 +41,8 @@
             "Fixed the admin panel styling issues when a page was loaded. - https://github.com/Eyraahh/Theamus/issues/52",
             "Added a system logging class - https://github.com/Eyraahh/Theamus/issues/55",
             "Rewrote the Default feature - https://github.com/Eyraahh/Theamus/issues/61",
-            "Rewrote the Accounts feature - https://github.com/Eyraahh/Theamus/issues/59"
+            "Rewrote the Accounts feature - https://github.com/Eyraahh/Theamus/issues/59",
+            "Rewrote the Pages feature - https://github.com/Eyraahh/Theamus/issues/66"
         ]
     },
     "authors": [
