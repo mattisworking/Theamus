@@ -1,54 +1,31 @@
 <?php
 
-// Define default js and css file as empty array
-$feature['js']['file'] 	= array();
-$feature['css']['file']	= array();
+// Administrators only can come to this feature
+if (!$Theamus->User->is_admin()) throw new Exception('Only administrators can access the Theamus Groups feature.');
 
-// Files to deny basic users
-$admin_files = array(
-    "create.php",
-    "remove.php",
-    "save.php",
-    "edit.php",
-    "index.php",
-    "groups-list.php",
-    "remove-group.php"
-    );
-// Deny bad users
-$tUser->deny_non_admins($file, $admin_files);
-
+// Initialize the groups class
 $feature['class']['file'] = 'groups.class.php';
 $feature['class']['init'] = 'Groups';
 
-define('FILE', $file);
+define('FILE', $file); // Define the file as a global variable
 
-// File specification
+$feature['js']['file'][] = GROUPS_DEV_MODE ? 'dev/groups.admin.js' : 'groups.admin.min.js';
+$feature['css']['file'][] = GROUPS_DEV_MODE ? 'dev/groups.admin.css' : 'groups.admin.min.css';
+
+// Load the file related information
 switch ($file) {
-	case "index.php":
-		$feature['js']['file'][] = "groups-index.js";
-        $feature['css']['file'][] = "main.css";
-		break;
-
-	case "edit.php":
-        $tUser->check_permissions("edit_groups");
-		$feature['js']['file'][] = "groups-form.js";
-		break;
-
-    case "save.php":
-        $tUser->check_permissions("edit_groups");
+    case "edit.php":
+        // Throw an exception for the people who want to edit groups but can't
+        if (!$Theamus->User->has_permission('edit_groups')) throw new Exception('You do not have permission to Edit Theamus Groups');
         break;
 
-	case "create.php":
-        $tUser->check_permissions("create_groups");
-		$feature['js']['file'][] = "groups-form.js";
-		break;
+    case "create.php":
+        // Throw an exception for the people who want to create new groups but can't
+        if (!$Theamus->User->has_permission('create_groups')) throw new Exception('You do not have permission to Create New Theamus Groups');
+        break;
 
     case "remove.php":
-        $tUser->check_permissions("remove_groups");
+        // Throw an exception for the people who want to delete groups but can't
+        if (!$Theamus->User->has_permission('remove_groups')) throw new Exception('You do not have permission to Delete Theamus Groups');
         break;
-
-	default:
-		break;
 }
-
-?>

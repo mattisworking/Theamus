@@ -1,14 +1,14 @@
-#groups_list {
+#groups-list {
     margin: 10px 0;
     width: 600px;
 }
-#groups_list > ul,
-#groups_list > ul li ul {
+#groups-list > ul,
+#groups-list > ul li ul {
     list-style: none;
     margin: 0;
     padding: 0;
 }
-#groups_list > ul li {
+#groups-list > ul li {
     display: block;
     padding: 10px;
     transition: background-color .3s ease-in-out;
@@ -16,35 +16,27 @@
     -moz-transition: background-color .3s ease-in-out;
     -ms-transition: background-color .3s ease-in-out;
 }
-#groups_list > ul li:hover {
+#groups-list > ul li:hover {
     background-color: #ddd;
 }
-#groups_list > ul > li:nth-child(even) {
+#groups-list > ul > li:nth-child(even) {
     background-color: #eee;
 }
-#groups_list > ul li .group-name {
+#groups-list > ul li .group-name {
     display: inline-block;
     margin: 0 10px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 200px;
+    width: 400px;
 }
-#groups_list > ul li .group-alias {
-    display: inline-block;
-    margin: 0 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 150px;
-}
-#groups_list > ul li ul {
+#groups-list > ul li ul {
     float: right;
     margin-top: -9px;
 }
-#groups_list > ul li ul li {
+#groups-list > ul li ul li {
     display: inline-block;
 }
-#groups_list > ul li ul li a {
+#groups-list > ul li ul li a {
     color: #222;
 }

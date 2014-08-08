@@ -1,16 +1,8 @@
-<!-- Groups Tabs -->
 <div class='admin-tabs'><?php echo $Groups->groups_tabs(FILE); ?></div>
 
-<!-- Search Form -->
-<form id='form' style='margin-top: 15px;'>
-    <div class='form-group'>
-        <input type='text' class='form-control' id='search' name='search' autocomplete='off' placeholder='Start typing to search' onkeyup='return search_groups();'>
-    </div>
-</form>
-
-<!-- List of Groups -->
-<div id='groups_list'></div>
+<div id='groups-list'></div>
 
 <script>
     admin_window_run_on_load('change_groups_tab');
+    admin_window_run_on_load('load_groups_list');
 </script>
