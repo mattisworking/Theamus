@@ -554,7 +554,7 @@ var editor = new function() {
             el.appendChild(buttons_el);
             this.window_wrapper.appendChild(el);
 
-            theamus.ajax.run({
+            Theamus.Ajax.run({
                 url:    argv.path,
                 result: "editor_wc-"+argv.id,
                 type:   "system",
@@ -852,7 +852,7 @@ var editor = new function() {
                     if (data === "lib") url = "editor/windows/add-image/";
 
                     $("#editor_wc-add-image").html(working());
-                    theamus.ajax.run({
+                    Theamus.Ajax.run({
                         url:    url,
                         result: "editor_wc-add-image",
                         type:   "system",
@@ -910,7 +910,7 @@ var editor = new function() {
     };
 
     this.images_next_page = function(page) {
-        theamus.ajax.run({
+        Theamus.Ajax.run({
             url: "editor/windows/add-image&page=" + page,
             result: "editor_window-content-add-image",
             type: "system",

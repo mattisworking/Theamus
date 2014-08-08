@@ -45,6 +45,7 @@ class Theamus {
         $this->Theme        = new Theme($this);         // Theme handling class
         $this->Files        = new Files($this);         // File manipulation/control class
         $this->Pagination   = new Pagination($this);    // Pagination made ez class
+        $this->Editor       = new Editor($this);        // Fancy WYSIWYG editor
 
         return;
     }
@@ -66,7 +67,8 @@ class Theamus {
             'user.class.php',
             'theme.class.php',
             'files.class.php',
-            'pagination.class.php'
+            'pagination.class.php',
+            'editor/editor.class.php'
         );
 
         // Loop through each of the system files
