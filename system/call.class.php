@@ -594,8 +594,8 @@ class Call {
     private function handle_issues() {
         $message = false;
 
-        if (empty($this->feature['files'])
-            && $this->feature['config'] == false) {
+        if (!isset($this->feature['config']) || empty($this->feature['files'])
+            || $this->feature['config'] == false) {
             $message = 100;
         }
 
@@ -834,7 +834,7 @@ class Call {
      * @return string|boolean
      */
     private function get_custom_folder($type) {
-        $config = $this->feature['config'];
+        $config = isset($this->feature['config']) ? $this->feature['config'] : array();
 
         if (isset($config['custom_folders']) && is_array($config['custom_folders'])) {
             if (array_key_exists($type, $config['custom_folders'])) {
