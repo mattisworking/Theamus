@@ -20,6 +20,7 @@ class Theamus {
     public $Theme;
     public $Files;
     public $Pagination;
+    public $Parsedown;
 
 
     /**
@@ -45,7 +46,8 @@ class Theamus {
         $this->Theme        = new Theme($this);         // Theme handling class
         $this->Files        = new Files($this);         // File manipulation/control class
         $this->Pagination   = new Pagination($this);    // Pagination made ez class
-        $this->Editor       = new Editor($this);        // Fancy WYSIWYG editor
+
+        $this->Parsedown    = new ParsedownExtra();     // Parsedown text class
 
         return;
     }
@@ -68,7 +70,6 @@ class Theamus {
             'theme.class.php',
             'files.class.php',
             'pagination.class.php',
-            'editor/editor.class.php'
         );
 
         // Loop through each of the system files
@@ -97,7 +98,9 @@ class Theamus {
         // Define all of the files that were created by someone else and is required
         // for Theamus to work properly
         $external_files = array(
-            'phpmailer/class.phpmailer.php'
+            'phpmailer/class.phpmailer.php',
+            'parsedown/Parsedown.php',
+            'parsedown/ParsedownExtra.php'
         );
 
         // Loop through all of the external files
