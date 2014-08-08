@@ -155,7 +155,7 @@ class HomePage {
         $page = $this->Theamus->DB->fetch_rows($query);
 
         // Define the page content for the class
-        $this->page_content = $page['content'];
+        $this->page_content = $page['parsed_content'];
 
         // Check for any navigation the home page might have
         if ($page['navigation'] != '') {
