@@ -746,6 +746,7 @@ textarea {
 	border: 1px solid #CCC;
 	outline: none;
 	min-height: 100px;
+    max-width: 100%;
 }
 textarea:hover {
 	border: 1px solid #AAA;
@@ -753,6 +754,9 @@ textarea:hover {
 textarea:focus {
 	border: 1px solid #666;
 	box-shadow: 0 0 10px #AAA;
+}
+textarea.monospaced {
+    font-family: 'Lucidia Console', monospace;
 }
 
 /* File */
