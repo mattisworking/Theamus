@@ -903,7 +903,6 @@ class Call {
             "<link rel='stylesheet' href='system/styles/css/theme.css' />",
             "<link rel='stylesheet' href='system/styles/css/ionicons/ionicons.min.css' />",
             "<link rel='stylesheet' href='system/external/prettify/prettify.css' />",
-            "<link rel='stylesheet' href='system/editor/css/editor.css' />"
         );
         return implode("", $ret);
     }
