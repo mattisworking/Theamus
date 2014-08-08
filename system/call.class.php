@@ -440,6 +440,12 @@ class Call {
         // Define the page data from the database
         $page = $this->Theamus->DB->fetch_rows($query);
 
+        // Check if a user has permission to view the page or not
+        foreach (explode(',', $page['groups']) as $group) {
+            if (!$this->Theamus->User->user) $this->Theamus->User->send_to_login();
+            if (!$this->Theamus->User->in_group($group)) die($this->error_page());
+        }
+
         // Define the theme and theme file desired for the page
         $theme = explode(":", $page['theme']);
         $file = $theme[count($theme)-1];
