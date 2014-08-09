@@ -10,7 +10,7 @@ $Theamus->Call->set_feature_config(array(
     // Feature Required
     'folder_name'     => 'groups',
     'feature_name'    => 'Theamus Groups',
-    'feature_version' => 1.1,
+    'feature_version' => 1.0,
     'custom_folders'  => array(
         'php'        => 'php',
         'javascript' => 'js',
@@ -20,7 +20,6 @@ $Theamus->Call->set_feature_config(array(
 
     // Feature Optional
     'load_files' => array(
-        'function'  => array(),
         'api'       => array('php/groups.class.php'),
     ),
     'release_notes' => array(
