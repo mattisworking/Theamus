@@ -1,46 +1,31 @@
 <?php
 
-// Define default files
-$feature['js']['file']	= array();
-$feature['css']['file']	= array();
+// Administrators only can come to this feature
+if (!$Theamus->User->is_admin()) throw new Exception('Only administrators can access the Theamus Navigation feature.');
 
-// Files to deny basic users
-$admin_files = array(
-    // Script files
-    "create.php",
-    "remove.php",
-    "save.php",
+// Initialize the navigation class
+$feature['class']['file'] = 'navigation.class.php';
+$feature['class']['init'] = 'Navigation';
 
-    // View files
-    "edit.php",
-    "form.php",
-    "index.php",
-    "navigation-list.php",
-    "remove-link.php"
-    );
-// Deny bad users
-$tUser->deny_non_admins($file, $admin_files);
+define('FILE', $file); // Define the file as a global variable
 
-$feature['class']['file'] = "navigation.class.php";
-$feature['class']['init'] = "Navigation";
-
-define('FILE', $file);
+$feature['js']['file'][] = NAV_DEV_MODE ? 'dev/navigation.admin.js' : 'navigation.admin.min.js';
+$feature['css']['file'][] = NAV_DEV_MODE ? 'dev/navigation.admin.css' : 'navigation.admin.min.css';
 
 // Define specific file information
 switch ($file) {
-	case "index.php":
-		$feature['js']['file'][] = "navigation-index.js";
-        $feature['css']['file'][] = "main.css";
-		break;
+    case 'create.php':
+        // Throw an exception for the people who want to create links but can't
+        if (!$Theamus->User->has_permission('create_links')) throw new Exception('You do not have permission to Create Theamus Links');
+        break;
 
-	case "create.php":
-		$feature['js']['file'][] = "navigation-form.js";
-		break;
-
-	case "edit.php":
-		$feature['js']['file'][] = "navigation-form.js";
-		break;
-
-	default:
-		break;
+    case 'edit.php':
+        // Throw an exception for the people who want to create links but can't
+        if (!$Theamus->User->has_permission('edit_links')) throw new Exception('You do not have permission to Edit Theamus Links');
+        break;
+    
+    case 'remove.php':
+        // Throw an exception for the people who want to create links but can't
+        if (!$Theamus->User->has_permission('remove_links')) throw new Exception('You do not have permission to Remove Theamus Links');
+        break;
 }

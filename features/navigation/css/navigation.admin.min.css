@@ -1,0 +1,20 @@
+#navigation-list{margin:10px 0;width:600px}
+#navigation-list > ul,#navigation-list > ul li ul{list-style:none;margin:0;padding:0}
+#navigation-list > ul li{display:block;padding:10px;transition:background-color .3s ease-in-out;-webkit-transition:background-color .3s ease-in-out;-moz-transition:background-color .3s ease-in-out;-ms-transition:background-color .3s ease-in-out}
+#navigation-list > ul li:hover{background-color:#ddd}
+#navigation-list > ul > li:nth-child(even){background-color:#eee}
+#navigation-list > ul li .link-text{display:inline-block;margin:0 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:200px}
+#navigation-list > ul li .link-views{display:inline-block;margin:0 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:150px}
+#navigation-list > ul li ul{float:right;margin-top:-9px}
+#navigation-list > ul li ul li{display:inline-block}
+#navigation-list > ul li ul li a{color:#222}
+.navigation_windows{left:0;position:absolute;right:0;top:150px}
+.navigation-window{background-color:#FFF;border:1px solid #CCC;box-shadow:0 0 10px #CCC;display:none;margin:0 auto;max-height:400px;overflow-y:auto;width:450px;z-index:2000000}
+.navigation-window > .window-header{border-bottom:1px solid #EEE;font-family:Raleway,sans-serif;font-size:12pt;margin:0 0 10px;padding:10px 0;text-align:center}
+.navigation-window > .window-content{padding:5px 20px 20px}
+.navigation-window > .window-content > .window-options{border-top:1px solid #CCC;margin:20px 0 0;padding:10px 10px 0;text-align:right}
+.path{width:350px}
+@media (max-width: 900px) {
+.affiliated-groups{display:none!important}
+.path{width:200px}
+}

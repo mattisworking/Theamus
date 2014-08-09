@@ -1,22 +1,21 @@
-<!-- Navigation Tabs -->
 <div class='admin-tabs'><?php echo $Navigation->navigation_tabs(FILE); ?></div>
 
-<!-- Navigation form result -->
 <div id='navigation-result' style='margin-top: 15px;'></div>
 
-<!-- New navigation item form -->
-<form class='form' style='width: 600px;' id='link-form'>
+<form class='form' style='width: 600px;' id='create-link-form'>
     <input type='hidden' name='page-type' value='create'>
     <h2 class='form-header'>Link Text</h2>
     <div class='form-group'>
-        <input type='text' class='form-control' name='text' id='text' autocomplete='off'>
+        <div class='col-12'>
+            <input type='text' class='form-control' name='text' id='text' autocomplete='off' placeholder='"Blog"'>
+        </div>
     </div>
 
     <h2 class='form-header'>Link Path</h2>
     <div class='col-12'>
         <div class='col-4'>
             <input type='hidden' name='path-type' id='path-type' value='path-url' />
-            <ul style='margin: 0; padding: 0;'>
+            <ul style='padding: 0; list-style: none;'>
                 <li><a href='#' name='path' id='path-url'>Website URL</a></li>
                 <li><a href='#' name='path' id='path-page'>Theamus Page</a></li>
                 <li><a href='#' name='path' id='path-feature'>Theamus Feature</a></li>
@@ -26,19 +25,16 @@
         </div>
 
         <div class='col-8'>
-            <!-- Custom URL -->
             <div id='path-url-wrapper' class='form-group'>
                 <label class='control-label' for='url-path'>URL Path</label>
-                <input type='text' class='form-control' name='url' id='url-path' autocomplete='off'>
+                <input type='text' class='form-control' name='url-path' id='url-path' autocomplete='off'>
             </div>
 
-            <!-- Theamus Page -->
             <div id='path-page-wrapper' class='form-group' style='display: none;'>
                 <label class='control-label' for='page-select'>Theamus Page</label>
                 <select class='form-control' name='page' id='page-select'></select>
             </div>
 
-            <!-- Theamus Feature -->
             <div id='path-feature-wrapper' class='form-group' style='display: none;'>
                 <label class='control-label' for='feature-select'>Theamus Feature</label>
                 <select class='form-control' name='feature' id='feature-select'></select>
@@ -49,13 +45,11 @@
                 <select class='form-control' name='file' id='feature-file-select'></select>
             </div>
 
-            <!-- Javascript -->
             <div id='path-js-wrapper' class='form-group' style='display: none;'>
                 <label class='control-label' for='js'>Javascript</label>
                 <input type='text' class='form-control' name='js' id='js' autocomplete='off'>
             </div>
 
-            <!-- Nolink -->
             <div id='path-null-wrapper' class='form-group' style='display: none;'>
                 <input type='hidden' name='null' value='null' />
                 <p class='form-control-help'>Creating a link that is 'Text Only' will do exactly what you think it will.</p>
@@ -68,7 +62,7 @@
         <label class='control-label col-3' for='position'>Theme Position</label>
         <div class='col-9'>
             <select class='form-control' name='position' id='position'>
-                <?=$Navigation->get_positions_select($post['position'])?>
+                <?php echo $Navigation->get_positions_select(); ?>
             </select>
         </div>
     </div>
@@ -77,7 +71,7 @@
         <label class='control-label col-3' for='child-of'>Child of</label>
         <div class='col-9'>
             <select class='form-control' name='child_of' id='child-of'>
-                <?=$Navigation->get_children_select($post['child_of'])?>
+                <?php echo $Navigation->get_children_select(); ?>
             </select>
         </div>
     </div>
@@ -112,7 +106,9 @@
 
 <script>
     admin_window_run_on_load('change_navigation_tab');
+    admin_window_run_on_load('create_link');
+    admin_window_run_on_load('load_pages_select');
+    admin_window_run_on_load('load_features_select');
+    admin_window_run_on_load('load_feature_files_select');
     admin_window_run_on_load('load_groups_select');
-    admin_window_run_on_load('add_listeners');
-    admin_window_run_on_load('load_selects');
 </script>
