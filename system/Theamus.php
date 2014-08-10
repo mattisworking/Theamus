@@ -235,7 +235,7 @@ class Theamus {
        $url = $protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
        // If the previous URL isn't the one the user is at currently (avoid loops)
-       if ($url != base_url) {
+       if ($url != $this->base_url) {
            // Relocate!
            substr($url, -1) != '/' ? header('Location: '.$url.'/') : header('Location: ../');
        }
