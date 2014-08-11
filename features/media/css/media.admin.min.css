@@ -1,0 +1,25 @@
+#media-list{margin-top:20px;position:relative;width:600px}
+#media-list .media-item{display:inline-block;float:none;height:150px;margin:10px;overflow:hidden;padding:5px;position:relative;width:30%}
+#media-list .media-item img{border:1px solid #ccc;border-radius:5px;box-shadow:2px 2px 5px #aaa;display:block;margin:0 auto;max-width:94%;position:absolute;top:50%;-webkit-transform:translateY(-50%)}
+#media-list .media-item .media-list-options{font-size:4em;left:50%;opacity:0;position:absolute;text-shadow:1px 1px #222;top:50%;transition:opacity .3s,visibility 0 ease-in-out .3s;-webkit-transform:translateY(-50%) translateX(-50%);visibility:hidden;z-index:50}
+#media-list .media-item:hover .media-list-options{opacity:1;transition:opacity .3s,visibility 0 ease-in-out 0;visibility:visible}
+#media-list .media-item .media-list-options a{color:#f04e4a}
+.admin-pagination:before,.admin-pagination:after{content:'';display:table}
+.admin-pagination:before{clear:both}
+.add-media{margin-top:15px;width:600px}
+.media_dnd-area{border:3px dashed #AAA;border-radius:10px;color:#888;font-family:Raleway,sans-serif;font-size:20px;padding:20px 0;text-align:center}
+.media_dnd-alt{padding:10px 0 0 20px}
+.media_add-list{display:none}
+.dnd_area-hover{background-color:#EEE;border:3px solid #888;box-shadow:inset 0 0 10px #555;color:#444;opacity:.5}
+.media_add-fileitem{border:1px solid #EEE;border-radius:2px;padding:10px;position:relative}
+.media_add-fileitem:not(:last-child){margin-bottom:10px}
+.media_remove-fileitem{color:#F44!important;font-size:8pt;padding:0 20px 0 10px}
+.media_remove-fileitem:hover{color:#A44!important;font-weight:700;text-decoration:none!important}
+#tempfile_input{visibility:hidden;position:absolute}
+.media_add-filename{color:#666;text-transform:lowercase}
+.media_add-filesize{color:#CCC;font-style:italic;margin-left:20px;text-transform:lowercase}
+.media_result{float:right;margin-right:40px}
+.media_upload-prog{background-color:#EEF;bottom:0;left:0;overflow:hidden;position:absolute;top:0;width:0}
+.media_upload-perc{color:#666;padding:10px;float:right}
+.media_add-fileinfo{position:relative}
+.media_error-title{background-color:#777;border-radius:50%;color:#CCC;cursor:default;font-weight:700;margin-left:10px;padding:3px 8px}

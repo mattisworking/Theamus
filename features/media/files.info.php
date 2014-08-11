@@ -1,48 +1,31 @@
 <?php
 
-// Define a default for the javascript and css files
-$feature['js']['file']	= array();
-$feature['css']['file']	= array();
+// Deny anyone who isn't an administrator
+if (!$Theamus->User->is_admin()) !$ajax ? $Theamus->back_up() : die();
 
+// Load the pages class
 $feature['class']['file'] = 'media.class.php';
 $feature['class']['init'] = 'Media';
 
-define('FILE', $file);
+define('FILE', $file); // Define the current file
 
-// Files to deny basic users
-$admin_files = array(
-    // Script files
-    'upload.php',
-    'remove-media.php',
-
-    // View files
-    'index.php',
-    'media-list.php',
-    'add-media.php'
-    );
-// Deny bad users
-$tUser->deny_non_admins($file, $admin_files);
+// Add the JS and CSS
+$feature['css']['file'][] = MEDIA_DEV_MODE ? 'dev/media.admin.css' : 'media.admin.min.css';
+$feature['js']['file'][] = MEDIA_DEV_MODE ? 'dev/media.admin.js' : 'media.admin.min.js';
 
 switch ($file) {
     case 'index.php':
-        $feature['js']['file'][]  = 'media.js';
-        $feature['css']['file'][] = 'media.css';
         break;
 
     case 'add-media.php':
-        $feature['js']['file'][] = 'media.js';
-        $feature['js']['file'][] = 'dnd.js';
-        $feature['css']['file'][] = 'media.css';
+        $feature['js']['file'][] = MEDIA_DEV_MODE ? 'dev/dnd.js' : 'dnd.min.js';
         break;
 
     case 'upload.php':
-        $tUser->check_permissions('add_media');
+        if (!$Theamus->User->has_permission('add_media')) throw new Exception('You do not have permission to Add Theamus Media.');
         break;
 
     case 'remove-media.php':
-        $tUser->check_permissions('remove_media');
-        break;
-
-    default:
+        if (!$Theamus->User->has_permission('remove_media')) throw new Exception('You do not have permission to Delete Theamus Media.');
         break;
 }

@@ -60,33 +60,36 @@ function show_files() {
     $("#media_add-list").html(html);
 }
 
-function upload_media(num) {
-    if (num['i'] < files.length && files.length > 0) {
-        $(".window-content").animate({
-            scrollTop: parseInt($("#mfi-"+num['i'])[0].offsetTop) - 58
+function upload_media(media_item) {
+    if (media_item < files.length && files.length > 0) {
+        $("#theamus-media").animate({
+            scrollTop: parseInt($("#mfi-"+media_item)[0].offsetTop) - 58
         }, "slow");
-        setTimeout(function(e) {
-            theamus.ajax.run({
-                url:         "media/upload/",
-                result:      "media_result-"+num['i'],
-                file_object: files[num['i']],
-                after: {
-                    do_function: "upload_media",
-                    arguments:   {i: (num['i'] + 1)}
-                },
-                upload: {
-                    growbar: "uprog-"+num['i'],
-                    percentage: "uper-"+num['i'],
-                    hide: false,
-                    stop: 5.98
+
+        Theamus.Ajax.api({
+            type: 'post',
+            url: Theamus.base_url+'/media/',
+            method: ['Media', 'upload_media'],
+            upload: {
+                files: [files[media_item]],
+                during: function(data) {
+                    $('#uprog-'+media_item).css('width', (data.percent_completed * 6));
+                    $('#uper-'+media_item).html(data.percentage);
                 }
-            });
-        }, 1000);
+            },
+            success: function(data) {
+                if (data.error.status === 1) {
+                    $('#media_result-'+media_item).html(data.error.message);
+                } else {
+                    var successes = ['Success!', 'Completed!', 'Uploaded!', 'It worked!'];
+                    $('#media_result-'+media_item).html(successes[Math.floor(Math.random() * successes.length)]);
+                    setTimeout(function() { upload_media(media_item + 1); }, 500);
+                }
+            }
+        });
     } else {
-        setTimeout(function() {
-            change_admin_window_title('theamus-media', 'Theamus Media');
-            update_admin_window_content('theamus-media', 'media/index/');
-        }, 2000);
+        update_admin_window_content('theamus-media', 'media/');
+        change_admin_window_title('theamus-media', 'Theamus Media');
     }
 }
 
@@ -132,7 +135,7 @@ function dnd_listen() {
 
     $("#upload_media").click(function(e) {
         e.preventDefault();
-        upload_media({i:0});
+        upload_media(0);
         $(".media_remove-fileitem").hide();
         $(".media_dnd-alt").hide();
         $("#upload_media").prop("disabled", true);
