@@ -487,7 +487,7 @@ var ajax = new function() {
         // Run the AJAX to call the API
         if (this.api_fail === false) {
             $.ajax({
-                async: false,
+                async: this.has_file ? true : false,
                 type: api_vars.type,
                 url: api_vars.url,
                 data: api_vars.form_data,
