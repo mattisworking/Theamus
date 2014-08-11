@@ -458,12 +458,6 @@ var ajax = new function() {
         api_vars.data = this.make_api_data(api_vars);
         api_vars.form_data = api_vars.type === "post" ? this.make_form_data(api_vars.data) : api_vars.data;
 
-        // Add file objects
-        if (args.upload.files !== undefined) {
-            api_vars.form_data = this.form_data_append(api_vars.form_data, "upload_file", args.upload.files[0]);
-            this.has_file = true;
-        }
-
         // Define the processData and contentType for GET requests
         if (api_vars.type === "get") {
             this.processData = true;
