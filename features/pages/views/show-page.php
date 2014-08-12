@@ -3,7 +3,7 @@
 // Query the database for this page
 $query = $Theamus->DB->select_from_table(
     $Theamus->DB->system_table('pages'),
-    array('groups', 'views', 'parsed_content'),
+    array('groups', 'views', 'raw_content'),
     array('operator' => '',
         'conditions' => array('alias' => $Theamus->Theme->get_page_variable('page_alias'))));
 
@@ -18,7 +18,7 @@ if (!$query) {
 $page = $Theamus->DB->fetch_rows($query);
 
 // Show the page content
-echo $page['parsed_content'];
+echo $Theamus->Parsedown->text($page['raw_content']);
 
 // Update the page view count
 $views = $page['views'] + 1;

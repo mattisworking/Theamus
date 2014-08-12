@@ -180,9 +180,6 @@ class Pages {
         // Define the groups
         $args['groups'] = $args['groups'] == '' ? 'everyone' : strtolower($args['groups']);
 
-        // Define the parsed content
-        $args['parsed_content'] = $this->Theamus->Parsedown->text($args['content']);
-
         return $args; // Return the arg data
     }
 
@@ -243,7 +240,6 @@ class Pages {
             array('alias'        => $args['alias'],
                 'title'          => $args['title'],
                 'raw_content'    => $args['content'],
-                'parsed_content' => $args['parsed_content'],
                 'views'          => 0,
                 'permanent'      => 0,
                 'groups'         => $args['groups'],
@@ -439,7 +435,6 @@ class Pages {
             array('alias'        => $args['alias'],
                 'title'          => $args['title'],
                 'raw_content'    => $args['content'],
-                'parsed_content' => $args['parsed_content'],
                 'groups'         => $args['groups'],
                 'theme'          => $args['layout'],
                 'navigation'     => $args['navigation']),
