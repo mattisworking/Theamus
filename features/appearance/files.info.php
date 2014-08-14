@@ -1,30 +1,31 @@
 <?php
 
-// Define a default for the javascript and css files
-$feature['js']['file']	= array();
-$feature['css']['file']	= array();
+// Administrators only can come to this feature
+if (!$Theamus->User->is_admin()) throw new Exception('Only administrators can access the Theamus Appearance feature.');
 
-// Allow administrators only
-if (!isset($_POST['ajax'])) back_up();
+// Initialize the appearance class
+$feature['class']['file'] = 'appearance.class.php';
+$feature['class']['init'] = 'Appearance';
 
-$feature['class']['file'] = "appearance.class.php";
-$feature['class']['init'] = "Appearance";
+define('FILE', $file); // Define the file as a global variable
 
-define('FILE', $file);
+$feature['js']['file'][] = APPEARANCE_DEV_MODE ? 'dev/appearance.admin.js' : 'appearance.admin.min.js';
+$feature['css']['file'][] = APPEARANCE_DEV_MODE ? 'dev/appearance.admin.css' : 'appearance.admin.min.css';
 
 // Customize files
 switch ($file) {
-	case "index.php":
-		$feature['js']['file'][]  = "theme-index.js";
-        $feature['css']['file'][] = "main.css";
-		break;
+    case 'install.php':
+        // Throw an exception for the people who want to install themes but can't
+        if (!$Theamus->User->has_permission('install_themes')) throw new Exception('You do not have permission to Install Theamus Themes');
+        break;
 
-	case "install.php":
-		$feature['js']['file'][]	= "install.js";
-		break;
+    case 'edit.php':
+        // Throw an exception for the people who want to edit themes but can't
+        if (!$Theamus->User->has_permission('edit_themes')) throw new Exception('You do not have permission to Edit Theamus Themes');
+        break;
 
-	case "edit.php":
-		$feature['js']['file'][]	= "theme-form.js";
-        $feature['css']['file'][]   = "main.css";
-		break;
+    case 'remove.php':
+        // Throw an exception for the people who want to remove themes but can't
+        if (!$Theamus->User->has_permission('remove_themes')) throw new Exception('You do not have permission to Remove Theamus Themes');
+        break;
 }
