@@ -94,6 +94,35 @@ class API {
 
 
     /**
+     * Checks to see if a string is a date
+     *
+     * @param string $string
+     * @return boolean
+     */
+    public function string_is_date($string = '') {
+        // Check for a string
+        if ($string == '') return false;
+
+        // Define the possible date formats
+        $date_formats = array('Y-m-d');
+
+        $return = array(); // Initialize the return array
+
+        // Loop through all of the date formats
+        foreach ($date_formats as $format) {
+            // Try to create a date with the format
+            $date = DateTime::createFromFormat($format, $string);
+
+            // Check the created date to see if the string is actually a date
+            $return[] = (!$date || !(date_format($date, $string) == $string)) ? false : true;
+        }
+
+        // Return!
+        return in_array(true, $return) ? true : false;
+    }
+
+
+    /**
      * Check to see if a string is just encoded JSON
      *
      * @param string $string

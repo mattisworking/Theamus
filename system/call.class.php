@@ -1291,7 +1291,7 @@ class Call {
         $ignore = array("method_class", "method", "params", "ajax", "ajax-hash-data", "type", "url", "api-key", "api-from");
         foreach ($input as $key => $value) {
             if (!in_array($key, $ignore)) {
-                if ($this->Theamus->API->string_is_json(urldecode($value))) {
+                if ($this->Theamus->API->string_is_json(urldecode($value)) && !$this->Theamus->API->string_is_date(urldecode($value))) {
                     $ret[$key] = json_decode(urldecode($value), true);
                 } else {
                     $ret[$key] = urldecode($value);
