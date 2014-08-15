@@ -49,7 +49,7 @@ class Call {
      *
      * @var array $feature
      */
-    private $feature;
+    public $feature;
 
 
     /**
@@ -774,7 +774,7 @@ class Call {
      * @param array $config
      * @return
      */
-    private function set_feature_config($config = array()) {
+    public function set_feature_config($config = array()) {
         $this->feature['config'] = $config;
         return;
     }
