@@ -934,4 +934,41 @@ class DB {
         }
         return false;
     }
+
+
+    /**
+     * Gets the table prefix for a feature from the database and defines the complete
+     * table name with the prefix attached
+     *
+     * @param string $name
+     * @param feature $feature
+     * @return string
+     * @throws Exception
+     */
+    public function table($name= '', $feature = '') {
+        // Define the feature to look for the prefix with
+        $feature_alias = $feature != '' ? $feature : $this->Theamus->Call->feature['config']['folder_name'];
+
+        // Query the database looking for the db_prefix
+        $query = $this->select_from_table(
+            $this->system_table('features'),
+            array('db_prefix'),
+            array('operator' => '',
+                'conditions' => array('alias' => $feature_alias)));
+
+        // Check the query for errors
+        if (!$query) {
+            $this->Theamus->Log->query($this->get_last_error()); // Log the query error
+            throw new Exception('Failed to get table name.');
+        }
+
+        // Check the query for results
+        if ($this->count_rows($query) == 0) throw new Exception('Could not find the table name.');
+
+        // Define the query information
+        $results = $this->fetch_rows($query);
+
+        // Return the completed table name
+        return $results['db_prefix'].'_'.$name;
+    }
 }
