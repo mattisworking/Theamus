@@ -51,7 +51,8 @@
             "Rewrote the Features feature - https://github.com/Eyraahh/Theamus/issues/62",
             "Rewrote the Settings feature - https://github.com/Eyraahh/Theamus/issues/67",
             "Updated the update scripts to work a little better.",
-            "Removed some old external files that were'nt being used anymore"
+            "Removed some old external files that were'nt being used anymore",
+            "Fixed an issue with the sessions homepage when they were pointing to features - https://github.com/Eyraahh/Theamus/issues/73"
         ]
     },
     "authors": [

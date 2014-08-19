@@ -210,7 +210,7 @@ class HomePage {
         $feature = $this->Theamus->DB->fetch_rows($query);
 
         // Relocate to the feature
-        header('Location: '.$feature['alias'].'/'.$home['file']);
+        header('Location: '.$this->Theamus->base_url.$feature['alias'].'/'.$home['file']);
     }
 
 
@@ -256,7 +256,7 @@ class HomePage {
      */
     private function handle_session() {
         // Check for a logged in user and handle when they are logged in
-        if ($this->Theamus->User->user) $ret =$this->check_session_vars('after');
+        if ($this->Theamus->User->user) $ret = $this->check_session_vars('after');
 
         // Handle when they are logged out
         else $ret = $this->check_session_vars('before');
@@ -286,8 +286,8 @@ class HomePage {
         // Define the information that will help show the correct page
         $ret['after-type']  = $home[$time.'-type'];
         $ret['id']          = $home[$time.'-id'];
-        $ret['file']        = array_key_exists('$t-file', $home) ? $home[$time.'-file'] : '';
-        $ret['url']         = array_key_exists('$t-url', $home) ? $home[$time.'-url'] : '';
+        $ret['file']        = array_key_exists($time.'-file', $home) ? $home[$time.'-file'] : '';
+        $ret['url']         = array_key_exists($time.'-url', $home) ? $home[$time.'-url'] : '';
 
         return $ret; // Return the correct session information
     }
