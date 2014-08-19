@@ -1,24 +1,50 @@
 <?php
 
-/**
- * Function that will run updates to make Theamus the latest version
- *
- * @param array $system_info
- * @return boolean
- */
-function update() {
-    // Define the update 'functions' to run
-    $updates = array('02', '11', '12', '130');
+// Look for the tData class in order to run these functions
+if (class_exists('tData')) {
+    /**
+     * Function that will run updates to make Theamus the latest standard (1.3.0)
+     *
+     * @param array $system_info
+     * @return boolean
+     */
+    function update() {
+        // Define the update 'functions' to run
+        $updates = array('02', '11', '12', '130');
 
-    // Run updates
-    foreach ($updates as $update) {
-        $update_function = 'update_'.$update;
-        if (!$update_function()) return false;
+        // Run updates
+        foreach ($updates as $update) {
+            $update_function = 'update_'.$update;
+            if (!$update_function()) return false;
+        }
+
+        update_version('1.3.0'); // Update the version
+
+        update_cleanup(); // Cleanup!
+
+        return true;
     }
+} else {
+    /**
+     * Function that will run updates to make Theamus the latest standard (1.3.0)
+     *
+     * @param array $system_info
+     * @return boolean
+     */
+    function update($Theamus, $update_information) {
+        // Define the update 'functions' to run
+        $updates = array();
 
-    update_version('1.3.0'); // Update the version
+        // Run updates
+        foreach ($updates as $update) {
+            $update_function = 'update_'.$update;
+            if (!$update_function()) return false;
+        }
 
-    update_cleanup(); // Cleanup!
+        update_version($update_information, $Theamus); // Update the version
 
-    return true;
+        update_cleanup($Theamus); // Cleanup!
+
+        return true;
+    }
 }

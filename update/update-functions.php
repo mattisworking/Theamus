@@ -6,14 +6,20 @@
  * @param string $version
  * @return boolean
  */
-function update_version($version) {
-    // Connect to the DB
-    $tData = new tData();
-    $tData->db = $tData->connect();
-    $prefix = $tData->get_system_prefix().'_';
+function update_version($version, $Theamus = '') {
+    if ($Theamus != '') {
+        if (!$Theamus->DB->update_table_row(
+            $Theamus->DB->system_table('settings'),
+            array('version' => $version))) return false;
+    } else {
+        // Connect to the DB
+        $tData = new tData();
+        $tData->db = $tData->connect();
+        $prefix = $tData->get_system_prefix().'_';
 
-    // Update the version
-    if (!$tData->db->query("UPDATE `".$prefix."settings` SET `version`='$version'")) return false;
+        // Update the version
+        if (!$tData->db->query("UPDATE `".$prefix."settings` SET `version`='$version'")) return false;
+    }
 
     return true;
 }
@@ -22,14 +28,17 @@ function update_version($version) {
 /**
  * Removes installer files
  */
-function update_cleanup() {
-    // Define the file management class
-    $tFiles = new tFiles();
-
-    // Remove the unnecessary folders
-    $tFiles->remove_folder(path(ROOT."/themes/installer/"));
-    $tFiles->remove_folder(path(ROOT."/features/install/"));
-    $tFiles->remove_folder(path(ROOT."/update/"));
+function update_cleanup($Theamus = '') {
+    if ($Theamus != '') {
+        $Theamus->Files->remove_folder($Theamus->file_path(ROOT."/themes/installer/"));
+        $Theamus->Files->remove_folder($Theamus->file_path(ROOT."/features/install/"));
+        $Theamus->Files->remove_folder($Theamus->file_path(ROOT."/update/"));
+    } else {
+        $files = new tFiles();
+        $files->remove_folder(path(ROOT."/themes/installer/"));
+        $files->remove_folder(path(ROOT."/features/install/"));
+        $files->remove_folder(path(ROOT."/update/"));
+    }
 }
 
 
