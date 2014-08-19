@@ -1,31 +1,37 @@
 <?php
 
-// Define custom feature folders
-$feature['js']['folder']        = "js";
-$feature['css']['folder']       = "css";
-$feature['scripts']['folder']   = "php";
+define('INSTALL_DEV_MODE', FALSE);
 
-// Custom function file to load beforehand
-//$feature['functions']['file'] = "php/functions.php";
-$feature['api']['class_file'] = "php/install.class.php";
+$Theamus->Call->set_feature_config(array(
+    // System Required
+    'theamus_version' => 1.0,
+    'permissions'     => array('database', 'files'),
 
-// Define feature information
-$feature['alias']       = "install";
-$feature['name']        = "Theamus Installer";
-$feature['db_prefix']   = "";
-$feature['groups']      = array("everyone");
-$feature['version']     = "1.1";
-$feature['notes']       = array();
+    // Feature Required
+    'folder_name'     => 'install',
+    'feature_name'    => 'Theamus Installer',
+    'feature_version' => 1.0,
+    'custom_folders'  => array(
+        'php'        => 'php',
+        'javascript' => 'js',
+        'css'        => 'css',
+        'class'      => 'php'
+    ),
 
-// Define the author information
-$feature['author']['name']      = "Eyrah Temet";
-$feature['author']['alias']     = "Eyraahh";
-$feature['author']['email']     = "eyrah.temet@theamus.com";
-$feature['author']['company']   = "Theamus";
+    // Feature Optional
+    'load_files' => array(
+        'api'       => array('php/install.class.php'),
+    ),
+    'release_notes' => array(
+        '1.1' => array('Updated to the new way of doing things.'),
+        '1.0' => array('Initial release.')
+    ),
 
-// Define configuration scripts
-/*
-$feature['install']['script']   = "config/install.php";
-$feature['update']['script']    = "config/update.php";
-$feature['remove']['script']    = "config/remove.php";
- */
+    // Optional Author Information
+    'author' => array(
+        'name'    => array('Eyrah Temet'),
+        'alias'   => array('Eyraahh'),
+        'email'   => array('eyrah.temet@theamus.com'),
+        'company' => 'Theamus'
+    )
+));

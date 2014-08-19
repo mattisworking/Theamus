@@ -1,0 +1,7 @@
+.homepage-content-header{font-family:Roboto,sans-serif;font-size:2.3em;margin-top:-10px;padding:20px 0}
+.dependency-row{text-align:center}
+.dependency-row span.glyphicon{font-size:2em}
+.dependency-row span.ion-checkmark-round{color:#73d470}
+.dependency-row span.ion-close-round{color:#d47370}
+.dependency-row p{display:inline-block;font-family:Roboto,sans-serif;font-size:1.5em;margin:0}
+#advanced-options{display:none}

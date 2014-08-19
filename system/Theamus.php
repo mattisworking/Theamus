@@ -21,6 +21,8 @@ class Theamus {
     public $Files;
     public $Pagination;
     public $Parsedown;
+    
+    public $version = '1.3.0';
 
 
     /**

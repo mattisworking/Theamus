@@ -1,4 +1,4 @@
 <?php
 
 // Go to the installer.
-header("Location: ".base_url);
+header("Location: ".$Theamus->base_url);

@@ -1,23 +1,3 @@
-<script type="text/javascript">
-    // Define the required steps and the completed steps to decide if the user can be here or not
-    var required_steps = ["welcome"],
-        steps = JSON.parse(localStorage.getItem("step"));
-
-    // Redirect if there are no steps done
-    if (steps === null) {
-        window.location = theamus.base_url;
-        return;
-    }
-
-    // Redirect the user if they haven't completed the steps up to this point
-    for (var r = 0; r < required_steps.length; r++) {
-        if (steps.indexOf(required_steps[r]) === -1) {
-            window.location = theamus.base_url;
-            return;
-        }
-    }
-</script>
-
 <?php
 
 // Define a failure variable to determine whether or not to disable the next step button
@@ -94,7 +74,7 @@ $failed = false;
             <?php
 
             // Check if the root of the system is writable
-            if (is_writable(path(ROOT))) {
+            if (is_writable($Theamus->file_path(ROOT))) {
                 echo "<span class='glyphicon ion-checkmark-round'></span>";
             } else {
                 echo "<span class='glyphicon ion-close-round'></span>";
@@ -112,30 +92,13 @@ $failed = false;
 </div><!-- /buttons -->
 
 <script type="text/javascript">
-    $(function() {
+    document.addEventListener('DOMContentLoaded', function(){
         $("#check-again").click(function() {
-            // Refresh the page to check the dependencies again
-            window.location = theamus.base_url+"install/dependencies-check/";
+            window.location = Theamus.base_url+"install/dependencies/";
         });
 
         $("#next-step").click(function() {
-            // Update the current step
-            if (localStorage.getItem("current_step") === null) {
-                localStorage.setItem("current_step", "database-configuration");
-            }
-
-            // Update the local storage to reflect the user has passed this step
-            var steps = JSON.parse(localStorage.getItem("step"));
-            if (steps.indexOf("dependencies-check") === -1) {
-                steps.push("dependencies-check");
-            }
-            localStorage.setItem("step", JSON.stringify(steps));
-
-            // Update the local storage letting the system know everything is ok
-            localStorage.setItem("dependencies_ok", true);
-
-            // Move on to the next step
-            window.location = theamus.base_url+"install/database-configuration/";
+            window.location = Theamus.base_url+"install/setup/";
         });
     });
 </script>

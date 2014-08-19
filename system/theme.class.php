@@ -60,7 +60,7 @@ class Theme {
         $this->Theamus = $t; // Make other Theamus classes usable
 
         // Define a class variable that determines a connection to the database or not
-        $this->no_database = isset($data['no_database']) && $data['no_database'] == true ? true : false;
+        $this->no_database = !$this->Theamus->DB->connection ? true : false;
     }
 
 
@@ -103,7 +103,9 @@ class Theme {
      * @return array
      */
     private function clean_data() {
-        $settings           = $this->Theamus->settings;
+        $settings = !$this->Theamus->DB->connection ? $this->data : $this->Theamus->settings;
+
+
         $ret['title']       = isset($this->data['title']) ? $this->data['title']." - ".$this->data['name'] : $this->data['name'];
         $ret['header']      = isset($this->data['header']) ? $this->data['header'] : "";
         $ret['theme_path']  = trim($this->Theamus->web_path(trim(str_replace(ROOT, "", $this->data['theme']), "/")), "/")."/";

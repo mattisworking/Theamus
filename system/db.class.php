@@ -91,14 +91,14 @@ class DB {
         // Only if this is a part of the Theamus construction
         if ($t != false) $this->Theamus = $t; // Make other Theamus classes usable
 
-        // Define the configuration information as defined by the site administrator
-        $this->config = $this->define_system_configuration();
-
         // Set the timezone of the site
         $this->set_timezone();
 
         // Connect to the database if this is a part of the Theamus construction
         if ($t != false) {
+            // Define the configuration information as defined by the site administrator
+            $this->config = $this->define_system_configuration();
+
             // Connect to the database right here and now
             $db_connection = $this->connect(true);
 
@@ -168,10 +168,7 @@ class DB {
      *
      * @return boolean
      */
-    public function connect($pdo = false) {
-        // Check the configuration settings
-        if (!isset($this->config['Database'])) return false;
-
+    public function connect($pdo = false, $test = false) {
         // Check for a custom connection or not
         if (!empty($this->connection_parameters)) {
             if (!isset($this->connection_parameters['Host Address'])) return false;
@@ -182,8 +179,11 @@ class DB {
             // Define the custom connection information as the connection parameters
             $connection_parameters = $this->connection_parameters;
 
+        // Check the configuration settings
+        } elseif (isset($this->config['Database'])) $connection_parameters = $this->config['Database'];
+
         // Leave the configuration settings as the connection parameters
-        } else $connection_parameters = $this->config['Database'];
+        else return false;
 
         // Check if the developer is looking to use PHP's mysqli as opposed to PDO
         if ($pdo == false) {
@@ -256,6 +256,7 @@ class DB {
      * @return string
      */
     public function system_table($name) {
+        if (!$this->connection) return $name;
         return $this->system_prefix.'_'.$name;
     }
 

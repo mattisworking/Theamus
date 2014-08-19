@@ -14,6 +14,9 @@ class Log {
      */
     public function __construct($t) {
         $this->Theamus = $t;
+
+        if (!$this->Theamus->DB->connection) return;
+
         $this->logging_permission = explode(',', $this->Theamus->settings['logging']);
         return;
     }
@@ -25,6 +28,7 @@ class Log {
      * @return
      */
     public function __destruct() {
+        if (!$this->Theamus->DB->connection) return;
         $this->commit_logs();
     }
 

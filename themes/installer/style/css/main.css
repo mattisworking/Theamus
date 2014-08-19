@@ -8,6 +8,10 @@
     font-weight: normal;
     font-style: normal;
 }
+.clearfix {
+    clear: both;
+    display: block;
+}
 body {
     height: auto;
 }

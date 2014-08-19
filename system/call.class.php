@@ -347,23 +347,25 @@ class Call {
         $post = filter_input_array(INPUT_POST);
         $get = filter_input_array(INPUT_GET);
 
+        $this->ajax = true;
+        $ajax = $api_from = false;
+        if (isset($post['ajax'])) $ajax = $post['ajax'];
+        if (isset($get['ajax']) && $ajax == false) $ajax = $get['ajax'];
+        $this->ajax = $ajax;
+
         if (!isset($post['ajax']) && !isset($get['ajax'])) {
             if ($this->Theamus->DB->try_installer) {
                 require $this->Theamus->file_path(ROOT."/system/install.class.php");
                 $install = new Install($this->Theamus, $this->Theamus->base_url);
                 $installed = $install->run_installer();
 
-                $this->install = $installed ? true : false;
+                $this->install = $installed ? false : true;
             }
 
             $ret['type'] = "regular";
             $ret['look_folder'] = "view";
             $ret['do_call'] = "show_page";
         } else {
-            $this->ajax = true;
-            $ajax = $api_from = false;
-            if (isset($post['ajax'])) $ajax = $post['ajax'];
-            if (isset($get['ajax']) && $ajax == false) $ajax = $get['ajax'];
             if ($ajax == false) throw new Exception("AJAX type cannot be found.");
 
             switch ($ajax) {
@@ -813,7 +815,7 @@ class Call {
         $location = urldecode(filter_input(INPUT_POST, "location"));
         $post_ajax = filter_input(INPUT_POST, "ajax");
         $get_ajax = filter_input(INPUT_GET, "ajax");
-        $ajax = $post_ajax == "" ? $get_ajax : $post_ajax;
+        $ajax = $this->ajax;
 
         $file_info = array();
         if (file_exists($feature_path."files.info.php")) {
@@ -1163,7 +1165,7 @@ class Call {
      */
     private function error_page($type="404") {
         // Define the settings to use
-        $settings = $this->install == false ? $this->Theamus->settings : "Theamus Installation";
+        $settings['name'] = $this->install == false ? $this->Theamus->settings : "Theamus Installation";
 
         // Define the theme data
         $data['name']       = $settings['name'];
@@ -1175,7 +1177,6 @@ class Call {
         $data['nav']        = false;
         $data['css']        = $this->get_css();
         $data['js']         = $this->get_javascript();
-        $data['no_database']= $this->install;
 
         // Load the page
         $this->Theamus->Theme->load_theme($data);

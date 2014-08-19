@@ -37,7 +37,7 @@ INSERT IGNORE INTO `tm_groups` (`id`, `alias`, `name`, `permissions`, `permanent
 -- Dumping data for table `tm_pages`
 --
 
-INSERT IGNORE INTO `tm_pages` (`id`, `alias`, `title`, `content`, `views`, `permanent`, `groups`, `theme`, `navigation`) VALUES
+INSERT IGNORE INTO `tm_pages` (`id`, `alias`, `title`, `raw_content`, `views`, `permanent`, `groups`, `theme`, `navigation`) VALUES
 (1, 'home_page', 'Hello world', 'Welcome to your new website.<br><br>Getting started is pretty easy if you ask me.  All you have to do is <a href="accounts/login/" id="24362">log in</a> then go to the administration panel.  That''s where you can do the fun things like:<ul>  <li>Add Themes to change the appearance of your website</li>  <li>Add Features to change the functionality of your website</li>  <li>Manage users and groups</li>  <li>Create Pages for the visitors of your website</li></ul>Using the Theamus platform as your content management system will make your life easier and more customizable than ever before.  The modularity of the system and the seamless integration of stand-alone applications will give you the freedom you''re looking for.  Freedom, that doesn''t look like it was whipped together at the whim of someone looking to make a quick buck.<br><br>Hold on tight because documentation is coming soon.', 0, 1, 'everyone', 'homepage', '');
 
 --
