@@ -3,12 +3,11 @@
 /**
  * Theamus
  * PHP Version 5.5.3
- * Version 1.3
+ * Version 1.3.0
  * @package Theamus
  * @link http://www.theamus.com/
  * @author Eyrah Temet (Eyraahh) <info@theamus.com>
  */
-
 class Theamus {
     /**
      * All of the Theamus system objects that will be usable to eachother
@@ -21,8 +20,8 @@ class Theamus {
     public $Files;
     public $Pagination;
     public $Parsedown;
-    
-    public $version = '1.3.0';
+
+    public $version = '1.3.0.0';
 
 
     /**

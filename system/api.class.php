@@ -3,12 +3,11 @@
 /**
  * API - Theamus API handling class
  * PHP Version 5.5.3
- * Version 1.3
+ * Version 1.3.0
  * @package Theamus
  * @link http://www.theamus.com/
  * @author Eyrah Temet (Eyraahh) <info@theamus.com>
  */
-
 class API {
     /**
      * Holds the value of whether or not the api call failed.

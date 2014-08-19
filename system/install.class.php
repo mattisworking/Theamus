@@ -3,12 +3,11 @@
 /**
  * Install - Theamus installer class
  * PHP Version 5.5.3
- * Version 1.3
+ * Version 1.3.0
  * @package Theamus
  * @link http://www.theamus.com/
  * @author Eyrah Temet (Eyraahh) <info@theamus.com>
  */
-
 class Install {
     /**
      * Complete base url to the current website (e.g. http://www.mysite.com/)

@@ -3,12 +3,11 @@
 /**
  * DB - Theamus database access class
  * PHP Version 5.5.3
- * Version 1.3
+ * Version 1.3.0
  * @package Theamus
  * @link http://www.theamus.com/
  * @author Eyrah Temet (Eyraahh) <info@theamus.com>
  */
-
 class DB {
     /**
      * Contains the information given by the configuration file
