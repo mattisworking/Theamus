@@ -47,16 +47,13 @@
             <a href="https://code.google.com/p/google-code-prettify/">Prettify</a>
         </li>
         <li>
-            <a href="https://code.google.com/p/rangy/">rangy</a>
+            <a href="http://parsedown.org/">PHP Parsedown</a>
         </li>
         <li>
             <a href="http://getbootstrap.com/">Bootstrap</a>
         </li>
         <li>
             <a href="http://www.chartjs.org/">Chart.js</a>
-        </li>
-        <li>
-            <a href="http://codemirror.net/">Codemirror</a>
         </li>
     </ul>
 </div>

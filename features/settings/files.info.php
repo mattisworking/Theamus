@@ -1,49 +1,30 @@
 <?php
 
-// Don't allow anyone that isn't an administrator
-if (!$tUser->is_admin() && $ajax == false) {
-    back_up();
-} elseif (!$tUser->is_admin() && $ajax != false && $ajax != "api") {
-    die("Invalid permission");
-} elseif ($ajax != "api") {
-    $feature['class']['file'] = "settings.class.php";
-    $feature['class']['init'] = "Settings";
-    
-    define('FILE', $file);
-}
+// Administrators only can come to this feature
+if (!$Theamus->User->is_admin()) throw new Exception('Only administrators can access the Theamus Navigation feature.');
 
-// Allowed API 'files' to be called
-$allowed_api = array("update-check.php", "auto-update.php");
-if (!in_array($file, $allowed_api) && $ajax == "api") {
-    $this->api_fail = "You do not have access to this via API.";
-}
+// Initialize the navigation class
+$feature['class']['file'] = 'settings.class.php';
+$feature['class']['init'] = 'Settings';
+
+define('FILE', $file); // Define the file as a global variable
+
+$feature['js']['file'][] = SETTINGS_DEV_MODE ? 'dev/settings.admin.js' : 'settings.admin.min.js';
+$feature['css']['file'][] = SETTINGS_DEV_MODE ? 'dev/settings.admin.css' : 'settings.admin.min.css';
 
 // Define file specifics
 switch ($file) {
-    case "index.php" :
-        $feature['js']['file'][] = "site.js";
-        $feature['js']['file'][] = 'customization.js';
+    case "index.php":
         break;
 
-    case "settings.php" :
-        $feature['css']['file'][] = "settings.css";
-
-        $feature['js']['file'][] = "site.js";
-        $feature['js']['file'][] = 'settings.js';
+    case "settings.php":
         break;
 
     case "update-manually.php":
-        $feature['js']['file'][] = "settings.js";
         break;
 
     case "about-theamus.php":
-        if ($ajax != "include" || $location != "admin") {
-            go_back();
-        }
-
-        $feature['css']['file'][] = "about.css";
-        break;
-
-    default :
+        if ($ajax != "include" || $location != "admin") $Theamus->go_back();
+        $feature['css']['file'][] = SETTINGS_DEV_MODE ? 'dev/about.css' : 'settings.about.css';
         break;
 }
