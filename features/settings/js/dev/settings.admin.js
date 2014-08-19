@@ -16,7 +16,7 @@ function change_path(to) {
 
     // Show the new element
     $('#'+to+'-wrapper').show();
-    
+
     show_appropriate_type_messages();
     resize_admin_window();
 }
@@ -26,7 +26,7 @@ function show_appropriate_type_messages() {
     if (type === "custom" && $("#reqlogin")[0].checked) {
         $("#custom-wrapper").hide();
         $("#no-custom").show();
-    } else 
+    } else
 
     if (type === "session" && $("#reqlogin")[0].checked) {
         $("#session-wrapper").hide();
@@ -39,12 +39,12 @@ function show_appropriate_type_messages() {
         $("#session-wrapper").show();
         $("#unsetsession").hide();
     }
-    
+
     if (type === "session" && $("#setting-session").val() === 'true') {
         $("#session-wrapper").hide();
         $("#unsetsession").show();
     }
-    
+
     if (type === 'require-login' && ($('#setting-session').val() === '' || $('#setting-session').val() === 'false')) {
         $("#require-login-wrapper").show();
         $("#unsetsession").hide();
@@ -70,7 +70,7 @@ function compile_home() {
         ret += "type=\""+type+"\";";
         t = type;
     }
-    
+
     if ($('#reqlogin')[0].checked && type === 'session' || type === 'require-login') {
         ret += 'after-type="page";id="1"';
     }
@@ -181,11 +181,11 @@ function customize() {
         e.preventDefault(); // Go nowhere, do nothing.
         change_path($(this).attr('data-for'));
     });
-    
+
     $('#features-select').change(function() {
         load_feature_files_select();
     });
-    
+
     $('#reqlogin').change(function() {
         if (this.checked) {
             $("#login-notify").show();
@@ -195,7 +195,7 @@ function customize() {
             $("#required-login").val("false");
         }
     });
-    
+
     $("#set-sessions").click(function(e) {
         e.preventDefault();
         set_session_page("in");
@@ -210,20 +210,20 @@ function customize() {
         e.preventDefault();
         cancel_session_set();
     });
-    
+
     $('#customize-settings-form').submit(function(e) {
         e.preventDefault(); // Go nowhere, do nothing
-        
+
         // Notify the user the form was submitted and show them
         $('#customize-result').html(Theamus.Notify('spinner', 'Saving...'));
         $('#theamus-settings').scrollTop(0);
-        
+
         // Disable the submit button
         $(this).find('button[type="submit"]').attr('disbaled', 'disabled');
-        
+
         // Compile the homepage information and add it to the form
         $(this).append(compile_home());
-        
+
         // Make the call to save the information
         Theamus.Ajax.api({
             type: 'post',
@@ -232,21 +232,21 @@ function customize() {
             data: { form: this },
             success: function(data) {
                 $('#customize-result').show();
-                
+
                 if (data.error.status === 1) {
                     $('#customize-result').html(Theamus.Notify('danger', data.error.message));
                 } else {
                     $('#customize-result').html(Theamus.Notify('success', 'Saved.'));
-                    
+
                     setTimeout(function() { $('#customize-result').html('').hide(); }, 2000);
                 }
-                
+
                 $('#customize-settings-form').find('button[type="submit"]').removeAttr('disabled');
             }
         });
     });
 
-    
+
     return; // Return!
 }
 
@@ -256,17 +256,17 @@ function settings() {
         this.checked ? $('#email-container').show() : $('#email-container').hide();
         resize_admin_window();
     });
-    
+
     $('#edit-settings-form').submit(function(e) {
         e.preventDefault(); // Go nowhere, do nothing.
-        
+
         // Notify the user that the form was submitted and show them
         $('#settings-result').html(Theamus.Notify('spinner', 'Saving...'));
         $('#theamus-settings').scrollTop(0);
-        
+
         // Disable the submit button
         $(this).find('button[type="submit"]').attr('disabled', 'disabled');
-        
+
         // Make the call to save the information
         Theamus.Ajax.api({
             type: 'post',
@@ -275,46 +275,46 @@ function settings() {
             data: { form: this },
             success: function(data) {
                 $('#settings-result').show();
-                
+
                 if (data.error.status === 1) {
                     $('#settings-result').html(Theamus.Notify('danger', data.error.message));
                 } else {
                     $('#settings-result').html(Theamus.Notify('success', 'Saved.'));
-                    
+
                     setTimeout(function() { $('#customize-result').html('').hide(); }, 2000);
                 }
-                
+
                 $('#edit-settings-form').find('button[type="submit"]').removeAttr('disabled');
             }
         });
     });
-    
+
     $('#update').click(function() {
         update_admin_window_content('theamus-settings', 'settings/update-check/');
         change_admin_window_title('theamus-settings', 'Theamus Auto Updater');
     });
-    
+
     return; // Return!
 }
 
 
 function update_check() {
     $('#checker-wrapper').html(Theamus.Notify('spinner', 'Checking for updates...'));
-    
+
     Theamus.Ajax.api({
         type: 'post',
         url: Theamus.base_url+'/settings/',
         method: ['Settings', 'get_update_info'],
         success: function(data) {
-            if (data.response.data.old_versions.indexOf($('#current_version')) === -1) {
+            if (data.response.data.old_versions.indexOf($('#current_version')) !== -1) {
                 var link = '<button class="btn btn-primary" id="settings_update-link">Update to the latest version of Theamus</button><hr class="form-split">';
                 $('#checker-wrapper').html('<div class="col-12">'+link+data.response.data.notes+'</div>');
-                
+
                 $('#settings_update-link').click(function(e) {
                     e.preventDefault();
-                    
+
                     $('#auto-update-result').html(Theamus.Notify('spinner', 'Updating...'));
-                    
+
                     Theamus.Ajax.api({
                         type: 'get',
                         url: Theamus.base_url+'/settings/',
@@ -333,19 +333,19 @@ function update_check() {
             }
         }
     });
-    
+
     return; // Return!
 }
 
 function settings_manual_update() {
     $('#settings_update-form').submit(function(e) {
         e.preventDefault();
-        
+
         $('#settings_update-result').show().html(Theamus.Notify('spinner', 'Updating...'));
         $('#theamus-settings').scrollTop(0);
-        
+
         $(this).find('button[type="submit"]').attr('disabled', 'disabled');
-        
+
         Theamus.Ajax.api({
             type: 'post',
             url: Theamus.base_url+'/settings/',
