@@ -48,7 +48,10 @@
             "Rewrote the Media feature - https://github.com/Eyraahh/Theamus/issues/64",
             "Back to basics on the pages database - https://github.com/Eyraahh/Theamus/issues/72",
             "Rewrote the Appearance feature - https://github.com/Eyraahh/Theamus/issues/60",
-            "Rewrote the Features feature - https://github.com/Eyraahh/Theamus/issues/62"
+            "Rewrote the Features feature - https://github.com/Eyraahh/Theamus/issues/62",
+            "Rewrote the Settings feature - https://github.com/Eyraahh/Theamus/issues/67",
+            "Updated the update scripts to work a little better.",
+            "Removed some old external files that were'nt being used anymore"
         ]
     },
     "authors": [
