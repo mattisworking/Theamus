@@ -1,13 +1,50 @@
 <?php
 
 /**
+ * Updates the version of Theamus in the database
+ *
+ * @param string $version
+ * @return boolean
+ */
+function update_version($version) {
+    // Connect to the DB
+    $tData = new tData();
+    $tData->db = $tData->connect();
+    $prefix = $tData->get_system_prefix().'_';
+
+    // Update the version
+    if (!$tData->db->query("UPDATE `".$prefix."settings` SET `version`='$version'")) return false;
+
+    return true;
+}
+
+
+/**
+ * Removes installer files
+ */
+function update_cleanup() {
+    // Define the file management class
+    $tFiles = new tFiles();
+
+    // Remove the unnecessary folders
+    $tFiles->remove_folder(path(ROOT."/themes/installer/"));
+    $tFiles->remove_folder(path(ROOT."/features/install/"));
+    $tFiles->remove_folder(path(ROOT."/update/"));
+}
+
+
+/**
  * Updates from 0.2
  *
  * @return boolean
  */
-function update_02($Theamus) {
+function update_02() {
+    // // Connect to the database
+    $tData      = new tData();
+    $tData->db  = $tData->connect(true);
+
     // Create the themes-data table
-    $query = $Theamus->DB->custom_query("CREATE TABLE IF NOT EXISTS `".$Theamus->DB->system_table('themes-data')."` (`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(`id`), `key` TEXT NOT NULL, `value` TEXT NOT NULL, `selector` TEXT NOT NULL, `theme` VARCHAR(50) NOT NULL);");
+    $query = $tData->db->query("CREATE TABLE IF NOT EXISTS `".$tData->get_system_prefix()."_themes-data` (`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(`id`), `key` TEXT NOT NULL, `value` TEXT NOT NULL, `selector` TEXT NOT NULL, `theme` VARCHAR(50) NOT NULL);");
 
     // Check the query and return
     if ($query == false) {
@@ -16,66 +53,94 @@ function update_02($Theamus) {
     return true;
 }
 
+
 /**
  * Updates to 1.1
  *
  * @return boolean
  */
-function update_11($Theamus) {
+function update_11() {
+    // Connect to the database
+    $tData      = new tData();
+    $tData->db  = $tData->connect();
+    $prefix     = $tData->get_system_prefix().'_';
+
     // Create the user sessions table
-    $Theamus->DB->custom_query("CREATE TABLE IF NOT EXISTS `".$Theamus->DB->system_table('user_sessions')."` (`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(`id`), `key` TEXT NOT NULL, `value` TEXT NOT NULL, `ip_address` TEXT NOT NULL, `user_id` INT NOT NULL);");
+    $tData->db->query("CREATE TABLE IF NOT EXISTS `".$prefix."user-sessions` (`id` INT NOT NULL AUTO_INCREMENT, PRIMARY KEY(`id`), `key` TEXT NOT NULL, `value` TEXT NOT NULL, `ip_address` TEXT NOT NULL, `user_id` INT NOT NULL);");
 
     // Get the tables from the database
     $tables = array();
-    $tables_query = $Theamus->DB->custom_query("SHOW TABLES");
-    $results = $Theamus->DB->fetch_rows($tables_query);
-    $all_tables = isset($results[0]) ? $results : $all_tables;
-    
-    foreach ($all_tables as $table) {
-        $tables[] = $table;
+    $tables_query = $tData->db->query("SHOW TABLES");
+    while ($row = $tables_query->fetch_array()) {
+        $tables[] = $row[0];
     }
 
     // Rename the images table
-    if (!in_array($Theamus->DB->system_table('media'), $tables));
-    $Theamus->DB->custom_query("RENAME TABLE `".$Theamus->DB->system_table('images')."` TO `".$Theamus->DB->system_table('media')."`");
+    if (!in_array($prefix."media", $tables));
+    $tData->db->query("RENAME TABLE `".$prefix."images` TO `".$prefix."media`");
 
     // Find the session column in the user's table
-    $users_table = $Theamus->DB->custom_query("SELECT `session` FROM `".$Theamus->DB->system_table('users')."` LIMIT 1");
+    $users_table = $tData->db->query("SELECT `session` FROM `".$prefix."users` LIMIT 1");
 
     // Drop the session column
     if ($users_table) {
-        $Theamus->DB->custom_query("ALTER TABLE `".$Theamus->DB->system_table('users')."` DROP COLUMN `session`;");
+        $tData->db->query("ALTER TABLE `".$prefix."users` DROP COLUMN `session`;");
     }
 
     // Find the type column in the media table
-    $media_table = $Theamus->DB->custom_query("SELECT `type` FROM `".$Theamus->DB->system_table('media')."` LIMIT 1");
+    $media_table = $tData->db->query("SELECT `type` FROM `".$prefix."media` LIMIT 1");
 
     // Add the type column
     if (!$media_table) {
-        $Theamus->DB->custom_query("ALTER TABLE `".$Theamus->DB->system_table('media')."` ADD `type` TEXT NOT NULL;");
+        $tData->db->query("ALTER TABLE `".$prefix."media` ADD `type` TEXT NOT NULL;");
     }
 
     return true;
 }
 
-function update_12($Theamus) {
+
+/**
+ * Updates to 1.2
+ *
+ * @return boolean
+ */
+function update_12() {
     return true;
 }
 
-function update_version($Theamus, $update_information) {
-    // Define the return array
-    $return = array();
 
-    // Update the version
-    $return[] = $Theamus->DB->custom_query("UPDATE `".$Theamus->DB->system_table('settings')."` SET `version`='".$update_information['version']."'") ? true : false;
+/**
+ * Updates to 1.3.0
+ *
+ * @return boolean
+ */
+function update_130() {
+    // Connect to the DB class
+    $tData = new tData();
+    $tData->db = $tData->connect();
+    $prefix = $tData->get_system_prefix().'_';
 
-    // Disconnect from the database and return
-    return in_array(false, $return) ? false : true;
-}
+    // Do a check to see if this function has run already
+    $check_query = $tData->db->query('SELECT `session_key` FROM `'.$prefix.'user-sessions`');
+    if ($check_query) return true;
 
-function update_cleanup($Theamus) {
-    // Remove the unnecessary folders
-    $Theamus->Files->remove_folder($Theamus->file_path(ROOT."/themes/installer/"));
-    $Theamus->Files->remove_folder($Theamus->file_path(ROOT."/features/install/"));
-    $Theamus->Files->remove_folder($Theamus->file_path(ROOT."/update/"));
+    // Alter the settings table
+    if (!$tData->db->query('ALTER TABLE `'.$prefix.'settings` MODIFY `home` TEXT;')) return false;
+
+    // Add the log table
+    if (!$tData->db->query('CREATE TABLE IF NOT EXISTS `'.$prefix.'logs` (`id` int(11) NOT NULL AUTO_INCREMENT, `message` text NOT NULL, `class` varchar(100) NOT NULL, `function` varchar(150) NOT NULL, `line` int(11) NOT NULL, `file` varchar(500) NOT NULL, `type` varchar(50) NOT NULL, `time` datetime NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;')) return false;
+
+    // Change the content column in the pages table
+    if (!$tData->db->query('ALTER TABLE `'.$prefix.'pages` CHANGE `content` `raw_content` TEXT')) return false;
+
+    // Add the logging column to the settings table
+    if (!$tData->db->query('ALTER TABLE `'.$prefix.'settings` ADD `logging` TEXT NOT NULL after `version`')) return false;
+
+    // Trim the 'create-groups' permission
+    if (!$tData->db->query('UPDATE `'.$prefix.'permissions` SET `permission` = "create_groups" WHERE `permission` LIKE "%create_groups"')) return false;
+
+    // Update the user sessions table
+    if (!$tData->db->multi_query('DROP TABLE IF EXISTS `'.$prefix.'user-sessions`; CREATE TABLE IF NOT EXISTS `'.$prefix.'user-sessions` (`id` int(11) NOT NULL AUTO_INCREMENT, `session_key` varchar(32) NOT NULL, `ip_address` varchar(15) NOT NULL, `expires` datetime NOT NULL, `last_seen` datetime NOT NULL, `browser` text NOT NULL, `user_id` int(11) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;')) return false;
+
+    return true;
 }

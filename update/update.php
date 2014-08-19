@@ -6,13 +6,19 @@
  * @param array $system_info
  * @return boolean
  */
-function update($Theamus, $update_info) {
+function update() {
+    // Define the update 'functions' to run
+    $updates = array('02', '11', '12', '130');
+
     // Run updates
-    update_02($Theamus);
-    update_11($Theamus);
-    update_12($Theamus);
-    update_version($Theamus, $update_info);
-    update_cleanup($Theamus);
+    foreach ($updates as $update) {
+        $update_function = 'update_'.$update;
+        if (!$update_function()) return false;
+    }
+
+    update_version('1.3.0'); // Update the version
+
+    update_cleanup(); // Cleanup!
 
     return true;
 }
