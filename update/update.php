@@ -6,13 +6,13 @@
  * @param array $system_info
  * @return boolean
  */
-function update($system_info) {
+function update($Theamus, $update_info) {
     // Run updates
-    update_02();
-    update_11();
-    update_12();
-    update_version("1.2");
-    update_cleanup();
+    update_02($Theamus);
+    update_11($Theamus);
+    update_12($Theamus);
+    update_version($Theamus, $update_info);
+    update_cleanup($Theamus);
 
     return true;
 }
