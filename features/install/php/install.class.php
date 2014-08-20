@@ -258,8 +258,8 @@ class Install {
      * @return array
      */
     public function create_config_file($args) {
-        $args['security_password-salt'] = $args['security_password-salt'] == '' ? md5(time().rand(0, 99999999)) : $args['security_password-salt'];
-        $args['security_session-salt'] = $args['security_session-salt'] == '' ? md5(time().rand(0, 99999999)) : $args['security_session-salt'];
+        $args['security_password-salt'] = $args['security_password-salt'] == '' ? md5(date('Y-m-d')) : $args['security_password-salt'];
+        $args['security_session-salt'] = $args['security_session-salt'] == '' ? md5(date('Y-m-d')) : $args['security_session-salt'];
 
         // Check the password salt length
         if (strlen($args['security_password-salt']) < 5) {
@@ -401,6 +401,9 @@ class Install {
 
         // Connect to the database
         $this->Theamus->DB->connect(true);
+
+        // Define the password salt
+        $args['security_password-salt'] = $args['security_password-salt'] == '' ? md5(date('Y-m-d')) : $args['security_password-salt'];
 
         // Define the secure password
         $salt = $args['security_password-salt'];
