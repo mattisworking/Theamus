@@ -31,4 +31,6 @@ switch ($file) {
         $feature['css']['file'][]   = DFLT_DEV_MODE ? 'admin/admin-home.css' : 'admin/admin-home.min.css';
         $feature['js']['file'][]    = DFLT_DEV_MODE ? 'dev/admin-home.js' : 'admin-home.min.js';
         break;
+    
+    default: $feature['title'] = $feature['header'] = '';
 }
