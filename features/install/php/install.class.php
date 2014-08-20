@@ -97,7 +97,7 @@ class Install {
             }
         }
 
-        return implode("", $queries);
+        return $queries;
     }
 
 
@@ -333,12 +333,11 @@ class Install {
         }
 
         // Attempt to perform all of the queries
-        $query = $this->Theamus->DB->custom_query($structure_queries);
-
-        // Check the query and return
-        if ($query == false) {
-            $this->restart_installation();
-            throw new Exception("There was an error creating the database structure.");
+        foreach ($structure_queries as $query) {
+            if(!$this->Theamus->DB->custom_query($query)) {
+                $this->restart_installation();
+                throw new Exception("There was an error creating the database structure.");
+            }
         }
 
         return true;
@@ -358,8 +357,8 @@ class Install {
             return false;
         }
 
-        // Define the structure queries
-        $structure_queries = $this->define_queries($args['database_prefix'], $this->sql_data);
+        // Define the data queries
+        $data_queries = $this->define_queries($args['database_prefix'], $this->sql_data);
 
         // Check the connection
         if ($this->Theamus->DB->connection == false) {
@@ -368,13 +367,13 @@ class Install {
         }
 
         // Attempt to perform all of the queries
-        $query = $this->Theamus->DB->custom_query($structure_queries);
-
-        // Check the query and return
-        if ($query == false) {
-            $this->restart_installation();
-            throw new Exception("There was an error adding the database data.");
+        foreach ($data_queries as $query) {
+            if(!$this->Theamus->DB->custom_query($query)) {
+                $this->restart_installation();
+                throw new Exception("There was an error adding the database data.");
+            }
         }
+
         return true;
     }
 
