@@ -6,10 +6,13 @@ if ($file == 'index.php') $i = $HomePage->redirect();
 
 // Load the admin class if relevant
 if ($Theamus->User->is_admin() && ($folders[0] == 'admin' || $file == 'admin-index.php')) {
+    if ($ajax == false) $Theamus->back_up();
     define('FILE', $file);
-
+ 
     $feature['class']['file'] = 'admin.class.php';
     $feature['class']['init'] = 'DefaultAdmin';
+} elseif (!$Theamus->User->is_admin() && ($folders[0] == 'admin' || $file == 'admin-index.php')) {
+    $ajax == false ? $Theamus->back_up() : die();
 }
 
 // Load the file related information
