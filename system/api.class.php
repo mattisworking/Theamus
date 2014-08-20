@@ -103,7 +103,7 @@ class API {
         if ($string == '') return false;
 
         // Check the created date to see if the string is actually a date and retrun respectively
-        return (($timestamp = strtotime($format)) === false) ? false : true;
+        return (($timestamp = strtotime($string)) === false) ? false : true;
     }
 
 
