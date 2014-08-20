@@ -12,7 +12,7 @@ $failed = false;
             <?php
 
             // Check the PHP version, make sure it is newer than 5.2.4
-            if (version_compare(phpversion(), "5.2.4", ">")) {
+            if (version_compare(phpversion(), "5.2.4", ">=")) {
                 echo "<span class='glyphicon ion-checkmark-round'></span>";
             } else {
                 echo "<span class='glyphicon ion-close-round'></span>";
