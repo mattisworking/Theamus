@@ -1164,7 +1164,7 @@ class Call {
      */
     private function error_page($type="404") {
         // Define the settings to use
-        $settings['name'] = $this->install == false ? $this->Theamus->settings : "Theamus Installation";
+        $settings['name'] = $this->install == false ? $this->Theamus->settings['name'] : "Theamus Installation";
 
         // Define the theme data
         $data['name']       = $settings['name'];

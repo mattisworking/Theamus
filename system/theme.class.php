@@ -53,7 +53,7 @@ class Theme {
      * Starts and initializes variables to be used by the class.
      * Then performs a try/catch statement to check/run the theme parsing
      *
-     * @param array $data
+     * @param object $t
      */
     public function __construct($t) {
         $this->Theamus = $t; // Make other Theamus classes usable
@@ -103,8 +103,7 @@ class Theme {
      */
     private function clean_data() {
         $settings = !$this->Theamus->DB->connection ? $this->data : $this->Theamus->settings;
-
-
+        
         $ret['title']       = isset($this->data['title']) ? $this->data['title']." - ".$this->data['name'] : $this->data['name'];
         $ret['header']      = isset($this->data['header']) ? $this->data['header'] : "";
         $ret['theme_path']  = trim($this->Theamus->web_path(trim(str_replace(ROOT, "", $this->data['theme']), "/")), "/")."/";
