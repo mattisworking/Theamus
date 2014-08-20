@@ -514,7 +514,7 @@ class DB {
                 if ($query) {
                     return $query;
                 } else {
-                    $this->query_errors[] = $this->connection_error;
+                    $this->query_errors[] = $this->connection->error;
 
                     if ($this->show_query_errors == true) {
                         $this->Theamus->pre("The query failed to execute. Code: ".$this->connection->errno." - Message: ".$this->connection->error);
@@ -636,7 +636,7 @@ class DB {
                     while ($this->connection->next_result()) continue;
                     return $return;
                 } else {
-                    $this->query_errors[] = $this->connection_error;
+                    $this->query_errors[] = $this->connection->error;
 
                     if ($this->show_query_errors == true) {
                         $this->Theamus->pre("The query failed to execute. Code: ".$this->connection->errno." - Message: ".$this->connection->error);
@@ -726,7 +726,7 @@ class DB {
                 if ($query) {
                     return $query;
                 } else {
-                    $this->query_errors[] = $this->connection_error;
+                    $this->query_errors[] = $this->connection->error;
 
                     if ($this->show_query_errors == true) {
                         $this->Theamus->pre("The query failed to execute. Code: ".$this->connection->errno." - Message: ".$this->connection->error);
@@ -826,7 +826,7 @@ class DB {
                 if ($query) {
                     return $query;
                 } else {
-                    $this->query_errors[] = $this->connection_error;
+                    $this->query_errors[] = $this->connection->error;
 
                     if ($this->show_query_errors == true) {
                         $this->Theamus->pre("The query failed to execute. Code: ".$this->connection->errno." - Message: ".$this->connection->error);
@@ -921,13 +921,27 @@ class DB {
                 foreach($variables as $key => $variable) {
                     $query = str_replace($key, "'".$this->connection->real_escape_string($variable)."'", $query);
                 }
-                return $this->connection->query($query);
+
+                $sql_query = $this->connection->query($query);
+                if ($sql_query) {
+                    return $sql_query;
+                } else {
+                    $this->query_errors[] = $this->connection->error;
+
+                    if ($this->show_query_errors == true) {
+                        $this->Theamus->pre("The query failed to execute. Code: ".$this->connection->errno." - Message: ".$this->connection->error);
+                    }
+                    return false;
+                }
 
             // If using PDO - prepare the statement and execute
             } else {
                 $query = $this->connection->prepare($query);
                 if ($query->execute($variables)) {
                     return $query;
+                } else {
+                    $query_error = $query->errorInfo();
+                    $this->query_errors[] = $query_error[2];
                 }
                 return false;
             }
