@@ -102,22 +102,8 @@ class API {
         // Check for a string
         if ($string == '') return false;
 
-        // Define the possible date formats
-        $date_formats = array('Y-m-d');
-
-        $return = array(); // Initialize the return array
-
-        // Loop through all of the date formats
-        foreach ($date_formats as $format) {
-            // Try to create a date with the format
-            $date = DateTime::createFromFormat($format, $string);
-
-            // Check the created date to see if the string is actually a date
-            $return[] = (!$date || !(date_format($date, $string) == $string)) ? false : true;
-        }
-
-        // Return!
-        return in_array(true, $return) ? true : false;
+        // Check the created date to see if the string is actually a date and retrun respectively
+        return (($timestamp = strtotime($format)) === false) ? false : true;
     }
 
 
