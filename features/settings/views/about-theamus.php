@@ -4,7 +4,7 @@
     </div>
     <div class="st_banner-version">
         Theamus<br>
-        version 1.3
+        version 1.3.0
     </div>
 </div>
 
