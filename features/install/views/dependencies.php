@@ -94,11 +94,11 @@ $failed = false;
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function(){
         $("#check-again").click(function() {
-            window.location = Theamus.base_url+"install/dependencies/";
+            window.location = Theamus.base_url+"/install/dependencies/";
         });
 
         $("#next-step").click(function() {
-            window.location = Theamus.base_url+"install/setup/";
+            window.location = Theamus.base_url+"/install/setup/";
         });
     });
 </script>

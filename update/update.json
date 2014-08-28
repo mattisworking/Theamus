@@ -5,7 +5,8 @@
         "files": [],
         "bugs": [
             "Added a way to avoid redundant queries when looking for table name prefixes using the DB->table() function.  https://github.com/Eyraahh/Theamus/issues/81",
-            "Trims any trailing underscores before attaching the table name to the table prefix in the DB->table() funciton. https://github.com/Eyraahh/Theamus/issues/80"
+            "Trims any trailing underscores before attaching the table name to the table prefix in the DB->table() function. https://github.com/Eyraahh/Theamus/issues/80",
+            "Trims the trailing slash from the url on the global JS variable Theamus.base_url. https://github.com/Eyraahh/Theamus/issues/82"
         ]
     },
     "authors": [
