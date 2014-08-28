@@ -360,7 +360,7 @@ class DB {
      * @param array $clause
      * @return string
      */
-    private function define_clause($clause) {
+    public function define_clause($clause) {
         $return_clause = $return_inner = array(); // Defaults
 
         if (!isset($clause['conditions']) || !isset($clause['operator'])) {
@@ -385,19 +385,17 @@ class DB {
                 if ($first_character == "[") {
                     preg_match("/\[(.*?)\]/", $key, $matches);
                     for ($i = 0; $i < strlen($matches[1]); $i++) {
-                        $break = false;
-
                         switch ($matches[1][$i]) {
                             case "!":
                                 if (isset($matches[1][$i + 1]) && $matches[1][$i + 1] == '%') {
                                     $key = str_replace("!%", "", $key);
                                     $equals = "NOT LIKE";
-                                    $break = true;
+                                    break 2;
                                 } else {
                                     $key = str_replace("!", "", $key);
                                     $equals = "!=";
+                                    break;
                                 }
-                                break;
                             case "%":
                                 $equals = "LIKE";
                                 $key = str_replace("%", "", $key);
@@ -410,25 +408,23 @@ class DB {
                                 if (isset($matches[1][$i + 1]) && $matches[1][$i + 1] == '=') {
                                     $key = str_replace("<=", "", $key);
                                     $equals = "<=";
-                                    $break = true;
+                                    break 2;
                                 } else {
                                     $key = str_replace("<", "", $key);
                                     $equals = "<";
+                                    break;
                                 }
-                                break;
                             case ">":
                                 if (isset($matches[1][$i + 1]) && $matches[1][$i + 1] == '=') {
                                     $key = str_replace(">=", "", $key);
                                     $equals = ">=";
-                                    $break = true;
+                                    break 2;
                                 } else {
                                     $key = str_replace(">", "", $key);
                                     $equals = ">";
+                                    break;
                                 }
-                                break;
                         }
-
-                        if ($break) break;
                     }
                     $key = str_replace("[", "", str_replace("]", "", $key));
                 }
