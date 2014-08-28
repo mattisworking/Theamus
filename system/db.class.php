@@ -360,7 +360,7 @@ class DB {
      * @param array $clause
      * @return string
      */
-    public function define_clause($clause) {
+    private function define_clause($clause) {
         $return_clause = $return_inner = array(); // Defaults
 
         if (!isset($clause['conditions']) || !isset($clause['operator'])) {
