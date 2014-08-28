@@ -1074,11 +1074,11 @@ class Call {
      * @return boolean
      */
     private function define_classes() {
-        $class_folder = $this->get_class_folder();
+        $class_folder = $this->get_class_folder().'/';
         $class_info = $this->get_class_info();
 
         if ($class_folder && $class_info) {
-            $path = $this->Theamus->file_path(ROOT."/features/$this->feature_folder/$class_folder/");
+            $path = $this->Theamus->file_path(ROOT."/features/{$this->feature_folder}/{$class_folder}");
             if ($this->include_class($path.$class_info['file'])) {
                 return true;
             }
