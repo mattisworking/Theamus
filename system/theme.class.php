@@ -103,7 +103,7 @@ class Theme {
      */
     private function clean_data() {
         $settings = !$this->Theamus->DB->connection ? $this->data : $this->Theamus->settings;
-        
+
         $ret['title']       = isset($this->data['title']) ? $this->data['title']." - ".$this->data['name'] : $this->data['name'];
         $ret['header']      = isset($this->data['header']) ? $this->data['header'] : "";
         $ret['theme_path']  = trim($this->Theamus->web_path(trim(str_replace(ROOT, "", $this->data['theme']), "/")), "/")."/";
@@ -418,7 +418,7 @@ class Theme {
                     if ($path == "hr") $nav .= "<li class='nav-hr'><hr /></li>";
                     elseif (is_array($navigation[$text])) {
                         $nav .= "<li><a href='".$navigation[$text]['path']."'>".$text."</a>";
-                        $nav .= extra_page_navigation($navigation[$text]);
+                        $nav .= $this->extra_page_navigation($navigation[$text]);
                         $nav .= "</li>";
                     } else $nav .= "<li><a href='".$path."'>".$text."</a></li>";
                 }

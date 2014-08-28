@@ -6,7 +6,8 @@
         "bugs": [
             "Added a way to avoid redundant queries when looking for table name prefixes using the DB->table() function.  https://github.com/Eyraahh/Theamus/issues/81",
             "Trims any trailing underscores before attaching the table name to the table prefix in the DB->table() function. https://github.com/Eyraahh/Theamus/issues/80",
-            "Trims the trailing slash from the url on the global JS variable Theamus.base_url. https://github.com/Eyraahh/Theamus/issues/82"
+            "Trims the trailing slash from the url on the global JS variable Theamus.base_url. https://github.com/Eyraahh/Theamus/issues/82",
+            "Fixed the Theme->extra_page_navigation() function recurse issue. https://github.com/Eyraahh/Theamus/issues/79"
         ]
     },
     "authors": [
