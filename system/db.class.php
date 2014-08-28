@@ -385,10 +385,18 @@ class DB {
                 if ($first_character == "[") {
                     preg_match("/\[(.*?)\]/", $key, $matches);
                     for ($i = 0; $i < strlen($matches[1]); $i++) {
+                        $break = false;
+
                         switch ($matches[1][$i]) {
                             case "!":
-                                $equals = "!=";
-                                $key = str_replace("!", "", $key);
+                                if (isset($matches[1][$i + 1]) && $matches[1][$i + 1] == '%') {
+                                    $key = str_replace("!%", "", $key);
+                                    $equals = "NOT LIKE";
+                                    $break = true;
+                                } else {
+                                    $key = str_replace("!", "", $key);
+                                    $equals = "!=";
+                                }
                                 break;
                             case "%":
                                 $equals = "LIKE";
@@ -398,7 +406,29 @@ class DB {
                                 $key = str_replace("`", "", $key);
                                 $equals = "=";
                                 break;
+                            case "<":
+                                if (isset($matches[1][$i + 1]) && $matches[1][$i + 1] == '=') {
+                                    $key = str_replace("<=", "", $key);
+                                    $equals = "<=";
+                                    $break = true;
+                                } else {
+                                    $key = str_replace("<", "", $key);
+                                    $equals = "<";
+                                }
+                                break;
+                            case ">":
+                                if (isset($matches[1][$i + 1]) && $matches[1][$i + 1] == '=') {
+                                    $key = str_replace(">=", "", $key);
+                                    $equals = ">=";
+                                    $break = true;
+                                } else {
+                                    $key = str_replace(">", "", $key);
+                                    $equals = ">";
+                                }
+                                break;
                         }
+
+                        if ($break) break;
                     }
                     $key = str_replace("[", "", str_replace("]", "", $key));
                 }
