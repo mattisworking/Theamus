@@ -82,6 +82,14 @@ class DB {
 
 
     /**
+     * Holds key/values for feature table prefixes to avoid excessive querying
+     *
+     * @var array $table_prefixes
+     */
+    private $table_prefixes = array();
+
+
+    /**
      * Initializes the class, defines the configuration given by the system
      *
      * @return boolean
@@ -963,6 +971,12 @@ class DB {
         // Define the feature to look for the prefix with
         $feature_alias = $feature != '' ? $feature : $this->Theamus->Call->feature['config']['folder_name'];
 
+        // Check for an existing table prefix value for this feature and return it before
+        // querying the database for the prefix again
+        if (isset($this->table_prefixes[$feature_alias])) {
+            return $this->table_prefixes[$feature_alias].$name;
+        }
+
         // Query the database looking for the db_prefix
         $query = $this->select_from_table(
             $this->system_table('features'),
@@ -982,7 +996,10 @@ class DB {
         // Define the query information
         $results = $this->fetch_rows($query);
 
+        // Add the table prefix to the class variable to avoid redundant queries
+        $this->table_prefixes[$feature_alias] = substr($results['db_prefix'], -1) == '_' ? $results['db_prefix'] : "{$results['db_prefix']}_";
+
         // Return the completed table name
-        return $results['db_prefix'].'_'.$name;
+        return $this->table_prefixes[$feature_alias].$name;
     }
 }
