@@ -429,4 +429,53 @@ class Theme {
         }
         return false;
     }
+
+
+    /**
+     * Returns a html UL element of tabs to be used on admin pages
+     *
+     * @param array $tabs
+     * @param string $current_file
+     * @return string
+     */
+    public function generate_admin_tabs($tab_name = "", $tabs = array(), $current_file = "") {
+        $return_tabs = array(); // Empty return array to add to
+
+        // Loop through all of the given tabs and assign them to li items/links
+        foreach ($tabs as $tab) {
+            $dd_class = ""; // Initialize the dropdown positioning class (eery time)
+
+            // Check if this tab is a dropdown item or not
+            if (!is_array($tab[1])) {
+                // Define the class for the current tab and add it to the return array
+                $class = $tab[1] == $current_file ? "class='current'" : "";
+                $return_tabs[] = "<li {$class}>".
+                    "<a href='#' name='{$tab_name}' data-file='/".str_replace(".php", "", $tab[1])."/' data-title='{$tab[2]}'>{$tab[0]}</a>".
+                    "</li>";
+
+            // For dropdown items
+            } else {
+                $temp_dropdown = array(); // Initialize the array of the dropdown items
+
+                // Loop through all of the dd tab items
+                foreach ($tab[1] as $dd_tab) {
+                    // Add the tab link to the dropdown array
+                    $temp_dropdown[] ="<li>".
+                        "<a href'#' name='{$tab_name}' data-file='/".str_replace(".php", "", $dd_tab[1])."/' data-title='{$dd_tab[2]}'>{$dd_tab[0]}</a>".
+                        "</li>";
+                }
+
+                // Define the positioning class for the dropdown item
+                if (isset($tab[2]) && ($tab[2] == "left" || $tab[2] == "right")) {
+                    $dd_class = "admin-tab-dropdown-{$tab[2]}";
+                }
+
+                // Add the dropdown to the return array
+                $return_tabs[] = "<li class='admin-tab-dropdown {$dd_class}'>{$tab[0]} <span class='glyphicon ion-arrow-down-b'></span><ul>".implode($temp_dropdown)."</ul></li>";
+            }
+        }
+
+        // Return the tabs to the page
+        return '<ul>'.implode('', $return_tabs).'</ul>';
+    }
 }

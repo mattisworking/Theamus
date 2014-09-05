@@ -55,20 +55,11 @@ class Appearance {
     public function appearance_tabs($file = '') {
         // Define the tabs and their options
         $tabs = array(
-            array('List of Themes', 'index.php', 'Theamus Themes'),
-            array('Install a Theme', 'install.php', 'Install a Theme')
-        );
+            array('List of Themes', 'appearance/index.php', 'Theamus Themes'),
+            array('Install a Theme', 'appearance/install.php', 'Install a Theme'));
 
-        $return_tabs = array(); // Empty return array to add to
-
-        // Loop through all of the tabs defined above and assign them to li items/links
-        foreach ($tabs as $tab) {
-            $class = $tab[1] == $file ? 'class=\'current\'' : ''; // Define the current tab
-            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'appearance-tab\' data-file=\'/appearance/'.trim($tab[1], '.php').'/\' data-title=\''.$tab[2].'\'>'.$tab[0].'</a></li>';
-        }
-
-        // Return the tabs to the page
-        return '<ul>'.implode('', $return_tabs).'</ul>';
+        // Return the HTML tabs
+        return $this->Theamus->Theme->generate_admin_tabs("appearance-tab", $tabs, $file);
     }
 
 

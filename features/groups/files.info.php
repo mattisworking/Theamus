@@ -7,7 +7,7 @@ if (!$Theamus->User->is_admin()) throw new Exception('Only administrators can ac
 $feature['class']['file'] = 'groups.class.php';
 $feature['class']['init'] = 'Groups';
 
-define('FILE', $file); // Define the file as a global variable
+define('FILE', "groups/{$file}"); // Define the file as a global variable
 
 $feature['js']['file'][] = GROUPS_DEV_MODE ? 'dev/groups.admin.js' : 'groups.admin.min.js';
 $feature['css']['file'][] = GROUPS_DEV_MODE ? 'dev/groups.admin.css' : 'groups.admin.min.css';

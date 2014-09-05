@@ -699,20 +699,11 @@ class Settings {
     public function settings_tabs($file = '') {
         // Define the tabs and their options
         $tabs = array(
-            array('Settings', 'settings.php', 'Theamus Settings'),
-            array('Customization', 'index.php', 'Site Customization'),
-            array('Manual Update', 'update-manually.php', 'Manual Update')
-        );
+            array('Settings', 'settings/settings.php', 'Theamus Settings'),
+            array('Customization', 'settings/index.php', 'Site Customization'),
+            array('Manual Update', 'settings/update-manually.php', 'Manual Update'));
 
-        $return_tabs = array(); // Empty return array to add to
-
-        // Loop through all of the tabs defined above and assign them to li items/links
-        foreach ($tabs as $tab) {
-            $class = $tab[1] == $file ? 'class=\'current\'' : ''; // Define the current tab
-            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'settings-tab\' data-file=\'/settings/'.trim($tab[1], '.php').'/\' data-title=\''.$tab[2].'\'>'.$tab[0].'</a></li>';
-        }
-
-        // Return the tabs to the page
-        return '<ul>'.implode('', $return_tabs).'</ul>';
+        // Return the HTML tabs
+        return $this->Theamus->Theme->generate_admin_tabs("settings-tab", $tabs, $file);
     }
 }

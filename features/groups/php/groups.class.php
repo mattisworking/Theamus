@@ -28,21 +28,12 @@ class Groups {
     public function groups_tabs($file = '') {
         // Define the tabs and their options
         $tabs = array(
-            array('List of Groups', 'index.php', 'Theamus Groups'),
-            array('Search Groups', 'search.php', 'Search Theamus Groups'),
-            array('Create a New Group', 'create.php', 'Create a New Group')
-        );
+            array('List of Groups', 'groups/index.php', 'Theamus Groups'),
+            array('Search Groups', 'groups/search.php', 'Search Theamus Groups'),
+            array('Create a New Group', 'groups/create.php', 'Create a New Group'));
 
-        $return_tabs = array(); // Empty return array to add to
-
-        // Loop through all of the tabs defined above and assign them to li items/links
-        foreach ($tabs as $tab) {
-            $class = $tab[1] == $file ? 'class=\'current\'' : ''; // Define the current tab
-            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'groups-tab\' data-file=\'/groups/'.str_replace('.php', '', $tab[1]).'/\' data-title=\''.$tab[2].'\'>'.$tab[0].'</a></li>';
-        }
-
-        // Return the tabs to the page
-        return '<ul>'.implode('', $return_tabs).'</ul>';
+        // Return the HTML tabs
+        return $this->Theamus->Theme->generate_admin_tabs("groups-tab", $tabs, $file);
     }
 
 

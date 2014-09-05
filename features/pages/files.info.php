@@ -4,7 +4,7 @@
 $feature['class']['file'] = 'pages.class.php';
 $feature['class']['init'] = 'Pages';
 
-define('FILE', $file); // Define the current file
+define('FILE', "pages/{$file}"); // Define the current file
 
 // Load the file related information
 switch ($file) {

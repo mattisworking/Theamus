@@ -15,7 +15,8 @@
             "Somehow the Notify javascript function was removed.  It's back!! - https://github.com/Eyraahh/Theamus/issues/85 & https://github.com/Eyraahh/Theamus/issues/86",
             "Updated the auto-updater to be of the latest and greatest version - https://github.com/Eyraahh/Theamus/issues/84",
             "Fixed an issue where admin tabs wouldn't load which was caused by #82 - https://github.com/Eyraahh/Theamus/issues/87",
-            "Added a 'root only' option to stop recursion when scanning folders - https://github.com/Eyraahh/Theamus/issues/88"
+            "Added a 'root only' option to stop recursion when scanning folders - https://github.com/Eyraahh/Theamus/issues/88",
+            "The admin window tabs now support dropdowns for more awesome! - https://github.com/Eyraahh/Theamus/issues/74"
         ]
     },
     "authors": [
