@@ -56,6 +56,9 @@ function create_admin_window(window_id, window_title, window_url) {
     $(ad_content).attr('id', window_id);
     $(ad_window).append(ad_content);
 
+    var ad_content_inner = document.createElement('div');
+    $(ad_content).append(ad_content_inner);
+
     $('.admin-windows').append(ad_window);
 
     setTimeout(function() {
@@ -66,7 +69,7 @@ function create_admin_window(window_id, window_title, window_url) {
 }
 
 function admin_window_loading(window_id) {
-    $('#'+window_id).html('<span class=\'spinner spinner-fixed admin-window-spinner\'></span>');
+    $('#'+window_id).children("div").html('<span class=\'spinner spinner-fixed admin-window-spinner\'></span>');
 }
 
 function update_admin_window_content(window_id, url) {
@@ -80,27 +83,30 @@ function update_admin_window_content(window_id, url) {
         Theamus.Ajax.run({
             url:        Theamus.base_url+url,
             type:       "include",
-            result:     window_id,
+            result:     $("#"+window_id).children("div"),
             after:      function() {
                 $('#'+window_id).parentsUntil('.admin-windows').find('.refresh').attr('data-url', url);
                 admin_add_extras();
                 resize_admin_window();
-                if (resize !== null) {
-                    resize = setInterval(resize_admin_window, 500);
-                    setTimeout(function() { clearInterval(resize); resize = null; }, 10000);
-                }
             }
         });
     }, 500);
 }
 
 function resize_admin_window() {
+    if (resize !== null) clearInterval(resize);
+
     for (var i = 0; i < $('.admin-window').length; i++) {
         var ad_window = $('.admin-window')[i];
-        if ($(ad_window).height() > $(window).height() && Theamus.Mobile === false) {
+
+        if (($(ad_window).height() > $(window).height()) && Theamus.Mobile === false) {
             $(ad_window).addClass('admin-window-maxheight');
+        } else if (($(ad_window).find(".window-content").children("div").height() < parseInt(($(window).height() * .90) - 100)) && Theamus.Mobile === false) {
+            $(ad_window).removeClass('admin-window-maxheight');
         }
     }
+
+    resize = setInterval(function() { resize_admin_window(); }, 500);
 }
 
 function change_admin_window_title(window_id, title) {
@@ -126,6 +132,7 @@ function admin_window_listeners() {
             containment: 'window',
             drag: function() {
                 $(this).removeClass('admin-window-init');
+                bring_admin_window_to_front(this);
             }
         });
     }
