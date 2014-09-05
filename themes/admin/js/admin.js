@@ -66,6 +66,10 @@ function create_admin_window(window_id, window_title, window_url) {
         admin_window_listeners();
         update_admin_window_content(window_id, window_url);
     }, 200);
+
+    var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+    theamus_ls['admin_cache'][window_id] = [window_title, window_url];
+    localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
 }
 
 function admin_window_loading(window_id) {
@@ -91,6 +95,14 @@ function update_admin_window_content(window_id, url) {
             }
         });
     }, 500);
+
+    var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+    if (theamus_ls['admin_cache'][window_id] !== undefined) {
+        if (theamus_ls['admin_cache'][window_id][1] !== url) {
+            theamus_ls['admin_cache'][window_id][1] = url;
+            localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
+        }
+    }
 }
 
 function resize_admin_window() {
@@ -113,6 +125,14 @@ function change_admin_window_title(window_id, title) {
     var chrome_title = $($('#'+window_id).siblings()[0]).children('.title');
     chrome_title.attr('title', title);
     chrome_title.html(title);
+
+    var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+    if (theamus_ls['admin_cache'][window_id] !== undefined) {
+        if (theamus_ls['admin_cache'][window_id][0] !== title) {
+            theamus_ls['admin_cache'][window_id][0] = title;
+            localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
+        }
+    }
 }
 
 function bring_admin_window_to_front(ad_window) {
@@ -142,6 +162,14 @@ function admin_window_listeners() {
         var ad_window = $(this);
         ad_window.parentsUntil('.admin-windows').addClass("admin-window-closing");
 
+        var window_id = ad_window.parentsUntil('.admin-windows').find(".window-content").attr("id");
+
+        var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+        if (theamus_ls['admin_cache'][window_id] !== undefined) {
+            delete theamus_ls['admin_cache'][window_id];
+            localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
+        }
+
         setTimeout(function() {
             ad_window.parentsUntil('.admin-windows').remove();
 
@@ -168,17 +196,19 @@ function switch_position_text() {
 }
 
 $(document).ready(function() {
-    // Define the position of the administration panel
-    if (localStorage.getItem('admin_position') === null) {
-        admin_position = 'left';
-        localStorage.setItem('admin_position', 'left');
-    } else {
-        admin_position = localStorage.getItem('admin_position');
+    if (localStorage.getItem("Theamus") === null) {
+        localStorage.setItem("Theamus", JSON.stringify({"admin_position": "left", "admin_cache": {1:0}}));
     }
 
+    var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+
+    if (theamus_ls['admin_cache'] !== "" || typeof(theamus_ls['admin_cache']) === "object") {
+    }
+
+    admin_position = theamus_ls['admin_position'];
     if (admin_position !== 'left' && admin_position !== 'right') {
-        admin_position = 'left';
-        localStorage.setItem('admin_position', 'left');
+        theamus_ls['admin_position'] = "left";
+        localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
     }
 
     $('.admin-header').addClass('admin-header-'+admin_position);
@@ -260,7 +290,8 @@ $(document).ready(function() {
         $('.admin-navigation').addClass('admin-navigation-'+new_position);
         $('.admin-navigation').addClass('admin-navigation-open-'+new_position);
 
-        localStorage.setItem('admin_position', new_position);
+        theamus_ls['admin_position'] = new_position;
+        localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
         admin_position = new_position;
 
         switch_position_text();
@@ -271,4 +302,11 @@ $(document).ready(function() {
         $('.admin').removeAttr('style');
         $('.admin').addClass('admin-on');
     }, 200);
+
+    if (theamus_ls['admin_cache'] !== undefined) {
+        for (var key in theamus_ls['admin_cache']) {
+            if (key === "1") continue;
+            create_admin_window(key, theamus_ls['admin_cache'][key][0], theamus_ls['admin_cache'][key][1]);
+        }
+    }
 });
