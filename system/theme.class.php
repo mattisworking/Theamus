@@ -218,7 +218,7 @@ class Theme {
         $url_params = $this->data['url_params'];
 
         if ($this->data['init-class'] != false) {
-            ${$this->data['init-class']} = new $this->data['init-class'];
+            ${$this->data['init-class']} = new $this->data['init-class']($this->Theamus);
         }
 
         include $this->data['file_path'];
