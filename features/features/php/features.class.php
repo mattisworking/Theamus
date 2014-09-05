@@ -37,7 +37,7 @@ class Features {
         // Loop through all of the tabs defined above and assign them to li items/links
         foreach ($tabs as $tab) {
             $class = $tab[1] == $file ? 'class=\'current\'' : ''; // Define the current tab
-            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'features-tab\' data-file=\'features/'.str_replace('.php', '', $tab[1]).'/\' data-title=\''.$tab[2].'\'>'.$tab[0].'</a></li>';
+            $return_tabs[] = '<li '.$class.'><a href=\'#\' name=\'features-tab\' data-file=\'/features/'.str_replace('.php', '', $tab[1]).'/\' data-title=\''.$tab[2].'\'>'.$tab[0].'</a></li>';
         }
 
         // Return the tabs to the page
