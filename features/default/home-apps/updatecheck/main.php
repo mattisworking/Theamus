@@ -3,7 +3,7 @@
 $error = false; // Start out the day nicely.
 
 // Get the update information from the server
-$json = file_get_contents("http://localhost/theamus/releases/api/update-info/");
+$json = file_get_contents("http://theamus.com/releases/api/update-info/");
 $info = json_decode($json, true);
 
 // Check the results
