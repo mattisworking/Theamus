@@ -32,7 +32,7 @@ class DefaultAdmin {
      */
     protected function get_app_folders() {
         // Return any folders found in the home apps folder
-        return $this->Theamus->Files->scan_folder($this->home_apps_folder, $this->home_apps_folder, 'folders');
+        return $this->Theamus->Files->scan_folder($this->home_apps_folder, $this->home_apps_folder, 'folders', true);
     }
 
 

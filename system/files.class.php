@@ -29,7 +29,7 @@ class Files {
      * @param string $return_type
      * @return array $ret
      */
-    function scan_folder($path, $clean = "", $return_type = "files") {
+    function scan_folder($path, $clean = "", $return_type = "files", $root_only = false) {
         $ret = array();
 
         // Scan the define folder for contents
@@ -48,7 +48,9 @@ class Files {
                 $ret[] = $current_path; // Add the folder to the return array
 
                 // Recurse into the folder, adding the information to the return array as well
-                foreach ($this->scan_folder($current_path, $clean, $return_type) as $value) $ret[] = $value;
+                if (!$root_only) {
+                    foreach ($this->scan_folder($current_path, $clean, $return_type) as $value) $ret[] = $value;
+                }
                 continue;
 
             // If the current file is a file and we're looking to return files only
@@ -59,7 +61,7 @@ class Files {
 
             // Only if we're returning files recurse into folders, if it's done without
             // the condition, it will try to recurse into files as well
-            if ($return_type == "files") {
+            if ($return_type == "files" && !$root_only) {
                 foreach ($this->scan_folder($current_path, $clean, $return_type) as $value) $ret[] = $value;
             }
         }
