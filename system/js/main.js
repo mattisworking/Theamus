@@ -23,7 +23,17 @@ Theamus = {
     })(),
     Tablet: (function() {
         return (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()));
-    })()
+    })(),
+    Notify: function(e, t) {
+        var n = {
+            success: "ion-checkmark-round",
+            danger: "ion-close",
+            warning: "ion-alert",
+            info: "ion-information",
+            spinner: "spinner spinner-fixed-size"
+        };
+        return "<div class='alert alert-" + e + "'><span class='glyphicon " + n[e] + "'></span>" + t + "</div>";
+    }
 };
 
 function add_js_file(source) {

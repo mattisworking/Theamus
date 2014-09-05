@@ -11,7 +11,8 @@
             "Added more options to the clause generator: <, >, <=, >=, !% (NOT LIKE). https://github.com/Eyraahh/Theamus/issues/77",
             "Class files can now live in the root of the feature. https://github.com/Eyraahh/Theamus/issues/76",
             "Changed the Files->scan_folder function to be able to recurse into directories when looking for folders as well as returning both folders and files.",
-            "Fixed an issue where the Theamus class wasn't being included in blank content pages. - https://github.com/Eyraahh/Theamus/issues/83"
+            "Fixed an issue where the Theamus class wasn't being included in blank content pages. - https://github.com/Eyraahh/Theamus/issues/83",
+            "Somehow the Notify javascript function was removed.  It's back!! - https://github.com/Eyraahh/Theamus/issues/85 & https://github.com/Eyraahh/Theamus/issues/86"
         ]
     },
     "authors": [
