@@ -23,23 +23,32 @@ function admin_window_run_on_load(func) {
     }
 }
 
-function create_admin_window(window_id, window_title, window_url) {
+function create_admin_window(window_id, window_title, window_url, pre_style) {
+    if (!pre_style) pre_style = "";
+    
+    var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+    
     if ($('#'+window_id).length > 0) {
         bring_admin_window_to_front($('#'+window_id).parentsUntil('.admin-windows'));
         return false;
     }
 
-    if (Theamus.Mobile === false) {
-        if ($('.admin-navigation').hasClass('admin-navigation-left')) {
-            $('.admin-navigation').addClass('admin-navigation-open-'+admin_position);
-        } else {
-            $('.admin-navigation').addClass('admin-navigation-open-'+admin_position);
+    if (theamus_ls['admin_open'] === true) {
+        $('.admin-header').addClass('admin-header-on');
+        $('.admin-navigation').addClass('admin-navigation-'+admin_position)
+        $('.admin-navigation').addClass('admin-navigation-open');
+        if (Theamus.Mobile === false) {
+            if ($('.admin-navigation').hasClass('admin-navigation-left')) {
+                $('.admin-navigation').addClass('admin-navigation-open-'+admin_position);
+            } else {
+                $('.admin-navigation').addClass('admin-navigation-open-'+admin_position);
+            }
         }
     }
 
     var ad_window = document.createElement('div');
     $(ad_window).addClass('admin-window');
-    $(ad_window).addClass('admin-window-init');
+    (pre_style === "") ? $(ad_window).addClass('admin-window-init') : $(ad_window).attr("style", pre_style);
     if (Theamus.Mobile === true) {
         $(ad_window).addClass('admin-window-mobile');
     }
@@ -62,14 +71,17 @@ function create_admin_window(window_id, window_title, window_url) {
     $('.admin-windows').append(ad_window);
 
     setTimeout(function() {
-        $(ad_window).addClass('admin-window-open');
+        if (theamus_ls['admin_open'] === true) {
+            $(ad_window).addClass('admin-window-open');
+        }
         admin_window_listeners();
         update_admin_window_content(window_id, window_url);
     }, 200);
 
-    var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
-    theamus_ls['admin_cache'][window_id] = [window_title, window_url];
-    localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
+    if (pre_style === "") {
+        theamus_ls['admin_cache'][window_id] = [window_title, window_url, ""];
+        localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
+    }
 }
 
 function admin_window_loading(window_id) {
@@ -150,9 +162,22 @@ function admin_window_listeners() {
             handle: '.window-chrome',
             cancel: '.close',
             containment: 'window',
+            start: function() {
+                bring_admin_window_to_front(this);
+            },
             drag: function() {
                 $(this).removeClass('admin-window-init');
-                bring_admin_window_to_front(this);
+            },
+            stop: function() {
+                
+                var window_id = $(this).find(".window-content").attr("id"),
+                    theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+                if (theamus_ls['admin_cache'][window_id] !== undefined) {
+                    if (theamus_ls['admin_cache'][window_id][2] !== $(this).attr("style")) {
+                        theamus_ls['admin_cache'][window_id][2] = $(this).attr("style");
+                        localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
+                    }
+                }
             }
         });
     }
@@ -197,7 +222,7 @@ function switch_position_text() {
 
 $(document).ready(function() {
     if (localStorage.getItem("Theamus") === null) {
-        localStorage.setItem("Theamus", JSON.stringify({"admin_position": "left", "admin_cache": {1:0}}));
+        localStorage.setItem("Theamus", JSON.stringify({"admin_position": "left", "admin_cache": {1:0}, "admin_open": false}));
     }
 
     var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
@@ -224,6 +249,9 @@ $(document).ready(function() {
 
     $('#ad_open-nav').click(function(e) {
         e.preventDefault();
+        
+        var ad_open = false;
+        
         $('.admin-navigation').toggleClass('admin-navigation-open');
         if ($('.admin-navigation').hasClass('admin-navigation-'+admin_position)) {
             $('.admin-navigation').toggleClass('admin-navigation-open-'+admin_position);
@@ -238,6 +266,8 @@ $(document).ready(function() {
             for (var i = 0; i < $('.admin-window').length; i++) {
                 $($('.admin-window')[i]).addClass('admin-window-open');
             }
+            
+            ad_open = true;
         } else {
             $('.admin-header').removeClass('admin-header-on');
             $('.admin').removeClass('admin-panel-open');
@@ -245,7 +275,13 @@ $(document).ready(function() {
             for (var i = 0; i < $('.admin-window').length; i++) {
                 $($('.admin-window')[i]).removeClass('admin-window-open');
             }
+            
+            ad_open = false;
         }
+        
+        var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+        theamus_ls['admin_open'] = ad_open;
+        localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
     });
 
 
@@ -306,7 +342,7 @@ $(document).ready(function() {
     if (theamus_ls['admin_cache'] !== undefined) {
         for (var key in theamus_ls['admin_cache']) {
             if (key === "1") continue;
-            create_admin_window(key, theamus_ls['admin_cache'][key][0], theamus_ls['admin_cache'][key][1]);
+            create_admin_window(key, theamus_ls['admin_cache'][key][0], theamus_ls['admin_cache'][key][1], theamus_ls['admin_cache'][key][2]);
         }
     }
 });
