@@ -740,7 +740,7 @@ var ajax = new function() {
     this.iterate_calls = function(functions, pause, count) {
         // Define variables
         var original_pause = pause,
-            pause = pause !== undefined ? parseInt(pause)*1000 : 0,
+            pause = pause !== undefined ? parseFloat(pause)*1000 : 0,
             count = count !== undefined ? count : 0,
             func = function(){};
 
