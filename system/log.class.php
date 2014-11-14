@@ -141,7 +141,7 @@ class Log {
             'line'      => $call_info['line'],
             'file'      => $call_info['file'],
             'type'      => $type,
-            'time'      => 'now()');
+            'time'      => '[func]now()');
 
         return; // Return
     }

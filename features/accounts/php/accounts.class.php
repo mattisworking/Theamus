@@ -480,7 +480,7 @@ class Accounts {
                     'permanent'         => 0,
                     'phone'             => $user_variables['phone'],
                     'picture'           => 'default-user-picture.png',
-                    'created'           => 'now()',
+                    'created'           => '[func]now()',
                     'active'            => !$registration || $this->Theamus->settings['email_host'] == '' ? 1 : 0,
                     'activation_code'   => $user_variables['activation-code'])));
 
