@@ -18,7 +18,8 @@
             "Added a 'root only' option to stop recursion when scanning folders - https://github.com/Eyraahh/Theamus/issues/88",
             "The admin window tabs now support dropdowns for more awesome! - https://github.com/Eyraahh/Theamus/issues/74",
             "Admin windows now resize automatically - https://github.com/Eyraahh/Theamus/issues/49",
-            "Loaded admin windows reload on page navigation - https://github.com/Eyraahh/Theamus/issues/56"
+            "Loaded admin windows reload on page navigation - https://github.com/Eyraahh/Theamus/issues/56",
+            "Fixed an issue with identifying IE11 as a browser"
         ]
     },
     "authors": [

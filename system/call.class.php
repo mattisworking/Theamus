@@ -1458,11 +1458,14 @@ class Call {
         } elseif(preg_match('/Netscape/i',$u_agent)) {
             $bname = 'Netscape';
             $ub = "Netscape";
+        } elseif(preg_match('/WOW64/i', $u_agent)) {
+            $bname = "Internet Explorer";
+            $ub = "rv";
         }
 
         // Get the version number
         $known = array('Version', $ub, 'other');
-        $pattern = '#(?<browser>'.join('|', $known).')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+        $pattern = '#(?<browser>'.join('|', $known).')[/ |:]+(?<version>[0-9.|a-zA-Z.]*)#';
         if (!preg_match_all($pattern, $u_agent, $matches)) {}
 
         $i = count($matches['browser']);
