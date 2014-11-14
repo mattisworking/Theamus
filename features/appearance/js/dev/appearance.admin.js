@@ -28,14 +28,14 @@ function list_listeners() {
         e.preventDefault();
 
         change_admin_window_title('theamus-appearance', 'Edit Theme');
-        update_admin_window_content('theamus-appearance', 'appearance/edit?id='+$(this).data('id'));
+        update_admin_window_content('theamus-appearance', '/appearance/edit?id='+$(this).data('id'));
     });
 
     $('[name="remove-theme-link"]').click(function(e) {
         e.preventDefault();
 
         change_admin_window_title('theamus-appearance', 'Remove Theme');
-        update_admin_window_content('theamus-appearance', 'appearance/remove?id='+$(this).data('id'));
+        update_admin_window_content('theamus-appearance', '/appearance/remove?id='+$(this).data('id'));
     });
 
     $("[name='activate-theme-link']").click(function(e) {
@@ -93,7 +93,7 @@ function install() {
                     $('#upload-result').html(Theamus.Notify('success', 'Theme installed.'));
 
                     setTimeout(function() {
-                        update_admin_window_content('theamus-appearance', 'appearance/');
+                        update_admin_window_content('theamus-appearance', '/appearance/');
                         change_admin_window_title('theamus-appearance', 'Theamus Appearance');
                     }, 1500);
                 }
@@ -159,7 +159,7 @@ function remove() {
                     $('#remove-result').html(Theamus.Notify('success', 'Theme Removed.'));
 
                     setTimeout(function() {
-                        update_admin_window_content('theamus-appearance', 'appearance/');
+                        update_admin_window_content('theamus-appearance', '/appearance/');
                         change_admin_window_title('theamus-appearance', 'Theamus Appearance');
                     }, 1500);
                 }

@@ -13,7 +13,7 @@ function list_listeners() {
         e.preventDefault();
 
         change_admin_window_title('theamus-navigation', 'Edit Link');
-        update_admin_window_content('theamus-navigation', 'navigation/edit?id='+$(this).data('id'));
+        update_admin_window_content('theamus-navigation', '/navigation/edit?id='+$(this).data('id'));
     });
 
     // Remove link
@@ -21,7 +21,7 @@ function list_listeners() {
         e.preventDefault();
 
         change_admin_window_title('theamus-navigation', 'Remove Link');
-        update_admin_window_content('theamus-navigation', 'navigation/remove?id='+$(this).data('id'));
+        update_admin_window_content('theamus-navigation', '/navigation/remove?id='+$(this).data('id'));
     });
 }
 
@@ -35,7 +35,7 @@ function change_path(to) {
 
     // Show the new element
     $('#'+to+'-wrapper').show();
-    
+
     resize_admin_window();
 }
 
@@ -82,7 +82,7 @@ function load_feature_files_select() {
         type: 'get',
         url: Theamus.base_url+'/navigation/',
         method: ['Navigation', 'get_feature_files_select'],
-        data: { custom: { 
+        data: { custom: {
                 feature: $('#feature').length > 0 && $('#feature').val() !== '' ? $('#feature').val() : $('#feature-select').val(),
                 file:  $('#feature-file').length > 0 ? $('#feature-file').val() : ''
             } },
@@ -118,10 +118,10 @@ function load_groups_select() {
 function get_navigation_links(page) {
     // Define the page number for the search results
     var page_number = page === undefined || (page % 1) !== 0 ? 1 : page;
-    
+
     // Define the search query
     var search_query = $('#navigation-search').length === 0 ? '' : $('#navigation-search').val();
-    
+
     // Make the call to get the list of links
     Theamus.Ajax.run({
         url: Theamus.base_url+'/navigation/links-list&search='+search_query+'&page='+page_number,
@@ -131,7 +131,7 @@ function get_navigation_links(page) {
             list_listeners();
         }
     });
-    
+
     return false; // Go nowhere, do nothing
 }
 
@@ -150,21 +150,21 @@ function create_link() {
         e.preventDefault(); // Go nowhere, do nothing.
         change_path(this.id);
     });
-    
+
     $('#feature-select').change(function() {
         load_feature_files_select();
     });
-    
+
     $('#create-link-form').submit(function(e) {
         e.preventDefault(); // Go nowhere, do nothing.
-        
+
         // Let the user know the form was submitted and show them
         $('#navigation-result').html(Theamus.Notify('spinner', 'Creating...'));
         $('#theamus-navigation').scrollTop(0);
-        
+
         // Disable the submit button
         $(this).find('button[type="submit"]').attr('disabled', 'disabled');
-        
+
         // Make the call to get the pages options
         Theamus.Ajax.api({
             type: 'get',
@@ -177,14 +177,14 @@ function create_link() {
                     $('#create-link-form').find('button[type="submit"]').removeAttr('disabled');
                 } else {
                     $('#navigation-result').html(Theamus.Notify('success', 'Link created successfully.'));
-                    
+
                     setTimeout(function() {
                         change_admin_window_title('theamus-navigation', 'Theamus Navigation');
                         update_admin_window_content('theamus-navigation', 'navigation/');
                     }, 1500);
                 }
             }
-        });   
+        });
     });
 }
 
@@ -195,21 +195,21 @@ function edit_link() {
         e.preventDefault(); // Go nowhere, do nothing.
         change_path(this.id);
     });
-    
+
     $('#feature-select').change(function() {
         load_feature_files_select();
     });
-    
+
     $('#edit-link-form').submit(function(e) {
         e.preventDefault(); // Go nowhere, do nothing.
-        
+
         // Let the user know the form was submitted and show them
         $('#navigation-result').html(Theamus.Notify('spinner', 'Saving...'));
         $('#theamus-navigation').scrollTop(0);
-        
+
         // Disable the submit button
         $(this).find('button[type="submit"]').attr('disabled', 'disabled');
-        
+
         // Make the call to get the pages options
         Theamus.Ajax.api({
             type: 'get',
@@ -218,17 +218,17 @@ function edit_link() {
             data: { form: this },
             success: function(data) {
                 $('#navigation-result').show();
-                
+
                 if (data.error.status === 1) {
                     $('#navigation-result').html(Theamus.Notify('danger', data.error.message));
                 } else {
                     $('#navigation-result').html(Theamus.Notify('success', 'Saved.'));
                     setTimeout(function() { $('#navigation-result').html('').hide(); }, 1500);
                 }
-                
+
                 $('#edit-link-form').find('button[type="submit"]').removeAttr('disabled');
             }
-        });   
+        });
     });
 }
 
@@ -236,14 +236,14 @@ function edit_link() {
 function remove_link() {
     $('#remove-link-form').submit(function(e) {
         e.preventDefault(); // Go nowhere, do nothing.
-        
+
         // Let the user know the form was submitted and show them
         $('#remove-result').html(Theamus.Notify('spinner', 'Removing...'));
         $('#theamus-navigation').scrollTop(0);
-        
+
         // Disable the submit button
         $(this).find('button[type="submit"]').attr('disabled', 'disabled');
-        
+
         // Make the call to get the pages options
         Theamus.Ajax.api({
             type: 'get',
@@ -256,13 +256,13 @@ function remove_link() {
                     $('#remove-link-form').find('button[type="submit"]').removeAttr('disabled');
                 } else {
                     $('#remove-result').html(Theamus.Notify('success', 'Removed.'));
-                    
+
                     setTimeout(function() {
                         change_admin_window_title('theamus-navigation', 'Theamus Navigation');
-                        update_admin_window_content('theamus-navigation', 'navigation/');
+                        update_admin_window_content('theamus-navigation', '/navigation/');
                     }, 1500);
                 }
             }
-        });   
+        });
     });
 }

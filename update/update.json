@@ -22,7 +22,8 @@
             "Fixed an issue with identifying IE11 as a browser",
             "Name replacement",
             "Added the ability to use [func] in database queries to avoid adding quotes around values - https://github.com/aelieo/Theamus/issues/96",
-            "parseInt to parseFloat when pausing between interated ajax calls using the Theamus.Ajax.iterate_calls() function - https://github.com/aelieo/Theamus/issues/95"
+            "parseInt to parseFloat when pausing between interated ajax calls using the Theamus.Ajax.iterate_calls() function - https://github.com/aelieo/Theamus/issues/95",
+            "Added some forgotten slashes that would prevent admin windows from loading - https://github.com/aelieo/Theamus/issues/97"
         ]
     },
     "authors": [
