@@ -88,7 +88,7 @@ $failed = false;
 
 <div class="next-step-wrapper col-6">
     <button type="button" id="check-again" class="btn btn-default">Check Again</button>
-    <button type="button" id="next-step" <?php if ($failed == true) echo "disabled"; ?> class="btn btn-primary">Next Step: Database Configuration <span class="glyphicon ion-arrow-right-c"></span></button>
+    <button type="button" id="next-step" <?php if ($failed == true) echo "disabled"; ?> class="btn btn-primary">Next Step: Configure Installation <span class="glyphicon ion-arrow-right-c"></span></button>
 </div><!-- /buttons -->
 
 <script type="text/javascript">
