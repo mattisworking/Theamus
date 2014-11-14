@@ -331,16 +331,19 @@ class DB {
                 // If MySQLi is being used
                 if ($this->use_pdo == false) {
                     $return['columns'][] = "`$key`";
-                    if ($value == 'now()') $return['prepare_keys'] = $this->connection->real_escape_string($value);
-                    else $return['prepare_keys'][] = "'".$this->connection->real_escape_string($value)."'";
+                    if (strpos(strtolower($value), '[func]') !== false && !is_numeric($value)) {
+                        $return['prepare_keys'] = $this->connection->real_escape_string(str_replace("[func]", "", $value));
+                    } else {
+                        $return['prepare_keys'][] = "'".$this->connection->real_escape_string($value)."'";
+                    }
                     $return['prepare_values'] = array();
 
                 // If PDO is being used
                 } else {
                     $random_key = ":".$key.$return['random_number'];            // random_key for shorter code
                     $return['columns'][] = "`$key`";
-                    if ($value == 'now()' && !is_numeric($value)) {
-                        $return['prepare_keys'][] = $value;
+                    if (strpos(strtolower($value), '[func]') !== false && !is_numeric($value)) {
+                        $return['prepare_keys'][] = str_replace("[func]", "", $value);
                     } else {
                         $return['prepare_keys'][]               = $random_key;
                         $return['prepare_values'][$random_key]  = $value;
@@ -431,16 +434,24 @@ class DB {
 
                 // If using MySQLi
                 if ($this->use_pdo == false) {
-                    // Define an escaped key/value combination and define the clause values as blank
-                    $return_inner[] = "$key $equals '".$this->connection->real_escape_string($value)."'";
-                    $this->clause_values = array();
+                    if (strpos(strtolower($value), '[func]') !== false && !is_numeric($value)) {
+                        $return_inner[] = "{$key} {$equals} ".str_replace("[func]", "", $value);
+                    } else {
+                        // Define an escaped key/value combination and define the clause values as blank
+                        $return_inner[] = "$key $equals '".$this->connection->real_escape_string($value)."'";
+                        $this->clause_values = array();
+                    }
 
                 // If using PDO
                 } else {
-                    // Define a random key, then the key/value combination, then add the value to the clause values array
-                    $random_key = ":".substr(md5($key.rand(0,999999999)), 0, 15);
-                    $return_inner[] = "$key $equals $random_key";
-                    $this->clause_values[$random_key] = $value;
+                    if (strpos(strtolower($value), '[func]') !== false && !is_numeric($value)) {
+                        $return_inner[] = "{$key} {$equals} ".str_replace("[func]", "", $value);
+                    } else {
+                        // Define a random key, then the key/value combination, then add the value to the clause values array
+                        $random_key = ":".substr(md5($key.rand(0,999999999)), 0, 15);
+                        $return_inner[] = "$key $equals $random_key";
+                        $this->clause_values[$random_key] = $value;
+                    }
                 }
             }
         }

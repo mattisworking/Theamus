@@ -20,7 +20,8 @@
             "Admin windows now resize automatically - https://github.com/aelieo/Theamus/issues/49",
             "Loaded admin windows reload on page navigation - https://github.com/aelieo/Theamus/issues/56",
             "Fixed an issue with identifying IE11 as a browser",
-            "Name replacement"
+            "Name replacement",
+            "Added the ability to use [func] in database queries to avoid adding quotes around values - https://github.com/aelieo/Theamus/issues/96"
         ]
     },
     "authors": [
