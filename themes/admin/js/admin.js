@@ -25,9 +25,9 @@ function admin_window_run_on_load(func) {
 
 function create_admin_window(window_id, window_title, window_url, pre_style) {
     if (!pre_style) pre_style = "";
-    
+
     var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
-    
+
     if ($('#'+window_id).length > 0) {
         bring_admin_window_to_front($('#'+window_id).parentsUntil('.admin-windows'));
         return false;
@@ -169,7 +169,7 @@ function admin_window_listeners() {
                 $(this).removeClass('admin-window-init');
             },
             stop: function() {
-                
+
                 var window_id = $(this).find(".window-content").attr("id"),
                     theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
                 if (theamus_ls['admin_cache'][window_id] !== undefined) {
@@ -227,9 +227,6 @@ $(document).ready(function() {
 
     var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
 
-    if (theamus_ls['admin_cache'] !== "" || typeof(theamus_ls['admin_cache']) === "object") {
-    }
-
     admin_position = theamus_ls['admin_position'];
     if (admin_position !== 'left' && admin_position !== 'right') {
         theamus_ls['admin_position'] = "left";
@@ -249,9 +246,9 @@ $(document).ready(function() {
 
     $('#ad_open-nav').click(function(e) {
         e.preventDefault();
-        
+
         var ad_open = false;
-        
+
         $('.admin-navigation').toggleClass('admin-navigation-open');
         if ($('.admin-navigation').hasClass('admin-navigation-'+admin_position)) {
             $('.admin-navigation').toggleClass('admin-navigation-open-'+admin_position);
@@ -266,7 +263,7 @@ $(document).ready(function() {
             for (var i = 0; i < $('.admin-window').length; i++) {
                 $($('.admin-window')[i]).addClass('admin-window-open');
             }
-            
+
             ad_open = true;
         } else {
             $('.admin-header').removeClass('admin-header-on');
@@ -275,10 +272,10 @@ $(document).ready(function() {
             for (var i = 0; i < $('.admin-window').length; i++) {
                 $($('.admin-window')[i]).removeClass('admin-window-open');
             }
-            
+
             ad_open = false;
         }
-        
+
         var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
         theamus_ls['admin_open'] = ad_open;
         localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
@@ -339,7 +336,7 @@ $(document).ready(function() {
         $('.admin').addClass('admin-on');
     }, 200);
 
-    if (theamus_ls['admin_cache'] !== undefined) {
+    if (theamus_ls['admin_cache'] !== undefined && Theamus.Mobile === false) {
         for (var key in theamus_ls['admin_cache']) {
             if (key === "1") continue;
             create_admin_window(key, theamus_ls['admin_cache'][key][0], theamus_ls['admin_cache'][key][1], theamus_ls['admin_cache'][key][2]);
