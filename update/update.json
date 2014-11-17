@@ -26,7 +26,8 @@
             "Added some forgotten slashes that would prevent admin windows from loading - https://github.com/aelieo/Theamus/issues/97",
             "Updated the installation button text from 'Database Configuration' to something more appropriate - https://github.com/aelieo/Theamus/issues/91",
             "Updated queries that used 'now()' to act appropriately with the new changed to the query generator - https://github.com/aelieo/Theamus/issues/99",
-            "Updated the default theme to work with <code> and prettyprint.  Also updated the default theme to work a smidgen better on mobile devices - https://github.com/aelieo/Theamus/issues/90"
+            "Updated the default theme to work with <code> and prettyprint.  Also updated the default theme to work a smidgen better on mobile devices - https://github.com/aelieo/Theamus/issues/90",
+            "Added the ability to track the load runtime using Theamus->get_run_time() - https://github.com/aelieo/Theamus/issues/89"
         ]
     },
     "authors": [
