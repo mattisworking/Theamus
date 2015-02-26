@@ -1,6 +1,7 @@
-$(document).ready(function() {
-    $("#cu_goupload").click(function(e) {
+function updatecheck_main() {
+    $("#updatecheck_update-link").click(function(e) {
         e.preventDefault();
-        admin_go("settings", "settings/settings/");
+
+        create_admin_window("theamus-settings", "Theamus Settings", "/settings/update-check/");
     });
-});
+}

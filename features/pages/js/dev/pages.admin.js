@@ -17,7 +17,7 @@ function get_pages(page) {
 
     // Make the call to get the information
     Theamus.Ajax.run({
-        url: 'pages/pages-list/&search='+search_query+'&page='+page_number,
+        url: Theamus.base_url+'/pages/pages-list/&search='+search_query+'&page='+page_number,
         result: "pages-list",
         type: "include",
         after: function() {
@@ -35,7 +35,7 @@ function list_listeners() {
         e.preventDefault();
 
         change_admin_window_title('theamus-pages', 'Edit Page');
-        update_admin_window_content('theamus-pages', 'pages/edit?id='+$(this).data('id'));
+        update_admin_window_content('theamus-pages', '/pages/edit?id='+$(this).data('id'));
     });
 
     // Delete pages link
@@ -43,7 +43,7 @@ function list_listeners() {
         e.preventDefault();
 
         change_admin_window_title('theamus-pages', 'Remove Page');
-        update_admin_window_content('theamus-pages', 'pages/remove?id='+$(this).data('id'));
+        update_admin_window_content('theamus-pages', '/pages/remove?id='+$(this).data('id'));
     });
 }
 
@@ -172,7 +172,7 @@ function create_page() {
 
                     // Go back to the list of pages
                     setTimeout(function() {
-                        update_admin_window_content('theamus-pages', 'pages/');
+                        update_admin_window_content('theamus-pages', '/pages/');
                         change_admin_window_title('theamus-pages', 'Theamus Pages');
                     }, 1500);
                 }
@@ -254,7 +254,7 @@ function remove_page() {
 
                     // Go back to the list of pages
                     setTimeout(function() {
-                        update_admin_window_content('theamus-pages', 'pages/');
+                        update_admin_window_content('theamus-pages', '/pages/');
                         change_admin_window_title('theamus-pages', 'Theamus Pages');
                     }, 1500);
                 }

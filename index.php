@@ -7,7 +7,7 @@
  * Version 1.3
  * @package Theamus
  * @link http://www.theamus.com/
- * @author Eyrah Temet (Eyraahh) <info@theamus.com>
+ * @author ælieo (aelieo) <aelieo@theamus.com>
  *
  *  This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by

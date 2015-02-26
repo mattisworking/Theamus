@@ -88,7 +88,7 @@ function upload_media(media_item) {
             }
         });
     } else {
-        update_admin_window_content('theamus-media', 'media/');
+        update_admin_window_content('theamus-media', '/media/');
         change_admin_window_title('theamus-media', 'Theamus Media');
     }
 }

@@ -63,7 +63,8 @@
 .site_content .body-header,.prettyprint{display:block}
 @media (max-width: 768px) {
 .site_header-company{font-size:1.5em}
-nav.content-wrapper{left:0;position:absolute;right:0;top:0;z-index:10}
+nav.content-wrapper{left:0;position:absolute;right:0;top:0;z-index:10;min-height:0;}
+.nav-inline li ul {position:relative;}
 #nav-response-btn{z-index:10}
 .black_bar:before,.black_bar:after{content:" ";display:table}
 .black_bar:after{clear:both}

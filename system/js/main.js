@@ -1,7 +1,10 @@
 Theamus = {
     Ajax: ajax,
-    Editor: editor,
-    base_url: document.getElementsByTagName("base")[0].href.substring(0, document.getElementsByTagName("base")[0].href.length - 1),
+    base_url: (function() {
+        var url = document.getElementsByTagName("base")[0].href;
+        if (url.slice(-1) === '/') return url.slice(0, -1);
+        else return url;
+    })(),
     Browser: (function() {
         var ua= navigator.userAgent, tem,
         M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*([\d\.]+)/i) || [];
@@ -20,7 +23,17 @@ Theamus = {
     })(),
     Tablet: (function() {
         return (/android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()));
-    })()
+    })(),
+    Notify: function(e, t) {
+        var n = {
+            success: "ion-checkmark-round",
+            danger: "ion-close",
+            warning: "ion-alert",
+            info: "ion-information",
+            spinner: "spinner spinner-fixed-size"
+        };
+        return "<div class='alert alert-" + e + "'><span class='glyphicon " + n[e] + "'></span>" + t + "</div>";
+    }
 };
 
 function add_js_file(source) {
@@ -178,7 +191,7 @@ function reload(timer) {
 function user_logout() {
     Theamus.Ajax.api({
         type:       'post',
-        url:        Theamus.base_url+'accounts/logout/',
+        url:        Theamus.base_url+'/accounts/logout/',
         method:     ['Accounts', 'logout'],
         success:    go_to
     });

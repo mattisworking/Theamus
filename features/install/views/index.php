@@ -19,7 +19,7 @@
 <script type='text/javascript'>
     $(function() {
         $('#next-step').click(function() {
-            window.location = Theamus.base_url+'install/dependencies/';
+            window.location = Theamus.base_url+'/install/dependencies/';
         });
     });
 </script>

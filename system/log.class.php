@@ -6,7 +6,7 @@
  * Version 1.3.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author Eyrah Temet (Eyraahh) <info@theamus.com>
+ * @author ælieo (aelieo) <aelieo@theamus.com>
  */
 class Log {
     protected $Theamus;
@@ -141,7 +141,7 @@ class Log {
             'line'      => $call_info['line'],
             'file'      => $call_info['file'],
             'type'      => $type,
-            'time'      => 'now()');
+            'time'      => '[func]now()');
 
         return; // Return
     }

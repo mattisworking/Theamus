@@ -23,23 +23,32 @@ function admin_window_run_on_load(func) {
     }
 }
 
-function create_admin_window(window_id, window_title, window_url) {
+function create_admin_window(window_id, window_title, window_url, pre_style) {
+    if (!pre_style) pre_style = "";
+
+    var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+
     if ($('#'+window_id).length > 0) {
         bring_admin_window_to_front($('#'+window_id).parentsUntil('.admin-windows'));
         return false;
     }
 
-    if (Theamus.Mobile === false) {
-        if ($('.admin-navigation').hasClass('admin-navigation-left')) {
-            $('.admin-navigation').addClass('admin-navigation-open-'+admin_position);
-        } else {
-            $('.admin-navigation').addClass('admin-navigation-open-'+admin_position);
+    if (theamus_ls['admin_open'] === true) {
+        $('.admin-header').addClass('admin-header-on');
+        $('.admin-navigation').addClass('admin-navigation-'+admin_position)
+        $('.admin-navigation').addClass('admin-navigation-open');
+        if (Theamus.Mobile === false) {
+            if ($('.admin-navigation').hasClass('admin-navigation-left')) {
+                $('.admin-navigation').addClass('admin-navigation-open-'+admin_position);
+            } else {
+                $('.admin-navigation').addClass('admin-navigation-open-'+admin_position);
+            }
         }
     }
 
     var ad_window = document.createElement('div');
     $(ad_window).addClass('admin-window');
-    $(ad_window).addClass('admin-window-init');
+    (pre_style === "") ? $(ad_window).addClass('admin-window-init') : $(ad_window).attr("style", pre_style);
     if (Theamus.Mobile === true) {
         $(ad_window).addClass('admin-window-mobile');
     }
@@ -56,17 +65,27 @@ function create_admin_window(window_id, window_title, window_url) {
     $(ad_content).attr('id', window_id);
     $(ad_window).append(ad_content);
 
+    var ad_content_inner = document.createElement('div');
+    $(ad_content).append(ad_content_inner);
+
     $('.admin-windows').append(ad_window);
 
     setTimeout(function() {
-        $(ad_window).addClass('admin-window-open');
+        if (theamus_ls['admin_open'] === true) {
+            $(ad_window).addClass('admin-window-open');
+        }
         admin_window_listeners();
         update_admin_window_content(window_id, window_url);
     }, 200);
+
+    if (pre_style === "") {
+        theamus_ls['admin_cache'][window_id] = [window_title, window_url, ""];
+        localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
+    }
 }
 
 function admin_window_loading(window_id) {
-    $('#'+window_id).html('<span class=\'spinner spinner-fixed admin-window-spinner\'></span>');
+    $('#'+window_id).children("div").html('<span class=\'spinner spinner-fixed admin-window-spinner\'></span>');
 }
 
 function update_admin_window_content(window_id, url) {
@@ -80,33 +99,52 @@ function update_admin_window_content(window_id, url) {
         Theamus.Ajax.run({
             url:        Theamus.base_url+url,
             type:       "include",
-            result:     window_id,
+            result:     $("#"+window_id).children("div"),
             after:      function() {
                 $('#'+window_id).parentsUntil('.admin-windows').find('.refresh').attr('data-url', url);
                 admin_add_extras();
                 resize_admin_window();
-                if (resize !== null) {
-                    resize = setInterval(resize_admin_window, 500);
-                    setTimeout(function() { clearInterval(resize); resize = null; }, 10000);
-                }
             }
         });
     }, 500);
+
+    var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+    if (theamus_ls['admin_cache'][window_id] !== undefined) {
+        if (theamus_ls['admin_cache'][window_id][1] !== url) {
+            theamus_ls['admin_cache'][window_id][1] = url;
+            localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
+        }
+    }
 }
 
 function resize_admin_window() {
+    if (resize !== null) clearInterval(resize);
+
     for (var i = 0; i < $('.admin-window').length; i++) {
         var ad_window = $('.admin-window')[i];
-        if ($(ad_window).height() > $(window).height() && Theamus.Mobile === false) {
+
+        if (($(ad_window).height() > $(window).height()) && Theamus.Mobile === false) {
             $(ad_window).addClass('admin-window-maxheight');
+        } else if (($(ad_window).find(".window-content").children("div").height() < parseInt(($(window).height() * .90) - 100)) && Theamus.Mobile === false) {
+            $(ad_window).removeClass('admin-window-maxheight');
         }
     }
+
+    resize = setInterval(function() { resize_admin_window(); }, 500);
 }
 
 function change_admin_window_title(window_id, title) {
     var chrome_title = $($('#'+window_id).siblings()[0]).children('.title');
     chrome_title.attr('title', title);
     chrome_title.html(title);
+
+    var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+    if (theamus_ls['admin_cache'][window_id] !== undefined) {
+        if (theamus_ls['admin_cache'][window_id][0] !== title) {
+            theamus_ls['admin_cache'][window_id][0] = title;
+            localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
+        }
+    }
 }
 
 function bring_admin_window_to_front(ad_window) {
@@ -124,8 +162,22 @@ function admin_window_listeners() {
             handle: '.window-chrome',
             cancel: '.close',
             containment: 'window',
+            start: function() {
+                bring_admin_window_to_front(this);
+            },
             drag: function() {
                 $(this).removeClass('admin-window-init');
+            },
+            stop: function() {
+
+                var window_id = $(this).find(".window-content").attr("id"),
+                    theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+                if (theamus_ls['admin_cache'][window_id] !== undefined) {
+                    if (theamus_ls['admin_cache'][window_id][2] !== $(this).attr("style")) {
+                        theamus_ls['admin_cache'][window_id][2] = $(this).attr("style");
+                        localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
+                    }
+                }
             }
         });
     }
@@ -134,6 +186,14 @@ function admin_window_listeners() {
         e.preventDefault();
         var ad_window = $(this);
         ad_window.parentsUntil('.admin-windows').addClass("admin-window-closing");
+
+        var window_id = ad_window.parentsUntil('.admin-windows').find(".window-content").attr("id");
+
+        var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+        if (theamus_ls['admin_cache'][window_id] !== undefined) {
+            delete theamus_ls['admin_cache'][window_id];
+            localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
+        }
 
         setTimeout(function() {
             ad_window.parentsUntil('.admin-windows').remove();
@@ -161,17 +221,16 @@ function switch_position_text() {
 }
 
 $(document).ready(function() {
-    // Define the position of the administration panel
-    if (localStorage.getItem('admin_position') === null) {
-        admin_position = 'left';
-        localStorage.setItem('admin_position', 'left');
-    } else {
-        admin_position = localStorage.getItem('admin_position');
+    if (localStorage.getItem("Theamus") === null) {
+        localStorage.setItem("Theamus", JSON.stringify({"admin_position": "left", "admin_cache": {1:0}, "admin_open": false}));
     }
 
+    var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+
+    admin_position = theamus_ls['admin_position'];
     if (admin_position !== 'left' && admin_position !== 'right') {
-        admin_position = 'left';
-        localStorage.setItem('admin_position', 'left');
+        theamus_ls['admin_position'] = "left";
+        localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
     }
 
     $('.admin-header').addClass('admin-header-'+admin_position);
@@ -187,6 +246,9 @@ $(document).ready(function() {
 
     $('#ad_open-nav').click(function(e) {
         e.preventDefault();
+
+        var ad_open = false;
+
         $('.admin-navigation').toggleClass('admin-navigation-open');
         if ($('.admin-navigation').hasClass('admin-navigation-'+admin_position)) {
             $('.admin-navigation').toggleClass('admin-navigation-open-'+admin_position);
@@ -201,6 +263,8 @@ $(document).ready(function() {
             for (var i = 0; i < $('.admin-window').length; i++) {
                 $($('.admin-window')[i]).addClass('admin-window-open');
             }
+
+            ad_open = true;
         } else {
             $('.admin-header').removeClass('admin-header-on');
             $('.admin').removeClass('admin-panel-open');
@@ -208,7 +272,13 @@ $(document).ready(function() {
             for (var i = 0; i < $('.admin-window').length; i++) {
                 $($('.admin-window')[i]).removeClass('admin-window-open');
             }
+
+            ad_open = false;
         }
+
+        var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
+        theamus_ls['admin_open'] = ad_open;
+        localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
     });
 
 
@@ -253,7 +323,8 @@ $(document).ready(function() {
         $('.admin-navigation').addClass('admin-navigation-'+new_position);
         $('.admin-navigation').addClass('admin-navigation-open-'+new_position);
 
-        localStorage.setItem('admin_position', new_position);
+        theamus_ls['admin_position'] = new_position;
+        localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
         admin_position = new_position;
 
         switch_position_text();
@@ -264,4 +335,11 @@ $(document).ready(function() {
         $('.admin').removeAttr('style');
         $('.admin').addClass('admin-on');
     }, 200);
+
+    if (theamus_ls['admin_cache'] !== undefined && Theamus.Mobile === false) {
+        for (var key in theamus_ls['admin_cache']) {
+            if (key === "1") continue;
+            create_admin_window(key, theamus_ls['admin_cache'][key][0], theamus_ls['admin_cache'][key][1], theamus_ls['admin_cache'][key][2]);
+        }
+    }
 });

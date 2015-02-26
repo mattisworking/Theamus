@@ -420,12 +420,12 @@ class Install {
                 "email"         => $args['user_email'],
                 "firstname"     => $args['user_firstname'],
                 "lastname"      => $args['user_lastname'],
-                "birthday"      => 'now()',
+                "birthday"      => '[func]now()',
                 "admin"         => 1,
                 "groups"        => "everyone,administrators",
                 "permanent"     => 1,
                 "picture"       => "default-user-picture.png",
-                "created"       => 'now()',
+                "created"       => '[func]now()',
                 "active"        => 1));
 
         // Check the query

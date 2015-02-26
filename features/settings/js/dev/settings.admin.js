@@ -290,7 +290,7 @@ function settings() {
     });
 
     $('#update').click(function() {
-        update_admin_window_content('theamus-settings', 'settings/update-check/');
+        update_admin_window_content('theamus-settings', '/settings/update-check/');
         change_admin_window_title('theamus-settings', 'Theamus Auto Updater');
     });
 
@@ -306,7 +306,9 @@ function update_check() {
         url: Theamus.base_url+'/settings/',
         method: ['Settings', 'get_update_info'],
         success: function(data) {
-            if (data.response.data.old_versions.indexOf($('#current_version')) !== -1) {
+            if (data.error.status === 1) {
+                $("#checker-wrapper").html(Theamus.Notify("danger", data.error.message));
+            } else if (data.response.data.old_versions.indexOf($('#current_version').val()) !== -1) {
                 var link = '<button class="btn btn-primary" id="settings_update-link">Update to the latest version of Theamus</button><hr class="form-split">';
                 $('#checker-wrapper').html('<div class="col-12">'+link+data.response.data.notes+'</div>');
 
@@ -315,18 +317,20 @@ function update_check() {
 
                     $('#auto-update-result').html(Theamus.Notify('spinner', 'Updating...'));
 
-                    Theamus.Ajax.api({
-                        type: 'get',
-                        url: Theamus.base_url+'/settings/',
-                        method: ['Settings', 'auto_update'],
-                        success: function(data) {
-                            if (data.error.status === 1) {
-                                $('#auto-update-result').html(Theamus.Notify('danger', data.error.message));
-                            } else {
-                                $('#auto-update-result').html(Theamus.Notify('success', 'Everything went smoothly.  In order for things to take effect, you need to <a href="./">refresh the page</a>.'));
+                    setTimeout(function() {
+                        Theamus.Ajax.api({
+                            type: 'get',
+                            url: Theamus.base_url+'/settings/',
+                            method: ['Settings', 'auto_update'],
+                            success: function(data) {
+                                if (data.error.status === 1) {
+                                    $('#auto-update-result').html(Theamus.Notify('danger', data.error.message));
+                                } else {
+                                    $('#auto-update-result').html(Theamus.Notify('success', 'Everything went smoothly.  In order for things to take effect, you need to <a href="./">refresh the page</a>.'));
+                                }
                             }
-                        }
-                    });
+                        });
+                    }, 500);
                 });
             } else {
                 $('#checker-wrapper').html(Theamus.Notify('info', 'No updates are available.'));

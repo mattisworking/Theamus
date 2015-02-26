@@ -6,7 +6,7 @@
  * Version 1.3.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author Eyrah Temet (Eyraahh) <info@theamus.com>
+ * @author ælieo (aelieo) <aelieo@theamus.com>
  */
 class Call {
     /**
@@ -1074,11 +1074,11 @@ class Call {
      * @return boolean
      */
     private function define_classes() {
-        $class_folder = $this->get_class_folder();
+        $class_folder = $this->get_class_folder().'/';
         $class_info = $this->get_class_info();
 
         if ($class_folder && $class_info) {
-            $path = $this->Theamus->file_path(ROOT."/features/$this->feature_folder/$class_folder/");
+            $path = $this->Theamus->file_path(ROOT."/features/{$this->feature_folder}/{$class_folder}");
             if ($this->include_class($path.$class_info['file'])) {
                 return true;
             }
@@ -1458,11 +1458,14 @@ class Call {
         } elseif(preg_match('/Netscape/i',$u_agent)) {
             $bname = 'Netscape';
             $ub = "Netscape";
+        } elseif(preg_match('/WOW64/i', $u_agent)) {
+            $bname = "Internet Explorer";
+            $ub = "rv";
         }
 
         // Get the version number
         $known = array('Version', $ub, 'other');
-        $pattern = '#(?<browser>'.join('|', $known).')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+        $pattern = '#(?<browser>'.join('|', $known).')[/ |:]+(?<version>[0-9.|a-zA-Z.]*)#';
         if (!preg_match_all($pattern, $u_agent, $matches)) {}
 
         $i = count($matches['browser']);

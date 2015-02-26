@@ -30,9 +30,9 @@ $Theamus->Call->set_feature_config(array(
 
     // Optional Author Information
     'author' => array(
-        'name'    => array('Eyrah Temet'),
-        'alias'   => array('Eyraahh'),
-        'email'   => array('eyrah.temet@theamus.com'),
+        'name'    => array('ælieo'),
+        'alias'   => array('aelieo'),
+        'email'   => array('aelieo@theamus.com'),
         'company' => 'Theamus'
     )
 ));

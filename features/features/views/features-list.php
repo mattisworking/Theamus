@@ -40,9 +40,11 @@ $original_config = $Theamus->Call->feature['config'];
 foreach ($all_features as $feature) {
     $config_file = $Theamus->file_path(ROOT.'/features/'.$feature['alias'].'/config.php');
 
-    if (file_exists($config_file)) {
+    if ($feature['alias'] == 'features') $version = $original_config['feature_version'];
+    elseif (file_exists($config_file)) {
         include_once $config_file;
         $version = isset($Theamus->Call->feature['config']['feature_version']) ? 'v'.$Theamus->Call->feature['config']['feature_version'] : 'Unknown';
+        $Theamus->Call->feature['config'] = array();
     }
 
     $feature['version'] = $version;

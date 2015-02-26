@@ -27,14 +27,14 @@ function add_account_listeners() {
     // Edit account links
     $('[name="edit-account-link"]').click(function(e) {
         e.preventDefault();
-        update_admin_window_content('theamus-accounts', 'accounts/admin/edit-account/'+$(this).attr('data-id'));
+        update_admin_window_content('theamus-accounts', '/accounts/admin/edit-account/'+$(this).attr('data-id'));
         change_admin_window_title('theamus-accounts', 'Edit User Account');
     });
 
     // Remove account links
     $('[name="remove-account-link"]').click(function(e) {
         e.preventDefault();
-        update_admin_window_content('theamus-accounts', 'accounts/admin/remove-account/'+$(this).attr('data-id'));
+        update_admin_window_content('theamus-accounts', '/accounts/admin/remove-account/'+$(this).attr('data-id'));
         change_admin_window_title('theamus-accounts', 'Remove User Account');
     });
 }
@@ -110,7 +110,7 @@ function create_account() {
 
                     // Go back to the list of users
                     setTimeout(function() {
-                        update_admin_window_content('theamus-accounts', 'accounts/admin/');
+                        update_admin_window_content('theamus-accounts', '/accounts/admin/');
                         change_admin_window_title('theamus-accounts', 'Theamus Accounts');
                     }, 1500);
                 }
@@ -137,7 +137,7 @@ function edit_account() {
         // Make the call to save this user information
         Theamus.Ajax.api({
             type: 'post',
-            url: Theamus.base_url+'accounts/admin/save-account',
+            url: Theamus.base_url+'/accounts/admin/save-account',
             method: ['Accounts', 'save_account_information'],
             data: { form: this },
             success: function(data) {
@@ -155,7 +155,7 @@ function edit_account() {
 function remove_account() {
     // Go back to the list of people
     $('[name="cancel"]').click(function(e) {
-        update_admin_window_content('theamus-accounts', 'accounts/admin/');
+        update_admin_window_content('theamus-accounts', '/accounts/admin/');
         change_admin_window_title('theamus-accounts', 'Theamus Accounts');
     });
 
@@ -181,7 +181,7 @@ function remove_account() {
 
                     // Go back to the list of users
                     setTimeout(function() {
-                        update_admin_window_content('theamus-accounts', 'accounts/admin/');
+                        update_admin_window_content('theamus-accounts', '/accounts/admin/');
                         change_admin_window_title('theamus-accounts', 'Theamus Accounts');
                     }, 1500);
                 }

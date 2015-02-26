@@ -6,7 +6,7 @@
  * Version 1.3.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author Eyrah Temet (Eyraahh) <info@theamus.com>
+ * @author ælieo (aelieo) <aelieo@theamus.com>
  */
 class User {
 
@@ -306,7 +306,7 @@ class User {
             array(
                 'session_key' => $session_key,
                 'expires'     => date('Y-m-d H:i:s', strtotime($expire)),
-                'last_seen'   => 'now()',
+                'last_seen'   => '[func]now()',
                 'browser'     => $user_browser));
 
         $query_data['clause'] = array(
@@ -395,7 +395,7 @@ class User {
                 'session_key' => $session_key,
                 'ip_address'  => $ip,
                 'expires'     => date('Y-m-d H:i:s', $expire),
-                'last_seen'   => 'now()',
+                'last_seen'   => '[func]now()',
                 'browser'     => $user_browser,
                 'user_id'     => $user_id));
 

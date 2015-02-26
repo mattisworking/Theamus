@@ -10,7 +10,7 @@ if ($folders[0] == 'admin' && $ajax != 'api' && $ajax != 'include' && $Theamus->
 $feature['class']['file'] = 'accounts.class.php';
 $feature['class']['init'] = 'Accounts';
 
-define('FILE', $file); // Define the current file
+define('FILE', "accounts/{$file}"); // Define the current file
 
 // Load the file related information
 switch ($file) {

@@ -7,7 +7,7 @@ if (!$Theamus->User->is_admin()) throw new Exception('Only administrators can ac
 $feature['class']['file'] = 'settings.class.php';
 $feature['class']['init'] = 'Settings';
 
-define('FILE', $file); // Define the file as a global variable
+define('FILE', "settings/{$file}"); // Define the file as a global variable
 
 $feature['js']['file'][] = SETTINGS_DEV_MODE ? 'dev/settings.admin.js' : 'settings.admin.min.js';
 $feature['css']['file'][] = SETTINGS_DEV_MODE ? 'dev/settings.admin.css' : 'settings.admin.min.css';

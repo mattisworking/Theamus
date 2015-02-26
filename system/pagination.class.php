@@ -6,7 +6,7 @@
  * Version 1.3.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author Eyrah Temet (Eyraahh) <info@theamus.com>
+ * @author ælieo (aelieo) <aelieo@theamus.com>
  */
 class Pagination {
     /**
@@ -211,7 +211,7 @@ class Pagination {
      * Takes and populates all of the keys in the template to their relative
      *  data array row
      *
-     * e.g. "%name%" -> "Matt"
+     * e.g. "%name%" -> "Peter"
      *
      * @param array $data_item
      * @return string

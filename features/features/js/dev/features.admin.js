@@ -28,14 +28,14 @@ function list_listeners() {
         e.preventDefault();
 
         change_admin_window_title('theamus-features', 'Edit Feature');
-        update_admin_window_content('theamus-features', 'features/edit?id='+$(this).data('id'));
+        update_admin_window_content('theamus-features', '/features/edit?id='+$(this).data('id'));
     });
 
     $('[name="remove-feature-link"]').click(function(e) {
         e.preventDefault();
 
         change_admin_window_title('theamus-features', 'Remove Feature');
-        update_admin_window_content('theamus-features', 'features/remove?id='+$(this).data('id'));
+        update_admin_window_content('theamus-features', '/features/remove?id='+$(this).data('id'));
     });
 }
 
@@ -63,7 +63,7 @@ function install_feature() {
 
                     setTimeout(function() {
                         change_admin_window_title('theamus-features', 'Theamus Features');
-                        update_admin_window_content('theamus-features', 'features/');
+                        update_admin_window_content('theamus-features', '/features/');
                     }, 1500);
                 }
             }
@@ -134,7 +134,7 @@ function remove_feature() {
 
                     setTimeout(function() {
                         change_admin_window_title('theamus-features', 'Theamus Features');
-                        update_admin_window_content('theamus-features', 'features/');
+                        update_admin_window_content('theamus-features', '/features/');
                     }, 1500);
                 }
             }

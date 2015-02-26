@@ -7,7 +7,7 @@ if (!$Theamus->User->is_admin()) !$ajax ? $Theamus->back_up() : die();
 $feature['class']['file'] = 'media.class.php';
 $feature['class']['init'] = 'Media';
 
-define('FILE', $file); // Define the current file
+define('FILE', "media/{$file}"); // Define the current file
 
 // Add the JS and CSS
 $feature['css']['file'][] = MEDIA_DEV_MODE ? 'dev/media.admin.css' : 'media.admin.min.css';

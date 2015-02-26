@@ -6,7 +6,7 @@
  * Version 1.3.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author Eyrah Temet (Eyraahh) <info@theamus.com>
+ * @author ælieo (aelieo) <aelieo@theamus.com>
  */
 class Theamus {
     /**
@@ -20,6 +20,7 @@ class Theamus {
     public $Files;
     public $Pagination;
     public $Parsedown;
+    protected $timer;
 
     public $version = '1.3.0.0';
 
@@ -30,6 +31,8 @@ class Theamus {
      * @return
      */
     public function __construct() {
+        $this->start_timer();
+
         $this->load_system_classes(); // Load the system classes to be initialized
         $this->load_external_sources(); // Load the external system classes
 
@@ -192,14 +195,14 @@ class Theamus {
 
 
     /**
-    * Shortcut to email people through the provided database information (and SMTP)
-    *
-    * @param string $to
-    * @param string $subject
-    * @param string $message
-    * @return boolean
-    */
-   public function mail($to, $subject, $message) {
+     * Shortcut to email people through the provided database information (and SMTP)
+     *
+     * @param string $to
+     * @param string $subject
+     * @param string $message
+     * @return boolean
+     */
+    public function mail($to, $subject, $message) {
        $settings   = $this->settings;
 
        // Define all of the email information using PHPMailer
@@ -225,12 +228,12 @@ class Theamus {
    }
 
 
-   /**
-    * Takes the user back a page
-    *
-    * @return header
-    */
-   function back_up() {
+    /**
+     * Takes the user back a page
+     *
+     * @return header
+     */
+    public function back_up() {
        // Define the URL to go to
        $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
        $url = $protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -242,16 +245,17 @@ class Theamus {
        }
    }
 
-   /**
-    * Prints out an alert on the website
-    *
-    * @param string $for
-    * @param string $type
-    * @param string $message
-    * @param string $extras
-    * @return boolean
-    */
-   function notify($type = 'success', $message = '', $return = false) {
+   
+    /**
+     * Prints out an alert on the website
+     *
+     * @param string $for
+     * @param string $type
+     * @param string $message
+     * @param string $extras
+     * @return boolean
+     */
+    public function notify($type = 'success', $message = '', $return = false) {
        // Define the icon to use
        $glyph = array(
            'success' => 'ion-checkmark-round',
@@ -283,14 +287,33 @@ class Theamus {
         $this->base_url = trim($protocol.$domain.$directory, "/")."/";
     }
 
+
     /**
      * Prints out an input that requests the site to include an extra javascript file
      *
      * @param string $path
      * @return boolean
      */
-    function load_js_file($path) {
+    public function load_js_file($path) {
        echo "<input type='hidden' name='addscript' value='".$path."?x=".time()."' />";
        return true;
+    }
+
+
+    /**
+     * Sets the timer to be now, every time Theamus loads
+     */
+    private function start_timer() {
+        $this->timer = microtime(true);
+    }
+
+
+    /**
+     * Returns the time inbetween this function call and the start timer time
+     *
+     * @return number
+     */
+    public function get_run_time() {
+        return microtime(true) - $this->timer;
     }
 }

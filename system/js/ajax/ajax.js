@@ -291,10 +291,14 @@ var ajax = new function() {
 
     this.get_result_area = function(info) {
         if ("result" in info) {
-            if ($("#" + info.result).length > 0) {
-                return $("#" + info.result);
+            if (typeof(info.result) === "string") {
+                if ($("#" + info.result).length > 0) {
+                    return $("#" + info.result);
+                } else {
+                    this.fail = "The AJAX result div provided doesn't exist.";
+                }
             } else {
-                this.fail = "The AJAX result div provided doesn't exist.";
+                return $(info.result);
             }
         } else {
             this.fail = "There is nowhere to put the AJAX results.";
@@ -736,7 +740,7 @@ var ajax = new function() {
     this.iterate_calls = function(functions, pause, count) {
         // Define variables
         var original_pause = pause,
-            pause = pause !== undefined ? parseInt(pause)*1000 : 0,
+            pause = pause !== undefined ? parseFloat(pause)*1000 : 0,
             count = count !== undefined ? count : 0,
             func = function(){};
 
