@@ -3,10 +3,10 @@
 /**
  * Theamus
  * PHP Version 5.5.3
- * Version 1.3.0
+ * Version 1.4.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author ælieo (aelieo) <aelieo@theamus.com>
+ * @author Matt Temet
  */
 class Theamus {
     /**
@@ -74,6 +74,7 @@ class Theamus {
             'theme.class.php',
             'files.class.php',
             'pagination.class.php',
+            'instance.class.php'
         );
 
         // Loop through each of the system files
@@ -195,14 +196,14 @@ class Theamus {
 
 
     /**
-     * Shortcut to email people through the provided database information (and SMTP)
-     *
-     * @param string $to
-     * @param string $subject
-     * @param string $message
-     * @return boolean
-     */
-    public function mail($to, $subject, $message) {
+    * Shortcut to email people through the provided database information (and SMTP)
+    *
+    * @param string $to
+    * @param string $subject
+    * @param string $message
+    * @return boolean
+    */
+   public function mail($to, $subject, $message) {
        $settings   = $this->settings;
 
        // Define all of the email information using PHPMailer
@@ -228,12 +229,12 @@ class Theamus {
    }
 
 
-    /**
-     * Takes the user back a page
-     *
-     * @return header
-     */
-    public function back_up() {
+   /**
+    * Takes the user back a page
+    *
+    * @return header
+    */
+   public function back_up() {
        // Define the URL to go to
        $protocol = isset($_SERVER['HTTPS']) ? 'https://' : 'http://';
        $url = $protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -245,34 +246,35 @@ class Theamus {
        }
    }
 
-   
-    /**
-     * Prints out an alert on the website
-     *
-     * @param string $for
-     * @param string $type
-     * @param string $message
-     * @param string $extras
-     * @return boolean
-     */
+
+   /**
+    * Prints out an alert on the website
+    *
+    * @param string $for
+    * @param string $type
+    * @param string $message
+    * @param string $extras
+    * @return boolean
+    */
     public function notify($type = 'success', $message = '', $return = false) {
-       // Define the icon to use
-       $glyph = array(
-           'success' => 'ion-checkmark-round',
-           'danger'  => 'ion-close',
-           'warning' => 'ion-alert',
-           'info'    => 'ion-information',
-           'spinner' => 'spinner spinner-fixed-size'
-       );
+        // Define the icon to use
+        $glyph = array(
+            'success' => 'ion-checkmark-round',
+            'danger'  => 'ion-close',
+            'warning' => 'ion-alert',
+            'info'    => 'ion-information',
+            'spinner' => 'spinner spinner-fixed-size'
+        );
 
-       // Define the actual notifictaion
-       $ret = '<div class="alert alert-'.$type.'" id="notify">';
-       $ret .= '<span class="glyphicon '.$glyph[$type].'"></span>'.$message.'</div>';
+        // Define the actual notifictaion
+        $ret = '<div class="alert alert-'.$type.'" id="notify">';
+        $ret .= '<span class="glyphicon '.$glyph[$type].'"></span>'.$message.'</div>';
 
-       // Echo or return depending on the specifications from the user
-       if ($return == false) echo $ret;
-       else return $ret;
-   }
+        // Echo or return depending on the specifications from the user
+        if ($return == false) echo $ret;
+        else return $ret;
+    }
+
 
     /**
      * Defines the URL that was used to make the current call
