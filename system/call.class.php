@@ -3,10 +3,10 @@
 /**
  * Call - Theamus content control class
  * PHP Version 5.5.3
- * Version 1.3.0
+ * Version 1.4.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author ælieo (aelieo) <aelieo@theamus.com>
+ * @author Matt Temet
  */
 class Call {
     /**
@@ -392,6 +392,11 @@ class Call {
                     if (isset($post['api-from'])) $api_from = $post['api-from'];
                     if (isset($get['api-from']) && $api_from == false) $api_from = $get['api-from'];
 
+                    break;
+                case "instance":
+                    $ret['type'] = "instance";
+                    $ret['look_folder'] = "";
+                    $ret['do_call'] = "run_instance";
                     break;
                 default: false;
             }
@@ -974,6 +979,7 @@ class Call {
         $ret = array(
             "<script src='system/js/jquery.js'></script>",
             "<script src='system/js/theamus.js'></script>",
+            "<script src='".($this->developer_mode() ? "system/js/dev/instance.js" : "system/js/instance.min.js")."'></script>",
             "<script src='system/external/prettify/prettify.js'></script>",
             $this->Theamus->User->user && $this->Theamus->User->is_admin() ? "<script src='themes/admin/js/admin.min.js'></script>" : "",
             "<script>Theamus.info = ".$this->define_javascript_info()."</script>",
@@ -1377,6 +1383,36 @@ class Call {
         }
         $return['error']['status'] = $error != false || $this->api_fail != false ? 1 : 0;
         echo json_encode($return);
+    }
+    
+    
+    /**
+     * Runs an instance object from a javascript request
+     * 
+     * See: ROOT/system/instance.class.php
+     * 
+     * @return int
+     */
+    private function run_instance() {
+        try {
+            $instance = new Instance($this->Theamus);
+            echo json_encode($instance->return_instance());
+        } catch (Exception $ex) {
+            $code = $ex->getCode() == 0 ? 1 : $ex->getCode();
+            
+            echo json_encode(array(
+                    "error" => array(
+                        "message" => $ex->getMessage(), 
+                        "status" => 1,
+                        "code" => $code
+                    ),
+                    "response" => array(
+                        "data" => array()
+                    )
+                ));
+        }
+        
+        return 0;
     }
 
 
