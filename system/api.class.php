@@ -3,10 +3,10 @@
 /**
  * API - Theamus API handling class
  * PHP Version 5.5.3
- * Version 1.3.0
+ * Version 1.4.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author ælieo (aelieo) <aelieo@theamus.com>
+ * @author Matt Temet
  */
 class API {
     /**

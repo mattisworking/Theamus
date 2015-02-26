@@ -3,10 +3,10 @@
 /**
  * Files - Theamus file access/manipulation class
  * PHP Version 5.5.3
- * Version 1.3.0
+ * Version 1.4.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author ælieo (aelieo) <aelieo@theamus.com>
+ * @author Matt Temet
  */
 class Files {
     /**
@@ -27,49 +27,25 @@ class Files {
      * @param string $path
      * @param string $clean
      * @param string $return_type
-     * @return array $ret
+     * @return type array
      */
-    function scan_folder($path, $clean = "", $return_type = "files", $root_only = false) {
+    function scan_folder($path, $clean = false, $return_type = "files") {
         $ret = array();
-
-        // Scan the define folder for contents
         $root = scandir($this->Theamus->file_path($path));
-
-        // Loop through the contents
         foreach ($root as $value) {
-            // Define the complete formatted current path of the loop
-            $current_path = $this->Theamus->file_path("{$path}/{$value}");
-
-            // Skip up a level files
             if ($value === '.' || $value === '..') continue;
-
-            // If the current file is a folder and we're looking to return folders only
-            if (is_dir($current_path) && ($return_type == "folders" || $return_type == "all")) {
-                $ret[] = $current_path; // Add the folder to the return array
-
-                // Recurse into the folder, adding the information to the return array as well
-                if (!$root_only) {
-                    foreach ($this->scan_folder($current_path, $clean, $return_type) as $value) $ret[] = $value;
-                }
+            if (is_file($this->Theamus->file_path($path."/".$value)) && $return_type == "files") {
+                $ret[] = $this->Theamus->file_path($path."/".$value);
                 continue;
-
-            // If the current file is a file and we're looking to return files only
-            } elseif (is_file($current_path) && ($return_type == "files" || $return_type == "all")) {
-                $ret[] = $current_path; // Add the file to the return array
+            } elseif (is_dir($this->Theamus->file_path($path."/".$value)) && $return_type == "folders") {
+                $ret[] = $this->Theamus->file_path($path."/".$value);
                 continue;
             }
 
-            // Only if we're returning files recurse into folders, if it's done without
-            // the condition, it will try to recurse into files as well
-            if ($return_type == "files" && !$root_only) {
-                foreach ($this->scan_folder($current_path, $clean, $return_type) as $value) $ret[] = $value;
-            }
+            if (is_dir($this->Theamus->file_path($path."/".$value))) foreach ($this->scan_folder($path."/".$value) as $value) $ret[] = $value;
         }
-
-        // If there is a need to remove some leading file path off of each value, do so
-        if ($clean != "") $ret = $this->clean_filenames($ret, $clean);
-
-        return $ret; // Return the information
+        if ($clean != false) $ret = $this->clean_filenames($ret, $clean);
+        return $ret;
     }
 
 

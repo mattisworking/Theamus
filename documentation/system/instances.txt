@@ -1,0 +1,158 @@
+Hello!
+
+Theamus Instances was made to preserve objects over multiple requests.  Sometimes I also refer to it as "persistent" objects.  The point of these object instances is to allow websites access to objects as you would a command line.
+
+In my mind, it works like this: command lines you open up an interactive shell
+
+php -a
+> include "classroom.php"
+> $classroom = new Classroom();
+> $classroom->add_course("history");
+> $classroom->add_student("Matt", "Temet");
+> echo $classroom->get_course();
+history
+> echo $classroom->get_student();
+Matt Temet
+-- and so on and so forth...
+
+Basically, what you have here is freedom to make up your mind as you go along.  You can do x or y without knowing before hand.  What you have to do in the web now for classes is gather all of that information first then send it out in one request while everything happens in one fell swoop.
+
+There's nothing wrong with that and if you want, you can always continue doing it that way.  Using Theamus Instances is completely optional.
+
+So let's say we have the same scenario except on the web.  You're looking at a classroom management page and you want to create a new one.  Click the new button and here's what happens:
+
+1 - A request is sent to the Theamus backend to create a new classroom.  What this does is creates a new Classroom class object. ($classroom = new Classroom())
+2 - If the request is successful, which it should be, it will return an instance id.  This instance id is what you will use to reference the classroom object you just created later on.
+3 - Now the classroom object is created, you're redirected to the classroom's management page.
+        On the classroom's management page, there's a few text fields.  One for the classroom course, and two for a student's first and last name.
+4 - You type in the course of the classroom and submit that form which creates a request similar to the one when you created the classroom object, except this one has an instance id defined.  That instance id is sent and the object stored related to that id is loaded up as an object.  Now the request adds the classroom course. ($classroom->add_course(course))
+5 - You type in the first and last names of a student and submit that form.  This same process is exactly similar to the one in step 4.  Using the instance id, Theamus loads that saved object and then adds a student to the classroom. ($classroom->add_student(firstname, lastname))
+
+So now, all of that information is saved into an object, instead of a database.  There's a few clever ways to get around this, by updating the class object when a field is onblur.  Maybe they are just "add" buttons that submit the form to the class object and then there's a "save" button required to save/push all of the information in the database.  It doesn't matter how you do it.  As long as you can get done what you want to get done, amirite?
+
+###
+
+Matt, how does one submit requests to make an instance?!  Well, it's like, super easy.  It's done through javascript and can be done on any page!  (whodathought?)
+
+To initialize the instance class you just initialize it.
+
+var instance = new Theamus.Instance();
+
+Easy, right?  Now after that, a few things need to be defined in order for everything to work.  Firstly you have your method of request, and your URL.
+
+instance.Method = "post"; // or "get".  post uses FormData(), get uses url data (?key=value&otherkey=1)
+instance.URL = Theamus.base_url + "/feature/"; // replace feature with the feature you're looking to go to, this is important for security stuffs.
+
+Nextly, you've gotta define the feature you want to call, and the class you want to load up
+
+instance.Feature = "feature"; // the _folder name_ or _alias_ of the feature you want to go to.
+instance.Class = "Classroom";
+
+Okay, here we have to step in to do something else.  In the feature configuration file (ROOT/features/feature/config.php) you have to add a little sumn-sumn that will allow Theamus to get the class file information.  While you're looking for the Classroom class, Theamus won't know what file that lives in by default.  So it loads up the configuration file to see what the class file is.
+
+In feature/config.php you should have something like:
+'load_files' => array(),
+
+What needs to happen here is we have to add key => value definition of the class name => class file.
+'load_files' => array(
+    'classes' => array("Classroom" => "classroom.php"); // the class file starts at the ROOT of the feature (ROOT/feature/<class file>)
+);
+
+Now Theamus knows that the instance.Class value is for the class file "classroom.php"
+
+Back to javascript...  We can now define the function and data.
+
+instance.Function = "add_course"; // $classroom->add_course();
+instance.Data = { course: "History"; } // $classroom->add_course("History");
+
+Easy!  But here's the last setup thing.  You can define 3 different return functions - complete, success, and error.  These will be called, respectively, when the request is over with.
+
+instance.complete = function(r) {
+    // what you get in this result is everything returned with the request, the headers, the success values, the instance information, the error information, everything.
+    console.log(r);
+}
+
+instance.success = function(r) {
+    // what you get in this function is only the success information like the result of the function called in the request and the instance id
+    console.log(r);
+}
+
+instance.error = function(r) {
+    // what you get in this function is the error information, like an error message and code
+    console.log(r);
+}
+
+Then, this part is most crucial.  It _has_ to be the last thing to come.  If any of the stuff isn't defined before this little number then nothing will work properly.
+
+instance.Send();
+
+Boom!  That's it, request sent, request returned to one of your defined functions, and your done!
+
+But Matt, what if I want to reference an existing object/instance?  Well, you're in luck because that easy-peasy.
+
+instance.ID = "whatever the id is."; // just make sure this is defined before the instance.Send() line and presto!  You're now referencing an existing object.
+
+Anything and everything about the instance values can be changed at any time.  All you have to do is redefine them before you hit that instance.Send() line.
+
+###
+
+Here's a few other functions you might find useful:
+
+instance.Delete(); // deletes the instance saved using the instance.ID value
+instance.DeleteAll(); // deletes all instances saved in the user's session
+instance.Reference(); // returns the instance information related to the instance.ID value
+instance.ReferenceAll(); // returns all saved instance information
+
+##
+
+I don't know where to put this information, but if you're wondering, all instances have a timeout.  An expiration date, if you will.  Firstly if they close their session (logout) then that clears them.  But there's also an automatic cleanup function when any request is made that will clear out all instances older than 6 hours.
+
+###
+
+Theamus Instance Error Codes:
+
+1000 - failed to get post/get data for the instance
+1001 - no feature defined for the instance
+1002 - feature folder could not be found
+1003 - feature configuration file not found or does not exist
+1004 - no class files defined in the feature configuration file
+1005 - requested class file not defined in feature configuration file
+1006 - requested class file not found or does not exist
+1007 - requested class was not defined or does not exist
+1008 - instance id is "undefined" in request data (POST/GET)
+1009 - instance object matching id X does not exist in session
+1010 - failed to create object
+
+
+###
+
+Theamus Instance Example:
+
+var instance = new Theamus.Instance();
+
+instance.Method = "post";
+instance.URL = Theamus.base_url + "/classroom/";
+
+instance.Feature = "classroom";
+instance.Class = "ClassroomManager";
+
+instance.success = function(r) {
+    // if you set this, then anything going forward will be in reference to the 
+    // object created with the first time this function is run.  with the instance
+    // id, you can save it to a cookie, or localstorage and then reference it later
+    // over multiple page requests.
+    instance.ID = r.data.instance_id;
+
+    alert(r.data.instance_result);
+}
+
+instance.error = function(r) {
+    alert(r.code + " " +r.message);
+}
+
+addCourseButton.addEventListener("click", function() {
+    instance.Function = "add_course";
+    instance.Data = { "course": "history" }
+
+    instance.Send();
+});

@@ -3,10 +3,10 @@
 /**
  * Log - Theamus logging class
  * PHP Version 5.5.3
- * Version 1.3.0
+ * Version 1.4.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author ælieo (aelieo) <aelieo@theamus.com>
+ * @author Matt Temet
  */
 class Log {
     protected $Theamus;
@@ -141,7 +141,7 @@ class Log {
             'line'      => $call_info['line'],
             'file'      => $call_info['file'],
             'type'      => $type,
-            'time'      => '[func]now()');
+            'time'      => 'now()');
 
         return; // Return
     }

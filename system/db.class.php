@@ -3,10 +3,10 @@
 /**
  * DB - Theamus database access class
  * PHP Version 5.5.3
- * Version 1.3.0
+ * Version 1.4.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author ælieo (aelieo) <aelieo@theamus.com>
+ * @author Matt Temet
  */
 class DB {
     /**
@@ -79,14 +79,6 @@ class DB {
      * @var array $query_errors
      */
     public $query_errors = array();
-
-
-    /**
-     * Holds key/values for feature table prefixes to avoid excessive querying
-     *
-     * @var array $table_prefixes
-     */
-    private $table_prefixes = array();
 
 
     /**
@@ -331,19 +323,16 @@ class DB {
                 // If MySQLi is being used
                 if ($this->use_pdo == false) {
                     $return['columns'][] = "`$key`";
-                    if (strpos(strtolower($value), '[func]') !== false && !is_numeric($value)) {
-                        $return['prepare_keys'] = $this->connection->real_escape_string(str_replace("[func]", "", $value));
-                    } else {
-                        $return['prepare_keys'][] = "'".$this->connection->real_escape_string($value)."'";
-                    }
+                    if ($value == 'now()') $return['prepare_keys'] = $this->connection->real_escape_string($value);
+                    else $return['prepare_keys'][] = "'".$this->connection->real_escape_string($value)."'";
                     $return['prepare_values'] = array();
 
                 // If PDO is being used
                 } else {
                     $random_key = ":".$key.$return['random_number'];            // random_key for shorter code
                     $return['columns'][] = "`$key`";
-                    if (strpos(strtolower($value), '[func]') !== false && !is_numeric($value)) {
-                        $return['prepare_keys'][] = str_replace("[func]", "", $value);
+                    if ($value == 'now()' && !is_numeric($value)) {
+                        $return['prepare_keys'][] = $value;
                     } else {
                         $return['prepare_keys'][]               = $random_key;
                         $return['prepare_values'][$random_key]  = $value;
@@ -390,15 +379,9 @@ class DB {
                     for ($i = 0; $i < strlen($matches[1]); $i++) {
                         switch ($matches[1][$i]) {
                             case "!":
-                                if (isset($matches[1][$i + 1]) && $matches[1][$i + 1] == '%') {
-                                    $key = str_replace("!%", "", $key);
-                                    $equals = "NOT LIKE";
-                                    break 2;
-                                } else {
-                                    $key = str_replace("!", "", $key);
-                                    $equals = "!=";
-                                    break;
-                                }
+                                $equals = "!=";
+                                $key = str_replace("!", "", $key);
+                                break;
                             case "%":
                                 $equals = "LIKE";
                                 $key = str_replace("%", "", $key);
@@ -407,26 +390,6 @@ class DB {
                                 $key = str_replace("`", "", $key);
                                 $equals = "=";
                                 break;
-                            case "<":
-                                if (isset($matches[1][$i + 1]) && $matches[1][$i + 1] == '=') {
-                                    $key = str_replace("<=", "", $key);
-                                    $equals = "<=";
-                                    break 2;
-                                } else {
-                                    $key = str_replace("<", "", $key);
-                                    $equals = "<";
-                                    break;
-                                }
-                            case ">":
-                                if (isset($matches[1][$i + 1]) && $matches[1][$i + 1] == '=') {
-                                    $key = str_replace(">=", "", $key);
-                                    $equals = ">=";
-                                    break 2;
-                                } else {
-                                    $key = str_replace(">", "", $key);
-                                    $equals = ">";
-                                    break;
-                                }
                         }
                     }
                     $key = str_replace("[", "", str_replace("]", "", $key));
@@ -434,24 +397,16 @@ class DB {
 
                 // If using MySQLi
                 if ($this->use_pdo == false) {
-                    if (strpos(strtolower($value), '[func]') !== false && !is_numeric($value)) {
-                        $return_inner[] = "{$key} {$equals} ".str_replace("[func]", "", $value);
-                    } else {
-                        // Define an escaped key/value combination and define the clause values as blank
-                        $return_inner[] = "$key $equals '".$this->connection->real_escape_string($value)."'";
-                        $this->clause_values = array();
-                    }
+                    // Define an escaped key/value combination and define the clause values as blank
+                    $return_inner[] = "$key $equals '".$this->connection->real_escape_string($value)."'";
+                    $this->clause_values = array();
 
                 // If using PDO
                 } else {
-                    if (strpos(strtolower($value), '[func]') !== false && !is_numeric($value)) {
-                        $return_inner[] = "{$key} {$equals} ".str_replace("[func]", "", $value);
-                    } else {
-                        // Define a random key, then the key/value combination, then add the value to the clause values array
-                        $random_key = ":".substr(md5($key.rand(0,999999999)), 0, 15);
-                        $return_inner[] = "$key $equals $random_key";
-                        $this->clause_values[$random_key] = $value;
-                    }
+                    // Define a random key, then the key/value combination, then add the value to the clause values array
+                    $random_key = ":".substr(md5($key.rand(0,999999999)), 0, 15);
+                    $return_inner[] = "$key $equals $random_key";
+                    $this->clause_values[$random_key] = $value;
                 }
             }
         }
@@ -1008,12 +963,6 @@ class DB {
         // Define the feature to look for the prefix with
         $feature_alias = $feature != '' ? $feature : $this->Theamus->Call->feature['config']['folder_name'];
 
-        // Check for an existing table prefix value for this feature and return it before
-        // querying the database for the prefix again
-        if (isset($this->table_prefixes[$feature_alias])) {
-            return $this->table_prefixes[$feature_alias].$name;
-        }
-
         // Query the database looking for the db_prefix
         $query = $this->select_from_table(
             $this->system_table('features'),
@@ -1033,10 +982,7 @@ class DB {
         // Define the query information
         $results = $this->fetch_rows($query);
 
-        // Add the table prefix to the class variable to avoid redundant queries
-        $this->table_prefixes[$feature_alias] = substr($results['db_prefix'], -1) == '_' ? $results['db_prefix'] : "{$results['db_prefix']}_";
-
         // Return the completed table name
-        return $this->table_prefixes[$feature_alias].$name;
+        return $results['db_prefix'].'_'.$name;
     }
 }
