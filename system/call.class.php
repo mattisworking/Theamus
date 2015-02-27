@@ -94,9 +94,9 @@ class Call {
     /**
      * Class to initiate when the page loads
      *
-     * @var string $init_class
+     * @var string $init_classes
      */
-    private $init_class;
+    private $init_classes = array();
 
     /**
      * Holds the value of whether or not the call is of an AJAX/outside origin
@@ -609,6 +609,7 @@ class Call {
         if (!isset($this->feature['config']) || empty($this->feature['files'])
             || $this->feature['config'] == false) {
             $message = 100;
+            $this->Theamus->pre($this->feature);
         }
 
         if ($this->complete_file_path == false
@@ -682,12 +683,8 @@ class Call {
             $settings['name'] = "Theamus Installation";
         }
 
+        $this->load_class_legacy();
         $data = $this->define_theme_data($settings['name']);
-        if ($this->define_classes()) {
-            $data['init-class'] = $this->init_class;
-        } else {
-            $data['init-class'] = false;
-        }
 
         unset($settings);
         $this->Theamus->Theme->load_theme($data);
@@ -702,21 +699,22 @@ class Call {
      * @return array $data
      */
     private function define_theme_data($name) {
-        $data['name']       = $name;
-        $data['base']       = $this->Theamus->base_url;
-        $data['css']        = $this->get_css();
-        $data['js']         = $this->get_javascript();
-        $data['title']      = @$this->feature['files']['title'];
-        $data['header']     = @$this->feature['files']['header'];
-        $data['feature']    = $this->feature_folder;
-        $data['nav']        = isset($this->feature['files']['nav']) ? $this->feature['files']['nav'] : "";
-        $data['admin']      = $this->Theamus->User->user && $this->Theamus->User->is_admin() ? $this->include_admin() : "";
-        $data['theme']      = $this->define_theme_path();
-        $data['template']   = isset($this->feature['files']['theme']) ? $this->feature['files']['theme'] : "default";
-        $data['file_path']  = $this->complete_file_path;
-        $data['page_alias'] = $this->page_alias;
-        $data['url_params'] = $this->parameters;
-        $data['no_database']= $this->install;
+        $data['name']           = $name;
+        $data['base']           = $this->Theamus->base_url;
+        $data['css']            = $this->get_css();
+        $data['js']             = $this->get_javascript();
+        $data['title']          = @$this->feature['files']['title'];
+        $data['header']         = @$this->feature['files']['header'];
+        $data['feature']        = $this->feature_folder;
+        $data['nav']            = isset($this->feature['files']['nav']) ? $this->feature['files']['nav'] : "";
+        $data['admin']          = $this->Theamus->User->user && $this->Theamus->User->is_admin() ? $this->include_admin() : "";
+        $data['theme']          = $this->define_theme_path();
+        $data['template']       = isset($this->feature['files']['theme']) ? $this->feature['files']['theme'] : "default";
+        $data['file_path']      = $this->complete_file_path;
+        $data['page_alias']     = $this->page_alias;
+        $data['url_params']     = $this->parameters;
+        $data['no_database']    = $this->install;
+        $data['init_classes']   = $this->init_classes;
 
         return $data;
     }
@@ -978,6 +976,7 @@ class Call {
     private function default_javascript() {
         $ret = array(
             "<script src='system/js/jquery.js'></script>",
+            "<script src='".($this->developer_mode() ? "system/js/dev/ajax.js" : "system/js/ajax.min.js")."'></script>",
             "<script src='system/js/theamus.js'></script>",
             "<script src='".($this->developer_mode() ? "system/js/dev/instance.js" : "system/js/instance.min.js")."'></script>",
             "<script src='system/external/prettify/prettify.js'></script>",
@@ -1069,46 +1068,57 @@ class Call {
         }
         return implode("", $ret);
     }
-
-
+    
     /**
-     * Defines a class that is specified by a feature, allows complete access
-     * to that class with the variable of the class name.
-     *
-     * e.g. $NewClass = new NewClass;
-     *
-     * @return boolean
+     * Loads a class file for a page call
+     * 
+     * @param string $file
+     * @param string $name
+     * @param string $var
+     * @return
+     * @throws Exception
      */
-    private function define_classes() {
-        $class_folder = $this->get_class_folder().'/';
-        $class_info = $this->get_class_info();
-
-        if ($class_folder && $class_info) {
-            $path = $this->Theamus->file_path(ROOT."/features/{$this->feature_folder}/{$class_folder}");
-            if ($this->include_class($path.$class_info['file'])) {
-                return true;
-            }
-        }
-
-        return false;
+    protected function load_class($file = "", $name = "", $var = "") {
+        if ($file == "") throw new Exception("Failed to load a class because no class file was defined.");
+        if ($name == "") throw new Exception("Failed to load a class because no class name was defined.");
+        if ($var == "") $var = $name;
+        
+        $class_folder = $this->get_class_folder();
+        $folder = ROOT."/features/{$this->feature_folder}/".($class_folder == "" ? "" : $class_folder."/");
+        $file_path = $this->Theamus->file_path($folder.$file);
+        
+        if (!file_exists($file_path)) {
+            throw new Exception("Failed to load a class because the class file was not found or does not exist.");
+        } else include $file_path;
+        
+        $this->init_classes[] = array($name, $var);
+        return;
     }
-
-
+    
+    
     /**
-     * Checks to see if a class file exists, then includes that file
-     *
-     * This function goes hand-in-hand with define_classes()
-     *
-     * @param string $path
-     * @return boolean
+     * The -old- way of doing things. Ugh.  This will be deprecated in 1.5.0
+     * 
+     * FROM:
+     * $feature['class']['file'] = "x"
+     * $feature['class']['init'] = "xy"
+     * $xy = new xy($Theamus);
+     * 
+     * TO:
+     * $Theamus->Call->load_class(x, xy)
+     * $xy = new xy($Theamus);
+     * 
+     * @return type
      */
-    private function include_class($path) {
-        if (file_exists($path)) {
-            include $path;
-            return true;
-        }
-        return false;
-    }
+    protected function load_class_legacy() {
+        $files = $this->feature['files'];
+
+        if (!is_array($files) && !isset($files['class'])) return;
+        if (!isset($files['class']['file']) || !isset($files['class']['init'])) return;
+        
+        $this->load_class($files['class']['file'], $files['class']['init']);
+        return;
+    } 
 
 
     /**
@@ -1126,34 +1136,6 @@ class Call {
             if (array_key_exists("custom_folders", $config)) {
                 if (array_key_exists("class", $config['custom_folders'])) {
                     return $config['custom_folders']['class'];
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Gets the class information (file, class name) from the provided feature
-     * configuration
-     *
-     * This function goes hand-in-hand with define_classes()
-     *
-     * @return boolean
-     */
-    private function get_class_info() {
-        $files = $this->feature['files'];
-
-        if (is_array($files)) {
-            if (array_key_exists("class", $files)) {
-                if (array_key_exists("file", $files['class']) &&
-                    array_key_exists("init", $files['class'])) {
-                    $this->init_class = $files['class']['init'];
-                    return array(
-                        "file" => $files['class']['file'],
-                        "init" => $files['class']['init']
-                        );
                 }
             }
         }
@@ -1206,10 +1188,13 @@ class Call {
      */
     private function do_ajax() {
         $Theamus = $this->Theamus;
-
-        if ($this->define_classes()) {
-            $init_class = $this->init_class;
-            ${$init_class} = new $init_class($this->Theamus);
+        $this->load_class_legacy();
+        
+        if (is_array($this->init_classes) && !empty($this->init_classes)) {
+            foreach ($this->init_classes as $class) {
+                if (count($class) < 2) continue;
+                ${$class[1]} = new $class[0]($this->Theamus);
+            }
         }
 
         include $this->complete_file_path;
@@ -1226,10 +1211,13 @@ class Call {
      */
     private function include_page() {
         $Theamus = $this->Theamus;
-
-        if ($this->define_classes()) {
-            $init_class = $this->init_class;
-            ${$init_class} = new $init_class($this->Theamus);
+        $this->load_class_legacy();
+        
+        if (is_array($this->init_classes) && !empty($this->init_classes)) {
+            foreach ($this->init_classes as $class) {
+                if (count($class) < 2) continue;
+                ${$class[1]} = new $class[0]($this->Theamus);
+            }
         }
 
         echo $this->get_javascript(true);

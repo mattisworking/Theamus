@@ -13,9 +13,34 @@ function admin_add_extras() {
     }
 }
 
+function get_window_function(functionName) {
+    if (window === undefined) return 0;
+    if (functionName === undefined) return 0;
+    
+    if (functionName.indexOf(".") > 0) {
+        var functionNameArray = functionName.split("."),
+            windowFunction = window;
+
+        for (var i = 0; i < functionNameArray.length; i++) {
+            if (windowFunction[functionNameArray[i]] === undefined) return 0;
+            windowFunction = windowFunction[functionNameArray[i]];
+        }
+
+        return windowFunction;
+    }
+    
+    if (typeof(window[functionName]) === "function") {
+        return window[functionName];
+    }
+    
+    return 0;
+}
+
 function admin_window_run_on_load(func) {
-    if (typeof(window[func]) === 'function') {
-        return window[func]();
+    var window_function = get_window_function(func);
+    
+    if (typeof(window_function) === 'function') {
+        return window_function();
     } else {
         setTimeout(function() {
             admin_window_run_on_load(func);

@@ -4,6 +4,10 @@
         "database": [],
         "files": [],
         "bugs": [
+            "Introduced the Call->load_class() function which allows you to load multiple classes on a page load - documentation/system/including_classes.txt",
+            "Theamus AJAX now has a dev/min version for developer mode/production mode.",
+            "You can now use dot notation to run functions in admin windows instead",
+            "Fixed the page title and prevented a random '-' before the site name",
             "Added a way to avoid redundant queries when looking for table name prefixes using the DB->table() function.  https://github.com/aelieo/Theamus/issues/81",
             "Trims any trailing underscores before attaching the table name to the table prefix in the DB->table() function. https://github.com/aelieo/Theamus/issues/80",
             "Trims the trailing slash from the url on the global JS variable Theamus.base_url. https://github.com/aelieo/Theamus/issues/82",
