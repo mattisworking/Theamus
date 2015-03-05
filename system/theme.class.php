@@ -104,7 +104,7 @@ class Theme {
     private function clean_data() {
         $settings = !$this->Theamus->DB->connection ? $this->data : $this->Theamus->settings;
 
-        $ret['title']       = isset($this->data['title']) ? $this->data['title']." - ".$this->data['name'] : $this->data['name'];
+        $ret['title']       = isset($this->data['title']) && $this->data['title'] != "" ? $this->data['title']." - ".$this->data['name'] : $this->data['name'];
         $ret['header']      = isset($this->data['header']) ? $this->data['header'] : "";
         $ret['theme_path']  = trim($this->Theamus->web_path(trim(str_replace(ROOT, "", $this->data['theme']), "/")), "/")."/";
         $ret['site_name']   = urldecode(stripslashes(isset($settings['name']) ? $settings['name'] : ""));
@@ -194,8 +194,11 @@ class Theme {
     public function content() {
         $Theamus = $this->Theamus;
 
-        if ($this->data['init-class'] != false) {
-            ${$this->data['init-class']} = new $this->data['init-class']($this->Theamus);
+        if (is_array($this->data['init_classes']) && !empty($this->data['init_classes'])) {
+            foreach ($this->data['init_classes'] as $class) {
+                if (count($class) < 2) continue;
+                ${$class[1]} = new $class[0]($this->Theamus);
+            }
         }
 
         $url_params = $this->data['url_params'];
@@ -217,8 +220,11 @@ class Theme {
 
         $url_params = $this->data['url_params'];
 
-        if ($this->data['init-class'] != false) {
-            ${$this->data['init-class']} = new $this->data['init-class']($this->Theamus);
+        if (is_array($this->data['init_classes']) && !empty($this->data['init_classes'])) {
+            foreach ($this->data['init_classes'] as $class) {
+                if (count($class) < 2) continue;
+                ${$class[1]} = new $class[0]($this->Theamus);
+            }
         }
 
         include $this->data['file_path'];

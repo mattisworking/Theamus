@@ -701,7 +701,10 @@ class Settings {
         $tabs = array(
             array('Settings', 'settings/settings.php', 'Theamus Settings'),
             array('Customization', 'settings/index.php', 'Site Customization'),
-            array('Manual Update', 'settings/update-manually.php', 'Manual Update'));
+            array('Manual Update', 'settings/update-manually.php', 'Manual Update'),
+            array('More', array(
+                array('View Logs', 'settings/logs/view.php', 'View Logs')
+            ), 'right'));
 
         // Return the HTML tabs
         return $this->Theamus->Theme->generate_admin_tabs("settings-tab", $tabs, $file);
