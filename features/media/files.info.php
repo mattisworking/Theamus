@@ -1,7 +1,8 @@
 <?php
 
-// Deny anyone who isn't an administrator
-if (!$Theamus->User->is_admin()) !$ajax ? $Theamus->back_up() : die();
+// Administrators only can come to this feature
+if ($ajax == false) $Theamus->back_up();
+if (!$Theamus->User->is_admin()) die("You don't have permission to this feature.");
 
 // Load the pages class
 $feature['class']['file'] = 'media.class.php';
