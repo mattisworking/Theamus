@@ -1,0 +1,11 @@
+Do it through Javascript in the browser (for now).
+
+Set variables:
+    Admin.Settings.Logs.PageVariables.pageNumber = <page number>
+    Admin.Settings.Logs.PageVariables.resultCount = <log count being returned to you>
+    Admin.Settings.Logs.PageVariables.logType = <type of logs to show (developer, general, query, or system)>
+    Admin.Settings.Logs.PageVariables.orderBy = <order by column (time, type, message)>
+    Admin.Settings.Logs.PageVariables.orderWay = <way the orders will be shown (ASC, DESC)>
+
+Load the page:
+    Admin.Settings.Logs.f.loadLogPage();

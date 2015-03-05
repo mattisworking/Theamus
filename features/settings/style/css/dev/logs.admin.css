@@ -1,0 +1,111 @@
+.settings_logs-wrapper {
+    max-width: 1000px;
+    min-width: 700px;
+}
+.settings_logs-row:before,
+.settings_logs-row:after { content: ""; display: table; }
+.settings_logs-row:after { clear: both; }
+.settings_logs-row {
+    cursor: pointer;
+    padding: 10px;
+    transition: background-color .2s ease-in-out;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    white-space: nowrap;
+}
+.settings_logs-row:hover {
+    background-color: #eee;
+}
+.settings_logs-row:not(:last-child) {
+    border-bottom: 1px solid #eee;
+}
+.settings_logs-row-type {
+    display: inline-block;
+    float: left;
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 15%;
+}
+.settings_logs-row-date {
+    color: #888;
+    display: inline-block;
+    float:left;
+    font-size:.8em;
+    margin-top: 3px;
+    width: 20%;
+}
+.settings_logs-row-message {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 65%;
+}
+
+.settings_logs-row-details-wrapper {
+    display: none;
+}
+
+.expanded {
+    border-left: 2px solid #888;
+}
+
+.expanded .settings_logs-row-details-wrapper {
+    border: 1px solid #ddd;
+    color: #888;
+    display: block;
+    font-style: italic;
+    margin-top: 5px;
+    padding: 10px;
+}
+.expanded .settings_logs-row-details-classfunc,
+.expanded .settings_logs-row-details-line,
+.expanded .settings_logs-row-details-file {
+    color: #222;
+    font-style: normal;
+}
+.expanded .settings_logs-row-message {
+    text-overflow: none;
+    white-space: normal;
+}
+
+.settings_logs-pages-wrapper {
+    border-top: 1px solid #eee;
+    padding: 10px;
+}
+.settings_logs-pages-wrapper a {
+    background-color: #666;
+    color: #fff;
+    display: inline-block;
+    font-size: .7em;
+    padding: 5px 12px;
+    margin: 0 2px;
+    text-decoration: none;
+    transition: background-color .3s ease-in-out;
+}
+.settings_logs-pages-wrapper a:hover {
+    background-color: #888;
+}
+.settings_logs-pages-wrapper a.settings_logs-current-page {
+    background-color: #444;
+}
+.settings_logs-pages-wrapper a.settings_logs-current-page:hover {
+    background-color: #666;
+}
+
+
+@media (max-width: 768px) {
+    .settings_logs-wrapper { max-width: 100%; min-width: 0%; width: 100%; }
+    .settings_logs-row-type { visibility: hidden; width: 10%; }
+    .settings_logs-row-type:first-letter { visibility: visible; }
+    .settings_logs-row-date { display: none; }
+    .settings_logs-row-message { width: 90%; }
+    .expanded .settings_logs-row-details-wrapper { white-space: normal; }
+    .settings_logs-pages-wrapper { white-space: nowrap; }
+    .settings_logs-pages-wrapper a { display: none; }
+    .settings_logs-pages-wrapper a.settings_logs-previous-page { display: inline-block; }
+    .settings_logs-pages-wrapper a.settings_logs-current-page { display: inline-block; }
+    .settings_logs-pages-wrapper a.settings_logs-next-page { display: inline-block; }
+}

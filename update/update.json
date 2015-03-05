@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "Added a way to view logs.  Theamus Admin -> Settings -> More (top right) -> View logs",
             "Introduced the Call->load_class() function which allows you to load multiple classes on a page load - documentation/system/including_classes.txt",
             "Theamus AJAX now has a dev/min version for developer mode/production mode.",
             "You can now use dot notation to run functions in admin windows instead",
