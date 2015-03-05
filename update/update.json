@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "Made the error page mobile-friendly!  Woo!",
             "Added security to admin only features.  They are exclusive to the admin panel, as they should've been.",
             "Added a way to view logs.  Theamus Admin -> Settings -> More (top right) -> View logs",
             "Introduced the Call->load_class() function which allows you to load multiple classes on a page load - documentation/system/including_classes.txt",
