@@ -2,3 +2,4 @@ config.php
 .DS_Store
 *.db
 features/documentation
+features/default/views/test/
