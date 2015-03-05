@@ -1,10 +1,8 @@
 <?php
 
 // Check for a call to the administrator and for an administrator
-if ($folders[0] == 'admin' && $ajax != 'api' && $ajax != 'include' && $Theamus->User->is_admin() == false) {
-    if ($location != 'admin') $Theamus->back_up();
-    if ($location != 'admin' && $ajax != 'include') die('You don\'t have permission to this file.');
-}
+if ($folders[0] == 'admin' && $ajax == false) $Theamus->back_up();
+if ($folders[0] == "admin" && !$Theamus->User->is_admin()) die("You don't have permission to this feature.");
 
 // Load the accounts class
 $feature['class']['file'] = 'accounts.class.php';

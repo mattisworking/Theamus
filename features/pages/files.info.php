@@ -14,8 +14,9 @@ switch ($file) {
     case 'edit.php':
     case 'remove.php':
     case 'pages-list.php':
-        // Deny anyone who isn't an administrator
-        if (!$Theamus->User->is_admin()) !$ajax ? $Theamus->back_up() : die();
+        // Administrators only can come to this feature
+        if ($ajax == false) $Theamus->back_up();
+        if (!$Theamus->User->is_admin()) die("You don't have permission to this feature.");
 
         $feature['css']['file'][] = PAGES_DEV_MODE ? 'dev/pages.admin.css' : 'pages.admin.min.css';
         $feature['js']['file'][] = PAGES_DEV_MODE ? 'dev/pages.admin.js' : 'pages.admin.min.js';

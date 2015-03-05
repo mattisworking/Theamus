@@ -1,7 +1,8 @@
 <?php
 
 // Administrators only can come to this feature
-if (!$Theamus->User->is_admin()) throw new Exception('Only administrators can access the Theamus Navigation feature.');
+if ($ajax == false) $Theamus->back_up();
+if (!$Theamus->User->is_admin()) die("You don't have permission to this feature.");
 
 // Initialize the navigation class
 $feature['class']['file'] = 'navigation.class.php';
