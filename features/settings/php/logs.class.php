@@ -183,16 +183,32 @@ class Logs extends Settings {
      * @return array
      */
     public function get_page_links() {
-        $pages = ceil($this->get_total_result_count() / $this->get_result_limit());
+        $total_pages = ceil($this->get_total_result_count() / $this->get_result_limit());
+        $pad_size = 2;
         
         $page_links = array();
-        if ($this->get_current_page() > 1) $page_links[] = "<a href='#' class='settings_logs-previous-page'>&lt;</a>";
-        for ($i = 0; $i < $pages; $i++) {
-            $bold = ($i + 1) == $this->get_current_page() ? true : false;
-            $page_links[] = "<a href='#' ".($bold ? "class='settings_logs-current-page'" : "").">".($i + 1)."</a>";
-        }
-        if ($this->get_current_page() < $pages) $page_links[] = "<a href='#' class='settings_logs-next-page'>&gt;</a>";
         
+        $numbers = array("left" => array("count" => 0, "links" => array()), "right" => array("count" => 0, "links" => array()));
+
+        for ($i = ($this->get_current_page() - 1); $i >= ($this->get_current_page() - $pad_size); $i--) {
+            if ($i <= 0) continue;
+            $numbers['left']['count'] = $numbers['left']['count'] + 1;
+            $numbers['left']['links'][] = "<a href='#'>{$i}</a>";
+        }
+        $numbers['left']['links'] = array_reverse($numbers['left']['links']);
+        $numbers['left']['links'][] = "<a href='#' class='settings_logs-current-page'>{$this->get_current_page()}</a>";
+
+        for ($i = ($this->get_current_page() + 1); $i <= ($this->get_current_page() + $pad_size); $i++) {
+            if ($i > $total_pages) continue;
+            $numbers['right']['count'] = $numbers['right']['count'] + 1;
+            $numbers['right']['links'][] = "<a href='#'>{$i}</a>";
+        }
+
+        if (!empty($numbers['right']['links'])) $page_links = array_merge($numbers['right']['links'], $page_links);
+        if (!empty($numbers['left']['links'])) $page_links = array_merge($numbers['left']['links'], $page_links);
+        if (($this->get_current_page() - 1) > 0) array_unshift($page_links, "<a href='#' class='settings_logs-previous-page'>&lt;</a> ");
+        if ($this->get_current_page() < $total_pages) $page_links[] = " <a href='#' class='settings_logs-next-page'>&gt;</a>";
+
         return $page_links;
     }
 }
