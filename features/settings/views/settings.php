@@ -4,6 +4,18 @@
 
 <form class='form' id='edit-settings-form' style='width: 500px; margin-top: 15px;'>
     <h2 class='form-header'>Site Email Setup</h2>
+    
+    <div class="form-group">
+        <div id="settings_test-email-result"></div>
+        <div class="input-group">
+            <input type="email" placeholder="send to email..." class="form-control" id="settings_test-email">
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" id="settings_test-email-button">Test Email</button>
+            </span>
+        </div>
+        <span class="help-block">Testing will use the information filled out in the "Configure Email Settings" section.</span>
+    </div>
+    
     <div class='form-group'>
         <label class='checkbox'>
             <input type='checkbox' name='config-email' id='config-email'>
@@ -41,7 +53,7 @@
 
         <div class='form-group'>
             <label class='control-label' for='password'>Password</label>
-            <input type='password' class='form-control' name='password' id='password' value='<?php echo $Theamus->settings['email_password']; ?>'>
+            <input type='password' class='form-control' name='password' id='password' value='<?php echo $Theamus->decrypt_string($Theamus->settings['email_password']); ?>'>
         </div>
     </div>
 
@@ -77,5 +89,6 @@
 
 <script>
     admin_window_run_on_load('change_settings_tab');
+    admin_window_run_on_load("test_email_listener");
     admin_window_run_on_load('settings');
 </script>

@@ -304,7 +304,7 @@ class Settings {
             $query_data['email_protocol'] = $args['protocol'];
             $query_data['email_port'] = $args['port'];
             $query_data['email_user'] = $args['email'];
-            $query_data['email_password'] = $args['password'];
+            $query_data['email_password'] = $this->Theamus->encrypt_string($args['password']);
         }
 
         // Check for display errors variable
@@ -708,5 +708,59 @@ class Settings {
 
         // Return the HTML tabs
         return $this->Theamus->Theme->generate_admin_tabs("settings-tab", $tabs, $file);
+    }
+    
+    
+    /**
+     * Sends a test email to whoever in order to check the configuration settings
+     * 
+     * @param array $args
+     * @return boolean
+     * @throws Exception
+     */
+    public function test_email($args = array()) {
+        if (!isset($args['protocol']) || $args['protocol'] == "") {
+            throw new Exception("Invalid protocol defined.");
+        }
+        
+        if (!isset($args['host']) || $args['host'] == "") {
+            throw new Exception("Invalid email host defined.");
+        }
+        
+        if (!isset($args['port']) || !is_numeric($args['port'])) {
+            throw new Exception("Invalid port defined.");
+        }
+        
+        if (!isset($args['email']) || $args['email'] == "") {
+            throw new Exception("Invalid email username defined.");
+        }
+        
+        if (!isset($args['to']) || $args['to'] == "" || !filter_var($args['to'], FILTER_VALIDATE_EMAIL)) {
+            throw new Exception("Invalid 'to' email address.");
+        }
+        
+        $mail = new PHPMailer(true);
+        $mail->IsSMTP();
+        
+        try {
+            $mail->SMTPAuth   = true;
+            $mail->SMTPSecure = $args['protocol'];
+            $mail->Host       = $args['host'];
+            $mail->Port       = $args['port'];
+            $mail->Username   = $args['email'];
+            $mail->Password   = $args['password'];
+            $mail->From       = $args['email'];
+            $mail->FromName   = $args['email'];
+
+            $mail->Subject = "test email, please ignore.";
+            $mail->Body = "helllo.  this is a test email.  if you got it, then your email setup works!";
+
+            $mail->AddAddress($args['to']);
+
+            // Send the email out
+            return $mail->Send();
+        } catch (phpmailerException $e) {
+            throw new Exception($e->errorMessage());
+        }
     }
 }

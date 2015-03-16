@@ -20,7 +20,7 @@ $Theamus->Call->set_feature_config(array(
 
     // Feature Optional
     'load_files' => array(
-        'api'       => array('php/settings.class.php'),
+        'api'   => array('php/settings.class.php'),
     ),
     'release_notes' => array(
         '1.3.0' => array('Updated to the new way of doing things.'),
