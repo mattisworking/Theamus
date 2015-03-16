@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "Can now send test emails in administrator settings to check your email configuration",
             "Made the error page mobile-friendly!  Woo!",
             "Added security to admin only features.  They are exclusive to the admin panel, as they should've been.",
             "Added a way to view logs.  Theamus Admin -> Settings -> More (top right) -> View logs",

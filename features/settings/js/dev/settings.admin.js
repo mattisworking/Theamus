@@ -366,3 +366,36 @@ function settings_manual_update() {
         });
     });
 }
+
+function test_email_listener() {    
+    $("#settings_test-email-button").on("click", function(e) {
+        $("#settings_test-email-result").show().html(Theamus.Notify("spinner", "Sending test email..."));
+        
+        setTimeout(function() {
+            Theamus.Ajax.api({
+                type: "post",
+                url: Theamus.base_url + "/settings/",
+                method: ["Settings", "test_email"],
+                data: {
+                    custom: {
+                        host: $("#host").val(),
+                        protocol: $("#protocol").val(),
+                        port: $("#port").val(),
+                        email: $("#email").val(),
+                        password: $("#password").val(),
+                        to: $("#settings_test-email").val()
+                    }
+                },
+                success: function(data) {
+                    if (data.error.status === 1) {
+                        $("#settings_test-email-result").html(Theamus.Notify("danger", data.error.message.replace(/(<([^>]+)>)/ig,"")));
+                        setTimeout(function() { $("#settings_test-email-result").html("").hide(); }, 1500);
+                    } else {
+                        $("#settings_test-email-result").html(Theamus.Notify("success", "Email sent successfully."));
+                        setTimeout(function() { $("#settings_test-email-result").html("").hide(); }, 5000);
+                    }
+                }
+            });
+        }, 100);
+    });
+}
