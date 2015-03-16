@@ -178,7 +178,7 @@ function bring_admin_window_to_front(ad_window) {
             $($('.admin-window')[i]).css('z-index', false);
         }
     }
-    $(ad_window).css('z-index', '10');
+    $(ad_window).css('z-index', '50');
 }
 
 function admin_window_listeners() {
@@ -263,7 +263,7 @@ $(document).ready(function() {
 
     resize = null;
 
-    add_css('themes/admin/style/css/admin.css');
+    add_css('themes/admin/style/css/admin.min.css');
 
     if (Theamus.Mobile === true) {
         $('.admin').addClass('admin-mobile');
