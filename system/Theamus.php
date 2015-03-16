@@ -214,7 +214,7 @@ class Theamus {
        $mail->Host       = $settings['email_host'];
        $mail->Port       = $settings['email_port'];
        $mail->Username   = $settings['email_user'];
-       $mail->Password   = $settings['email_password'];
+       $mail->Password   = $this->decrypt_string($settings['email_password']);
        $mail->From       = $settings['email_user'];
        $mail->FromName   = $settings['name'];
 
@@ -317,5 +317,33 @@ class Theamus {
      */
     public function get_run_time() {
         return microtime(true) - $this->timer;
+    }
+    
+    
+    /**
+     * Returns an encrypted & utf8-encoded
+     * 
+     * @return string $encrypted_string
+     */
+    function encrypt_string($pure_string) {
+        $encryption_key = $this->DB->get_config_salt("password");
+        $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        $encrypted_string = mcrypt_encrypt(MCRYPT_BLOWFISH, $encryption_key, utf8_encode($pure_string), MCRYPT_MODE_ECB, $iv);
+        return $encrypted_string;
+    }
+
+    
+    /**
+     * Returns decrypted original string
+     * 
+     * @return string $decrypted_string
+     */
+    function decrypt_string($encrypted_string) {
+        $encryption_key = $this->DB->get_config_salt("password");
+        $iv_size = mcrypt_get_iv_size(MCRYPT_BLOWFISH, MCRYPT_MODE_ECB);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, $encryption_key, $encrypted_string, MCRYPT_MODE_ECB, $iv);
+        return trim($decrypted_string);
     }
 }

@@ -304,7 +304,7 @@ class Settings {
             $query_data['email_protocol'] = $args['protocol'];
             $query_data['email_port'] = $args['port'];
             $query_data['email_user'] = $args['email'];
-            $query_data['email_password'] = $args['password'];
+            $query_data['email_password'] = $this->Theamus->encrypt_string($args['password']);
         }
 
         // Check for display errors variable

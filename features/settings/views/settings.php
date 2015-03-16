@@ -53,7 +53,7 @@
 
         <div class='form-group'>
             <label class='control-label' for='password'>Password</label>
-            <input type='password' class='form-control' name='password' id='password' value='<?php echo $Theamus->settings['email_password']; ?>'>
+            <input type='password' class='form-control' name='password' id='password' value='<?php echo $Theamus->decrypt_string($Theamus->settings['email_password']); ?>'>
         </div>
     </div>
 
