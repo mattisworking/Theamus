@@ -582,6 +582,6 @@
 
 .admin-window .form .form-group {
     float: none;
-    margin: 0 auto;
+    margin: 0 auto 15px;
     width: 95%;
 }
