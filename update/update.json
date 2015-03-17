@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "Added the ability to define which logs get logged.",
             "Updates to the admin panel styling",
             "Added encryption to the email password in the database. To update it, resave the email configuration settings.",
             "Can now send test emails in administrator settings to check your email configuration",
