@@ -64,6 +64,20 @@
             Display errors?
         </label>
     </div>
+    
+    <div class="form-group">
+        <label class="control-label"
+               for="settings_log-categories">Log Categories</label>
+        <select class="form-control"
+                id="settings_log-categories"
+                name="settings_log-categories"
+                multiple="multiple"
+                size="3">
+            <option value="general" <?php if (strpos($Theamus->settings['logging'], "general") !== false) echo "selected"; ?>>General</option>
+            <option value="developer" <?php if (strpos($Theamus->settings['logging'], "developer") !== false) echo "selected"; ?>>Developer</option>
+            <option value="query" <?php if (strpos($Theamus->settings['logging'], "query") !== false) echo "selected"; ?>>Query</option>
+        </select>
+    </div>
 
     <h2 class='form-header'>Update Theamus</h2>
     <div class='form-group'>

@@ -167,3 +167,31 @@ function remove() {
         });
     });
 }
+
+function update_favicon_listener() {
+    $("#appearance_favicon-form").on("submit", function(e) {
+        e.preventDefault();
+        
+        $("#appearance_favicon-result").show().html(Theamus.Notify("spinner", "Saving favicon..."));
+        $("#appearance_favicon-form").find("button[type='submit']").attr("disabled", "disabled");
+        
+        setTimeout(function() {
+            Theamus.Ajax.api({
+                type: "post",
+                url: Theamus.base_url + "/appearance/",
+                method: ["Appearance", "update_favicon"],
+                data: { form: $("#appearance_favicon-form") },
+                success: function(data) {
+                    if (data.error.status === 1) {
+                        $("#appearance_favicon-result").html(Theamus.Notify("danger", data.error.message));
+                    } else {
+                        $("#appearance_favicon-result").html(Theamus.Notify("success", "Favicon updated."));
+                    }
+                    
+                    $("#appearance_favicon-form").find("button[type='submit']").removeAttr("disabled");
+                    setTimeout(function() { $("#appearance_favicon-result").html(""); }, 1500);
+                }
+            })
+        }, 100);
+    });
+}

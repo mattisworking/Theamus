@@ -279,6 +279,9 @@ class Settings {
 
         // Check for the config-email variable
         if (!isset($args['config-email'])) throw new Exception('Invalid config email.');
+        
+        if (!isset($args['settings_log-categories'])) $args['settings_log-categories'] = "";
+        $query_data['logging'] = $args['settings_log-categories'];
 
         // Check for the email setup to be changed
         if ($args['config-email'] !== 'false') {

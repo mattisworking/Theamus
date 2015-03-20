@@ -1,56 +1,41 @@
 <?php
 
-// Define the information from the URL
-$get = filter_input_array(INPUT_GET);
+$current_page   = isset($Theamus->Call->parameters[0]) ? $Theamus->Call->parameters[0]  : 1;
+$media = $Media->get_media_listing($current_page);
 
-// Define the page number
-$page = isset($get['page']) ? $get['page'] : 1;
+if (empty($media[0])):
+    $Theamus->notify("info", "There's no media!  Upload something!");
+else:
+    echo "<div class=\"media_listing-wrapper\">";
+    foreach ($media as $item):
+?>
+    <div class="media_listing-row">
+        <span class="media_listing-img">
+            <img src="<?php echo "media/{$item['path']}"; ?>" alt="<?php echo $item['file_name']; ?>">
+        </span>
+        <span class="media_listing-name">
+            <?php echo $item['file_name']; ?>
+        </span>
+        <span class="media_listing-options">
+            <a href="#" class="remove"
+               data-id="<?php echo $item['id']; ?>">
+                Remove</a> |
+            <a href="#" name="media_info-link" 
+               data-id="<?php echo $item['id']; ?>">
+                More Information</a>
+        </span>
+    </div>
+<?php
+    endforeach;
+    echo "<div>";
+endif;
+?>
 
-$media_options = ''; // Initialize the media options array
-if ($Theamus->User->has_permission('remove_media')) {
-    $media_options = implode(array(
-        '<div class="media-list-options">',
-        '<a href="#" class="remove" data-id="%id%" title="Remove"><span class="glyphicon ion-close"></span></a>',
-        '</div>'
-    ));
-}
+<div class="media_listing-pages-wrapper">
+    <?php echo implode($Media->get_page_links($current_page)); ?>
+</div>
 
-// Define the template to show the media with
-$template = implode(array(
-    '<div class="media-item">',
-    $media_options,
-    '::"%type%" == "image" ? "<img src=\'media/%path%\' alt=\'\'>" : ""::',
-    '::"%type%" == "object" ? "<iframe type=\'application/pdf\' src=\'media/%path%\'></iframe>" : ""::',
-    '</div>'
-));
-
-// Query the database for all media
-$query = $Theamus->DB->select_from_table(
-    $Theamus->DB->system_table('media'),
-    array('id', 'path', 'type'));
-
-// Check the query for errors
-if (!$query) {
-    $Theamus->Log->query($Theamus->DB->get_last_error()); // Log the query error
-
-    die($Theamus->notify('danger', 'Failed to get media.'));
-}
-
-// Check the query for results
-if ($Theamus->DB->count_rows($query) == 0) die($Theamus->notify('info', 'There is no media.'));
-
-// Define the information from the query
-$results = $Theamus->DB->fetch_rows($query);
-$media = isset($results[0]) ? $results : array($results);
-
-// Define the Pagination information
-$Theamus->Pagination->set_page_data(array(
-    'data'          => $media,
-    'per_page'      => 10,
-    'current'       => $page,
-    'list_template' => $template
-));
-
-// Show the media an pagination links
-$Theamus->Pagination->print_list();
-$Theamus->Pagination->print_pagination('get_media_list', 'admin-pagination');
+<script>
+    admin_window_run_on_load("mediaPageListeners");
+    admin_window_run_on_load("mediaInfoListeners");
+</script>

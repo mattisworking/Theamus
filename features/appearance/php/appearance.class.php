@@ -56,7 +56,10 @@ class Appearance {
         // Define the tabs and their options
         $tabs = array(
             array('List of Themes', 'appearance/index.php', 'Theamus Themes'),
-            array('Install a Theme', 'appearance/install.php', 'Install a Theme'));
+            array('Install a Theme', 'appearance/install.php', 'Install a Theme'),
+            array('More', array(
+                array('Favicon Settings', 'appearance/favicon.php', 'Favicon Settings')
+            ), 'right'));
 
         // Return the HTML tabs
         return $this->Theamus->Theme->generate_admin_tabs("appearance-tab", $tabs, $file);
@@ -284,5 +287,25 @@ class Appearance {
         $this->clean_temp_folder(); // Clean the temp folder, just cuz
 
         return true; // Return true!
+    }
+    
+    public function update_favicon($args = array()) {
+        if (!$this->Theamus->User->is_admin()) {
+            throw new Exception("Only administrators can change the favicon.");
+        }
+        
+        if (!isset($args['appearance_favicon-path'])) $args['appearance_favicon-path'] = "";
+        
+        $query = $this->Theamus->DB->update_table_row(
+                $this->Theamus->DB->system_table("settings"),
+                array("favicon_path" => $args['appearance_favicon-path']));
+        
+        if (!$query) {
+            $this->Theamus->Log->query($this->Theamus->DB->get_last_error());
+            throw new Exception("Failed to save the favicon path because of a query error.");
+        }
+        
+        $this->Theamus->Log->system("Updated site favicon.");
+        return true;
     }
 }

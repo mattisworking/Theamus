@@ -2,8 +2,8 @@
 
 class Media {
     protected $Theamus;
-    protected $allowed_media = array('jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf');
-    protected $images = array('jpg', 'jpeg', 'png', 'gif', 'webp');
+    protected $allowed_media = array('jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'ico');
+    protected $images = array('jpg', 'jpeg', 'png', 'gif', 'webp', 'ico');
     protected $images_folder = '';
     protected $objects_folder = '';
 
@@ -173,5 +173,69 @@ class Media {
         // Commit to the DB and return true!
         $this->Theamus->DB->use_pdo == true ? $this->Theamus->DB->connection->commit() : $this->Theamus->DB->connection->commit();
         return true;
+    }
+    
+    
+    public function get_media_listing($page_number = 1) {
+        $result_limit = 8;
+        $conditions = array();
+        
+        $count_query = $this->Theamus->DB->select_from_table(
+                $this->Theamus->DB->system_table("media"));
+        
+        if (!$count_query) throw new Exception("Failed to get a total count on the media.");
+        
+        $this->total_result_count = $this->Theamus->DB->count_rows($count_query);
+        
+        if ($this->total_result_count > 200) $query_limit['count'] = 200;
+        
+        $query_limit = array(
+            "start" => ($result_limit * $page_number) - $result_limit,
+            "count" => $result_limit
+        );
+        
+        $query = $this->Theamus->DB->select_from_table(
+                $this->Theamus->DB->system_table("media"),
+                array(),
+                (!empty($conditions) ? array("operator" => "&&", "conditions" => $conditions) : array()),
+                "LIMIT {$query_limit['start']}, {$query_limit['count']}");
+        
+        if (!$query) {
+            throw new Exception();
+        }
+        
+        $results = $this->Theamus->DB->fetch_rows($query);
+        return isset($results[0]) ? $results : array($results);
+    }
+    
+    public function get_page_links($current_page = 1) {
+        $result_limit = 8;
+        $total_pages = ceil($this->total_result_count / $result_limit);
+        $pad_size = 2;
+        
+        $page_links = array();
+        
+        $numbers = array("left" => array("count" => 0, "links" => array()), "right" => array("count" => 0, "links" => array()));
+
+        for ($i = ($current_page - 1); $i >= ($current_page - $pad_size); $i--) {
+            if ($i <= 0) continue;
+            $numbers['left']['count'] = $numbers['left']['count'] + 1;
+            $numbers['left']['links'][] = "<a href='#'>{$i}</a>";
+        }
+        $numbers['left']['links'] = array_reverse($numbers['left']['links']);
+        $numbers['left']['links'][] = "<a href='#' class='media_listing-current-page'>{$current_page}</a>";
+
+        for ($i = ($current_page + 1); $i <= ($current_page + $pad_size); $i++) {
+            if ($i > $total_pages) continue;
+            $numbers['right']['count'] = $numbers['right']['count'] + 1;
+            $numbers['right']['links'][] = "<a href='#'>{$i}</a>";
+        }
+
+        if (!empty($numbers['right']['links'])) $page_links = array_merge($numbers['right']['links'], $page_links);
+        if (!empty($numbers['left']['links'])) $page_links = array_merge($numbers['left']['links'], $page_links);
+        if (($current_page - 1) > 0) array_unshift($page_links, "<a href='#' class='media_listing-previous-page'>&lt;</a> ");
+        if ($current_page < $total_pages) $page_links[] = " <a href='#' class='media_listing-next-page'>&gt;</a>";
+
+        return $page_links;
     }
 }
