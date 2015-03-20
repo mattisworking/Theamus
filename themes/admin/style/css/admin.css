@@ -36,7 +36,7 @@
     -webkit-transition: opacity .3s ease-in-out, box-shadow .3s ease-in-out;
     -moz-transition: opacity .3s ease-in-out, box-shadow .3s ease-in-out;
     -ms-transition: opacity .3s ease-in-out, box-shadow .3s ease-in-out;
-    z-index: 50;
+    z-index: 500;
 }
 
 .admin-header-left {
@@ -197,6 +197,10 @@
     z-index: 45;
 }
 
+.admin-navigation:hover {
+    z-index: 450;
+}
+
 .admin-navigation-left {
     border-left: 0;
     left: -180px;
@@ -298,7 +302,7 @@
 
 .admin-window {
     box-shadow: 0 0 5px #666;
-    min-height: 100px;
+    min-height: 10px;
     max-height: 300px;
     left: -5000px;
     min-width: 300px;
@@ -385,6 +389,10 @@
 
 .admin-window-maxheight .window-content {
     padding: 5px 20px 5px 5px;
+}
+.admin_window-inner-content,
+.admin_window-loader {
+    display: none;
 }
 
 .admin-window-spinner {

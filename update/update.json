@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "Admin windows are smarter!  They will wait until everything is loaded to show content, making the spinner more relevant than ever!",
             "Added favicon support to themes",
             "Restructured the media windows so you can now get information on a media item.",
             "Added the ability to define which logs get logged.",

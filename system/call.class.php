@@ -977,10 +977,12 @@ class Call {
         $ret = array(
             "<script src='system/js/jquery.js'></script>",
             "<script src='".($this->developer_mode() ? "system/js/dev/ajax.js" : "system/js/ajax.min.js")."'></script>",
+            "<script src='".($this->developer_mode() ? "system/js/dev/main.js" : "system/js/main.min.js")."'></script>",
             "<script src='system/js/theamus.js'></script>",
             "<script src='".($this->developer_mode() ? "system/js/dev/instance.js" : "system/js/instance.min.js")."'></script>",
             "<script src='system/external/prettify/prettify.js'></script>",
-            $this->Theamus->User->user && $this->Theamus->User->is_admin() ? "<script src='themes/admin/js/admin.min.js'></script>" : "",
+            $this->Theamus->User->user && $this->Theamus->User->is_admin() ? 
+                ($this->developer_mode() ? "<script src='themes/admin/js/admin.js'></script>" : "<script src='themes/admin/js/admin.min.js'></script>") : "",
             "<script>Theamus.info = ".$this->define_javascript_info()."</script>",
         );
         return implode("\n", $ret);

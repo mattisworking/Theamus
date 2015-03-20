@@ -296,8 +296,8 @@ class Theamus {
      * @param string $path
      * @return boolean
      */
-    public function load_js_file($path) {
-       echo "<input type='hidden' name='addscript' value='".$path."?x=".time()."' />";
+    public function load_js_file($path, $force = "false") {
+       echo "<input type='hidden' name='addscript' data-force='{$force}' value='".$path."?x=".time()."' />";
        return true;
     }
 

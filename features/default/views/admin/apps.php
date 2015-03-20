@@ -4,7 +4,7 @@ function add_homeapp_js($Theamus, $path, $homeapp) {
     if (isset($homeapp['js']) && is_array($homeapp['js'])) {
         foreach ($homeapp['js'] as $js) {
             if (file_exists($path.'/'.$js)) {
-                $Theamus->load_js_file($path.'/'.$js);
+                $Theamus->load_js_file($path.'/'.$js, "true");
             }
         }
     } else {
