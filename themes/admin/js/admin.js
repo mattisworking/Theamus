@@ -1,14 +1,32 @@
 function admin_add_extras() {
     var scripts = $('[name="addscript"]'),
-        styles = $('[name="addstyle"]');
+        styles = $('[name="addstyle"]'),
+        dataforce = undefined,
+        force = undefined;
 
     for (var i = 0; i < scripts.length; i++) {
-        add_js_file(scripts[i].value);
+        dataforce = scripts[i].getAttribute('data-force');
+        force = false;
+    
+        if (dataforce !== null) {
+            force = dataforce === "false" ? false : true;
+        }
+        
+        add_js_file(scripts[i].value, force);
         $(scripts[i]).remove();
     }
+    
+    dataforce = force = undefined;
 
     for (var i = 0; i < styles.length; i++) {
-        add_css(styles[i].value);
+        dataforce = styles[i].getAttribute('data-force');
+        force = false;
+    
+        if (dataforce !== null) {
+            force = dataforce === "false" ? false : true;
+        }
+    
+        add_css(styles[i].value, force);
         $(styles[i]).remove();
     }
 }
@@ -36,11 +54,16 @@ function get_window_function(functionName) {
     return 0;
 }
 
+loading = {};
+
 function admin_window_run_on_load(func) {
     var window_function = get_window_function(func);
+    loading[func] = 'loading';
     
     if (typeof(window_function) === 'function') {
-        return window_function();
+        var ran = window_function();
+        loading[func] = ran;
+        return ran;
     } else {
         setTimeout(function() {
             admin_window_run_on_load(func);
@@ -91,7 +114,12 @@ function create_admin_window(window_id, window_title, window_url, pre_style) {
     $(ad_window).append(ad_content);
 
     var ad_content_inner = document.createElement('div');
+    $(ad_content_inner).addClass('admin_window-inner-content');
     $(ad_content).append(ad_content_inner);
+    
+    var ad_content_loader = document.createElement('div');
+    $(ad_content_loader).addClass('admin_window-loader');
+    $(ad_content).append(ad_content_loader);
 
     $('.admin-windows').append(ad_window);
 
@@ -110,7 +138,24 @@ function create_admin_window(window_id, window_title, window_url, pre_style) {
 }
 
 function admin_window_loading(window_id) {
-    $('#'+window_id).children("div").html('<span class=\'spinner spinner-fixed admin-window-spinner\'></span>');
+    $('#'+window_id).children("div.admin_window-loader").show().html('<span class=\'spinner spinner-fixed admin-window-spinner\'></span>');
+}
+
+function show_admin_window_content(window_id) {
+    var gb = [];
+    
+    for (var key in loading) {
+       if (loading[key] === 'loading') gb.push(false);
+       else gb.push(true);
+    }
+    
+    if (gb.indexOf(false) > -1) {
+        setTimeout(function() { show_admin_window_content(window_id); }, 100);
+    } else {
+        $("#"+window_id).children("div.admin_window-inner-content").show();
+        $('#'+window_id).children("div.admin_window-loader").hide();
+    }
+    return;
 }
 
 function update_admin_window_content(window_id, url) {
@@ -120,18 +165,19 @@ function update_admin_window_content(window_id, url) {
     bring_admin_window_to_front($('#'+window_id).parentsUntil('.admin-windows'));
     admin_window_loading(window_id);
 
-    setTimeout(function() {
-        Theamus.Ajax.run({
-            url:        Theamus.base_url+url,
-            type:       "include",
-            result:     $("#"+window_id).children("div"),
-            after:      function() {
-                $('#'+window_id).parentsUntil('.admin-windows').find('.refresh').attr('data-url', url);
-                admin_add_extras();
-                resize_admin_window();
-            }
-        });
-    }, 500);
+    Theamus.Ajax.run({
+        url:        Theamus.base_url+url,
+        type:       "include",
+        result:     $("#"+window_id).children("div.admin_window-inner-content"),
+        after:      function() {
+            $("#"+window_id).children("div.admin_window-inner-content").hide();
+            $('#'+window_id).parentsUntil('.admin-windows').find('.refresh').attr('data-url', url);
+            admin_add_extras();
+            resize_admin_window();
+            
+            show_admin_window_content(window_id);
+        }
+    });
 
     var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
     if (theamus_ls['admin_cache'][window_id] !== undefined) {
@@ -140,6 +186,8 @@ function update_admin_window_content(window_id, url) {
             localStorage.setItem('Theamus', JSON.stringify(theamus_ls));
         }
     }
+    
+    loading = {};
 }
 
 function resize_admin_window() {
