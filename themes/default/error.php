@@ -6,6 +6,7 @@
         <title><?php echo $Theamus->Theme->get_page_variable("title"); ?></title>
         <?php echo $Theamus->Theme->get_page_variable("css"); ?>
         <link rel="stylesheet" type="text/css" href="<?php echo $Theamus->Theme->get_page_variable("theme_path"); ?>/css/error.css" />
+        <link rel="icon" href="<?php echo $Theamus->Theme->get_page_variable("favicon"); ?>">
     </head>
     <body>
         <div class="main">

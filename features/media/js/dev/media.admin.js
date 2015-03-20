@@ -7,7 +7,7 @@ function get_media_list(page) {
 
     // Make the call to get the list
     Theamus.Ajax.run({
-        url: Theamus.base_url+'/media/media-list&page='+page_number,
+        url: Theamus.base_url+'/media/media-list/'+page_number,
         result: 'media-list',
         type: 'include',
         after: function() {
@@ -61,5 +61,27 @@ function remove_media() {
                 }
             }
         });
+    });
+}
+
+function mediaPageListeners() {
+    $(".media_listing-pages-wrapper").find('a').unbind("click");
+    $(".media_listing-pages-wrapper").find('a').on("click", function(e) {
+        e.preventDefault();
+        var current_page = parseInt($(".media_listing-current-page").html());
+        var new_page = parseInt($(this).html());
+        if ($(this).html() === "&gt;") new_page = current_page + 1;
+        if ($(this).html() === "&lt;") new_page = current_page - 1;
+        get_media_list(new_page);
+    });
+}
+
+function mediaInfoListeners() {
+    $("[name='media_info-link']").unbind("click");
+    $("[name='media_info-link']").on("click", function(e) {
+        e.preventDefault();
+        
+        var mediaId = this.getAttribute("data-id");
+        create_admin_window("media_info-" + mediaId, "Media Information", "/media/media-info/" + mediaId);
     });
 }

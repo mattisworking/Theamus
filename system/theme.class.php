@@ -115,6 +115,7 @@ class Theme {
         $ret['page_alias']  = isset($this->data['page_alias']) ? $this->data['page_alias'] : "";
         $this->admin_panel  = isset($this->data['admin']) ? $this->data['admin'] : "";
         $ret['has_admin']   = isset($this->data['admin']) && $this->Theamus->User->is_admin() != false ? true : false;
+        $ret['favicon']     = $this->Theamus->settings['favicon_path'];
         return $ret;
     }
 

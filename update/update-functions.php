@@ -144,6 +144,9 @@ function update_130() {
 
     // Add the logging column to the settings table
     if (!$tData->db->query('ALTER TABLE `'.$prefix.'settings` ADD `logging` TEXT NOT NULL after `version`')) return false;
+    
+    // Add the favicon column to the settings table
+    if (!$tData->db->query('ALTER TABLE `'.$prefix.'settings` ADD `favicon_path` VARCHAR(200) NOT NULL after `logging`')) return false;
 
     // Trim the 'create-groups' permission
     if (!$tData->db->query('UPDATE `'.$prefix.'permissions` SET `permission` = "create_groups" WHERE `permission` LIKE "%create_groups"')) return false;
