@@ -27,4 +27,8 @@ switch ($file) {
     case 'remove.php':
         if (!$Theamus->User->has_permission('remove_features')) throw new Exception('You do not have permission to Remove Theamus Features');
         break;
+        
+    case "developer/create.php":
+        $feature['js']['file'][] = FEATURES_DEV_MODE ? "dev/features.developer.admin.js" : "features.developer.admin.min.js";
+        break;
 }

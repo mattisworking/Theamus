@@ -1,6 +1,6 @@
 <?php
 
-define('FEATURES_DEV_MODE', FALSE);
+define('FEATURES_DEV_MODE', TRUE);
 
 $Theamus->Call->set_feature_config(array(
     // System Required
