@@ -609,7 +609,6 @@ class Call {
         if (!isset($this->feature['config']) || empty($this->feature['files'])
             || $this->feature['config'] == false) {
             $message = 100;
-            $this->Theamus->pre($this->feature);
         }
 
         if ($this->complete_file_path == false
@@ -914,7 +913,22 @@ class Call {
             "<link rel='stylesheet' href='system/styles/css/ionicons/ionicons.min.css' />",
             "<link rel='stylesheet' href='system/external/prettify/prettify.css' />",
         );
+        $this->get_card_css($ret);
         return implode("", $ret);
+    }
+    
+    
+    /**
+     * Adds the Cards css to the DOM
+     * 
+     * @param array $given
+     */
+    private function get_card_css(&$given) {
+        if ($this->developer_mode()) {
+            $given[] = "<link rel='stylesheet' href='system/styles/css/dev/cards.css'>";
+        } else {
+            $given[] = "<link rel='stylesheet' href='system/styles/css/cards.min.css'>";
+        }
     }
 
     /**
@@ -985,7 +999,29 @@ class Call {
                 ($this->developer_mode() ? "<script src='themes/admin/js/admin.js'></script>" : "<script src='themes/admin/js/admin.min.js'></script>") : "",
             "<script>Theamus.info = ".$this->define_javascript_info()."</script>",
         );
+        $this->get_card_js($ret);
         return implode("\n", $ret);
+    }
+    
+    
+    /**
+     * Adds Theamus.Style.Cards to every pageload <3
+     * 
+     * @param array $given
+     */
+    private function get_card_js(&$given) {
+        if ($this->developer_mode()) {
+            $given[] = "<script src='system/js/dev/cards/Style.js'></script>";
+            $given[] = "<script src='system/js/dev/cards/Cards.js'></script>";
+            $given[] = "<script src='system/js/dev/cards/Collapsible.js'></script>";
+            $given[] = "<script src='system/js/dev/cards/Content.js'></script>";
+            $given[] = "<script src='system/js/dev/cards/Expansion.js'></script>";
+            $given[] = "<script src='system/js/dev/cards/Input.js'></script>";
+            $given[] = "<script src='system/js/dev/cards/Progress.js'></script>";
+        } else {
+            $given[] = "<script src='system/js/cards.min.js'></script>";
+        }
+        $given[] = "<script>Theamus.Style.loadCards();</script>";
     }
 
 
