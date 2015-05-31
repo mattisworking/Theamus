@@ -11,6 +11,7 @@
     </head>
 
     <body>
+        <?php echo $Theamus->Theme->get_page_variable("js"); ?>
         <div id="site-wrapper">
             <div id="container">
                 <div class="logo">
@@ -21,8 +22,6 @@
                 </div>
             </div>
         </div>
-
-        <?php echo $Theamus->Theme->get_page_variable("js"); ?>
         <script type="text/javascript">$(function(){$("#container").addClass("load-in-container"),$(".homepage-content").addClass("load-in-homepage")});</script>
     </body>
 </html>
