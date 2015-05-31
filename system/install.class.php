@@ -6,7 +6,7 @@
  * Version 1.3.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author ælieo (aelieo) <aelieo@theamus.com>
+ * @author MMT (helllomatt) <mmt@itsfake.com>
  */
 class Install {
     /**
