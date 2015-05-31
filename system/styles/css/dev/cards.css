@@ -1,4 +1,5 @@
 section[type="card"] {
+    background-color: #fff;
     box-shadow: 0 0 2px #666;
     padding-bottom: 10px;
 }
@@ -71,7 +72,7 @@ section[type="card"] section[type="card_collapsible"] header[type="card_collapsi
     z-index: 2;
 }
 section[type="card"] section[type="card_collapsible"].collapsible-expanded header[type="card_collapsible-header"] {
-    border: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
 }
 section[type="card"] section[type="card_collapsible"] div.collapsible-chevron {
@@ -196,6 +197,7 @@ section[type="card"] section[type="card_expansion"].card_expanded {
     display: block;
     margin-top: 10px;
     max-height: 10000px;
+    overflow: visible;
     padding-top: 10px;
     transition: max-height 1s ease-in 0s, padding .2s ease-in 0s;
     -moz-transition: max-height 1s ease-in 0s, padding .2s ease-in 0s;
@@ -277,7 +279,7 @@ section[type="card"] div.feedback-danger span.glyphicon {
 }
 section[type="card"] div.card_input-wrapper label {
     color: #ccc;
-    cursor: text;
+    cursor: default;
     font-weight: normal;
     left: 20px;
     margin: 0;
@@ -371,7 +373,8 @@ section[type="card"] div.card_input-wrapper input[type="url"],
 section[type="card"] div.card_input-wrapper input[type="tel"],
 section[type="card"] div.card_input-wrapper input[type="number"],
 section[type="card"] div.card_input-wrapper input[type="date"],
-section[type="card"] div.card_input-wrapper textarea {
+section[type="card"] div.card_input-wrapper textarea,
+section[type="card"] div.card_input-wrapper select {
     border: 1px solid #ccc;
     display: table-cell;
     padding: 10px;
@@ -389,7 +392,8 @@ section[type="card"] div.card_input-wrapper input[type="url"]:hover,
 section[type="card"] div.card_input-wrapper input[type="tel"]:hover,
 section[type="card"] div.card_input-wrapper input[type="number"]:hover,
 section[type="card"] div.card_input-wrapper input[type="date"]:hover,
-section[type="card"] div.card_input-wrapper textarea:hover {
+section[type="card"] div.card_input-wrapper textarea:hover,
+section[type="card"] div.card_input-wrapper select:hover {
     border: 1px solid #aaa;
 }
 section[type="card"] div.card_input-wrapper input[type="text"]:active,
@@ -409,7 +413,9 @@ section[type="card"] div.card_input-wrapper input[type="number"]:focus,
 section[type="card"] div.card_input-wrapper input[type="date"]:active,
 section[type="card"] div.card_input-wrapper input[type="date"]:focus,
 section[type="card"] div.card_input-wrapper textarea:active,
-section[type="card"] div.card_input-wrapper textarea:focus {
+section[type="card"] div.card_input-wrapper textarea:focus,
+section[type="card"] div.card_input-wrapper select:active,
+section[type="card"] div.card_input-wrapper select:focus {
     box-shadow: 0px 0px 5px #888;
 }
 section[type="card"] div.card_input-wrapper input[type="text"].input-clean,

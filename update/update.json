@@ -4,6 +4,8 @@
         "database": [],
         "files": [],
         "bugs": [
+            "Miscellaneous bug fixes to Theamus Cards - updating readme, styling. https://github.com/helllomatt/Theamus/issues/123 | https://github.com/helllomatt/Theamus/issues/125 | https://github.com/helllomatt/Theamus/issues/126",
+            "Introducing Theamus Cards!",
             "Added a way to simply create a feature's structure if developer mode is turned on.",
             "Admin windows are smarter!  They will wait until everything is loaded to show content, making the spinner more relevant than ever!",
             "Added favicon support to themes",

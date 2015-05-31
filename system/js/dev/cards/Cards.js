@@ -14,7 +14,7 @@ Theamus.Style.Card.prototype = {
     
     , locale: {
         input: {
-            query: ["input", "textarea"]
+            query: ["input", "textarea", "select"]
         },
         headerQuery: "header[type='card_header']",
         collapsibleQuery: "section[type='card_collapsible']",
