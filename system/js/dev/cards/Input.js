@@ -42,7 +42,9 @@ Theamus.Style.Card.Input.prototype = {
                 "radio",
                 "range",
                 "date",
-                "color"
+                "color",
+                "select-one",
+                "select-multiple"
             ],
         cleanClass: "input-clean",
         defaultInputType: "input",
@@ -151,8 +153,10 @@ Theamus.Style.Card.Input.prototype = {
 
     , loadInteractiveLabel: function() {
         var label = document.createElement(this.locale.label.element);
-        label.classList.add(this.locale.label.inlineClassPrefix + this.input.label.direction);
         label.classList.add(this.locale.label.normal.defaultClass);
+        if (this.input.label.direction === "left") label.classList.add(this.locale.label.normal.leftClass);
+        else label.classList.add(this.locale.label.normal.upClass);
+        label.setAttribute("for", this.input.id);
         label.innerHTML = this.input.label.text;
         this.input.parentNode.insertBefore(label, this.input);
     }
@@ -196,7 +200,7 @@ Theamus.Style.Card.Input.prototype = {
     }
 
     , addInputEvents: function() {
-        if (this.input.label.action === "none") return;
+        if (this.input.label.action === "none" || this.locale.interactiveInputs.indexOf(this.input.type) > -1) return;
         this.input.removeEventListener("focus", function(){return;}, false);
         this.input.removeEventListener("blur", function(){return;}, false);
         this.input.addEventListener("focus", this.eventFocusInput);
@@ -218,7 +222,7 @@ Theamus.Style.Card.Input.prototype = {
     }
 
     , eventBlurInput: function() {
-        if (this.label.isClean === true) return;
+        if (this.label.isClean === true || this.value !== "") return;
         if (this.label.action === "disappear") this.label.element.style.display = "block";
         else if (this.label.direction === "left") {
             this.label.element.classList.remove(this.label.info.slideLeftClass);

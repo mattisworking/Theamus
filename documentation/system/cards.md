@@ -83,6 +83,8 @@ Theamus Cards will automatically detect whether or not a card can be expanded.
 </section>
 ```
 
+You can add the class `.expansion-only` to the top Card element if the card truly is an expansion only card. This will clean up some of the margins/padding.
+
 ####<a title="Back to Top" href="#html" name="text-card">Text Card</a>
 Of course, you can just throw some text in there without the wrapper. With the wrapper, though, it will make your text prettier!
 
