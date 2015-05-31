@@ -17,7 +17,6 @@
             </div>
         </div>
 
-
         <?php echo $Theamus->Theme->get_page_variable("js"); ?>
     </body>
 </html>

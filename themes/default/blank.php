@@ -1,1 +1,1 @@
-<?php $Theamus->Theme->blank_content(); ?>
+<?php $Theamus->Theme->blank_content();

@@ -3,9 +3,7 @@
     <header class="content-wrapper header-wrapper">
         <div class="site_header-company left">
             <a href="#">
-                <span class="site_header-company-logo">
-                    <!-- Company logo -->
-                </span>
+                <span class="site_header-company-logo"><!-- Company logo --></span>
                 <span class="site_header-company-text">
                     <?php echo $Theamus->settings["name"]; ?>
                 </span>
