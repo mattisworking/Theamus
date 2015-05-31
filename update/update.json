@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "Instances include the Theamus class now",
             "Miscellaneous bug fixes to Theamus Cards - updating readme, styling. https://github.com/helllomatt/Theamus/issues/123 | https://github.com/helllomatt/Theamus/issues/125 | https://github.com/helllomatt/Theamus/issues/126",
             "Introducing Theamus Cards!",
             "Added a way to simply create a feature's structure if developer mode is turned on.",

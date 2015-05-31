@@ -250,29 +250,30 @@ class Instance {
      */
     private function get_instance() {
         $this->get_class();
-        
+
         if ($this->new_instance) {
             $ref = new ReflectionClass($this->instance_data['instance_class']);
             $instance = $ref->newInstanceArgs(array_values($this->function_variables));
-            
+
             $_SESSION['Theamus']['Instances'][$this->instance_id] = array(
                 "serial" => serialize($instance),
                 "created" => time(),
                 "updated" => 0,
                 "delete"  => time() + $this->expire_time
             );
-            
-            return $instance;
         } else {
             if (!isset($_SESSION['Theamus']['Instances'][$this->instance_id]['serial'])) {
                 throw new Exception("Failed to get instance object because none exists with the id of '{$this->instance_id}'", 1009);
             }
-            
-            return unserialize($_SESSION['Theamus']['Instances'][$this->instance_id]['serial']);
+
+            $instance = unserialize($_SESSION['Theamus']['Instances'][$this->instance_id]['serial']);
         }
+
+        $instance->Theamus = $this->Theamus;
+        return $instance;
     }
-    
-    
+
+
     /**
      * Checks for a function defined in the instance request variable then runs 
      * the function and returns the results.
@@ -285,16 +286,17 @@ class Instance {
             return true;
         } else {
             $instance = $this->get_instance();
-            
+
             if (!is_object($instance)) {
                 throw new Exception("Failed to run the instance because of a failed object creation.", 1010);
             }
-            
+
             $result = call_user_func_array(
                 array($instance, $this->instance_data['instance_function']),
                 $this->function_variables
             );
 
+            $instance->Theamus = null;
             $_SESSION['Theamus']['Instances'][$this->instance_id] = array(
                 "serial"  => serialize($instance),
                 "created" => $_SESSION['Theamus']['Instances'][$this->instance_id]['created'],
@@ -305,7 +307,7 @@ class Instance {
             return $result;
         }
     }
-    
+
     
     /**
      * Deletes instance objects from the session variable when their time has expired.
