@@ -4,7 +4,7 @@
  * Theamus -- a modular content management system that makes websites easy.
  *
  * PHP Version 5.5.3
- * Version 1.3.0
+ * Version 1.3.1
  * @package Theamus
  * @link http://www.theamus.com/
  * @author MMT (helllomatt) <mmt@itsfake.com>

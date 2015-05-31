@@ -3,7 +3,7 @@
 // Look for the tData class in order to run these functions
 if (class_exists('tData')) {
     /**
-     * Function that will run updates to make Theamus the latest standard (1.3.0)
+     * Function that will run updates to make Theamus the latest standard (1.3.1)
      *
      * @param array $system_info
      * @return boolean
@@ -18,7 +18,7 @@ if (class_exists('tData')) {
             if (!$update_function()) return false;
         }
 
-        update_version('1.3.0'); // Update the version
+        update_version('1.3.1'); // Update the version
 
         update_cleanup(); // Cleanup!
 
@@ -26,7 +26,7 @@ if (class_exists('tData')) {
     }
 } else {
     /**
-     * Function that will run updates to make Theamus the latest standard (1.3.0)
+     * Function that will run updates to make Theamus the latest standard (1.3.1)
      *
      * @param array $system_info
      * @return boolean
