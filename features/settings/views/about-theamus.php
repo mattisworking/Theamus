@@ -7,7 +7,7 @@
         version 1.3.0
     </div>
 </div>
-
+<!--
 <div class="st_contributors-wrapper">
     <h1 class="st_contributors-header">People I'd like to thank for contributing to the source code:</h1>
     <ul>
@@ -21,19 +21,9 @@
                 </div>
             </div>
         </li>
-        <li>
-            <div class="st_contributor">
-                <div class="st_contributor-image">
-                    <img src="data:image/gif;base64,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" alt="">
-                </div>
-                <div class="st_contributor-name">
-                    <a href="https://github.com/wellthatwaseasy">wellthatwaseasy</a>
-                </div>
-            </div>
-        </li>
     </ul>
 </div>
-
+-->
 <div class="st_ext-libs-wrapper">
     <h2 class="st_ext-libs-header">External Libraries:</h2>
     <ul>

@@ -3,10 +3,10 @@
 /**
  * Theamus
  * PHP Version 5.5.3
- * Version 1.4.0
+ * Version 1.3.0
  * @package Theamus
  * @link http://www.theamus.com/
- * @author Matt Temet
+ * @author MMT
  */
 class Theamus {
     /**
@@ -22,7 +22,7 @@ class Theamus {
     public $Parsedown;
     protected $timer;
 
-    public $version = '1.3.0.0';
+    public $version = '1.3.0';
 
 
     /**
