@@ -248,6 +248,7 @@ class Call {
         return false; // Bad return :(
     }
 
+    
     /**
      * Displays errors for PHP based on the site configuration
      *
