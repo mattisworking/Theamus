@@ -4,7 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
-           "Hotfix update - fixing JS stuffs"
+           "[Feature] - Can now set custom index files for folders! See documentation/system/set-folder-index.md for information. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/117)"
         ]
     },
     "authors": [

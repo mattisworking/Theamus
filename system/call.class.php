@@ -144,6 +144,14 @@ class Call {
      * @var boolean $install
      */
     private $install = false;
+    
+    
+    /**
+     * String to define what the index file is for a folder
+     * 
+     * @var string $folder_index
+     */
+    protected $folder_index;
 
 
     /**
@@ -223,13 +231,13 @@ class Call {
             $this->look_in_folder = $this->look_in_folder($call['look_folder']);
             $this->feature_path_folders = $this->define_feature_folders();
 
+            // Define the feature file information
+            $this->feature['files'] = $this->feature_files_configuration();
+
             // Define the feature file and the path to the feature file
             $file_info = $this->define_feature_file();
             $this->feature_file = $file_info['feature_file'];
             $this->complete_file_path = $file_info['complete_path'];
-
-            // Define the feature file information
-            $this->feature['files'] = $this->feature_files_configuration();
 
             // Handle any issues that might've come up
             $this->handle_issues();
@@ -563,6 +571,40 @@ class Call {
 
         return $folders;
     }
+    
+    
+    /**
+     * Defines the index file for a folder that's being called for.
+     * Checks to make sure, applies defaults where necessary.
+     * 
+     * @param string $file_name
+     */
+    public function set_folder_index($file_name = "") {
+        if ($file_name == "") $file_name = "index";
+        
+        $exploded = array_filter(explode(".", $file_name));
+        $extension = end($exploded);
+
+        if ($extension != "php") $file_name = "{$file_name}.php";
+        
+        $path = $this->Theamus->file_path(ROOT."/features/$this->feature_folder$this->look_in_folder");
+        if ($this->feature_path_folders != false) $path .= $this->feature_path_folders;
+        
+        if (!file_exists($path.$file_name)) $file_name = "index.php";
+        
+        $this->folder_index = $file_name;
+    }
+    
+    
+    /**
+     * Returns the defined/default folder index file
+     * 
+     * @return string
+     */
+    public function get_folder_index() {
+        if ($this->folder_index == null) $this->set_folder_index();
+        return $this->folder_index;
+    }
 
 
     /**
@@ -581,7 +623,7 @@ class Call {
             } elseif ($this->page == true) {
                 $file = "show-page.php";
             } else {
-                $file = "index".$extension;
+                $file = $this->get_folder_index();
             }
 
             $path = $this->Theamus->file_path(ROOT."/features/$this->feature_folder$this->look_in_folder");
@@ -811,7 +853,7 @@ class Call {
         $Theamus = $this->Theamus;
 
         $feature_path = $this->Theamus->file_path(ROOT."/features/$this->feature_folder/");
-        $folders = explode("/", $this->feature_path_folders);
+        $folders = array_filter(explode("/", $this->feature_path_folders));
         $file = $this->feature_path_folders.$this->feature_file;
         $location = urldecode(filter_input(INPUT_POST, "location"));
         $post_ajax = filter_input(INPUT_POST, "ajax");
