@@ -12,11 +12,11 @@ $view_files = array(
 if ($ajax != false) ini_set('display_errors', 0);
 
 // Die on anyone trying to make a request to a file that isn't defined here
-if (!in_array($file, $view_files)) {
+if (!in_array($Theamus->Call->get_called_file(), $view_files)) {
     $ajax == false ? $Theamus->back_up() : die();
 }
 
-switch ($file) {
+switch ($Theamus->Call->get_called_file()) {
     case 'index.php':
         $feature['title']   = 'Welcome';
         $feature['header']  = '';
