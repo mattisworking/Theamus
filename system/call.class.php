@@ -144,14 +144,31 @@ class Call {
      * @var boolean $install
      */
     private $install = false;
-    
-    
+
+
     /**
      * String to define what the index file is for a folder
-     * 
+     *
      * @var string $folder_index
      */
     protected $folder_index;
+
+
+    /**
+     * Boolean to let Theamus know if an index file is implied or not
+     *
+     * @var boolean $folder_index_is_implied
+     */
+    protected $folder_index_is_implied;
+
+
+    /**
+     * When figuring out files, this lets Theamus know if it should shift
+     * the parameters array anymore or not
+     *
+     * @var boolean $shift_parameters
+     */
+    protected $shift_parameters = true;
 
 
     /**
@@ -231,16 +248,11 @@ class Call {
             $this->look_in_folder = $this->look_in_folder($call['look_folder']);
             $this->feature_path_folders = $this->define_feature_folders();
 
+            // Define the feature file and the path to the feature file
+            $this->define_feature_file();
+
             // Define the feature file information
             $this->feature['files'] = $this->feature_files_configuration();
-
-            // Define the feature file and the path to the feature file
-            $file_info = $this->define_feature_file();
-            $this->feature_file = $file_info['feature_file'];
-            $this->complete_file_path = $file_info['complete_path'];
-
-            // Handle any issues that might've come up
-            $this->handle_issues();
 
             return true; // Good return!
         }
@@ -248,7 +260,7 @@ class Call {
         return false; // Bad return :(
     }
 
-    
+
     /**
      * Displays errors for PHP based on the site configuration
      *
@@ -572,34 +584,34 @@ class Call {
 
         return $folders;
     }
-    
-    
+
+
     /**
      * Defines the index file for a folder that's being called for.
      * Checks to make sure, applies defaults where necessary.
-     * 
+     *
      * @param string $file_name
      */
     public function set_folder_index($file_name = "") {
         if ($file_name == "") $file_name = "index";
-        
+
         $exploded = array_filter(explode(".", $file_name));
         $extension = end($exploded);
 
         if ($extension != "php") $file_name = "{$file_name}.php";
-        
-        $path = $this->Theamus->file_path(ROOT."/features/$this->feature_folder$this->look_in_folder");
+
+        $path = $this->Theamus->file_path(ROOT."/features/{$this->feature_folder}{$this->look_in_folder}");
         if ($this->feature_path_folders != false) $path .= $this->feature_path_folders;
-        
-        if (!file_exists($path.$file_name)) $file_name = "index.php";
-        
-        $this->folder_index = $file_name;
+
+        if (!file_exists($path.$file_name)) $file_name = "__.php";
+
+        $this->folder_index = substr($file_name, 0, -4);
     }
-    
-    
+
+
     /**
      * Returns the defined/default folder index file
-     * 
+     *
      * @return string
      */
     public function get_folder_index() {
@@ -609,34 +621,111 @@ class Call {
 
 
     /**
+     * Sets a folder to imply the index, allowing parameters to be directly passed
+     * to it without directly calling it.
+     *
+     * @param string $folder
+     */
+    public function imply_folder_index($folder = "") {
+        $folders = array_filter(explode("/", $this->feature_path_folders));
+        if ((empty($folders) && $folder == "root") || (end($folders) == $folder)) {
+            array_splice($this->parameters, 0, 0, array($this->get_folder_index()));
+            $this->folder_index_is_implied = true;
+            $this->shift_parameters = true;
+            $this->check_file_existence();
+        }
+    }
+
+
+    /**
+     * Checks to see if a folder's index should be implied or not.
+     *
+     * @return boolean
+     */
+    public function folder_index_implied() {
+        if ($this->folder_index_is_implied == null) return false;
+        return $this->folder_index_is_implied;
+    }
+
+
+    /**
+     * Recursively checks to see if a file exists and whether or not to imply the
+     * index file for the folder
+     *
+     * @param boolean $try_index
+     * @return boolean
+     */
+    public function check_file_existence($try_index = false) {
+        if ($this->page == true) {
+            $file_name = "show-page.php";
+        } elseif (isset($this->parameters[0])) {
+            $file_name = "{$this->parameters[0]}.php";
+        } elseif ($this->folder_index != NULL) {
+            $file_name = $this->get_folder_index().".php";
+        } elseif ($this->folder_index_implied() && $try_index == true) {
+            $file_name = $this->get_folder_index().".php";
+        } elseif ($this->feature_file != NULL && $this->folder_index == NULL && !$this->folder_index_implied()) {
+            $file_name = $this->feature_file;
+        } else {
+            $file_name = "index.php";
+        }
+
+        $path = ROOT."/features/{$this->feature_folder}{$this->look_in_folder}";
+        if ($this->feature_path_folders != false) $path .= $this->feature_path_folders;
+        $path .= $file_name;
+        $path = $this->Theamus->file_path($path);
+
+        if (file_exists($path)) {
+            $this->feature_file = $file_name;
+            $this->complete_file_path = $path;
+            return true;
+        } elseif (!file_exists($path) && $try_index == true) {
+            return false;
+        } else {
+            return $this->check_file_existence(true);
+        }
+    }
+
+
+    /**
      * Defines the file that was called and the entire file path to include later on
      *
      * @return array|boolean $ret
      */
     private function define_feature_file() {
-        $file = $file_path = false;
         if ($this->feature_folder != false) {
-            $extension = ".php";
-
-            if (array_key_exists(0, $this->parameters)) {
-                $file = $this->parameters[0].$extension;
-                array_shift($this->parameters);
-            } elseif ($this->page == true) {
-                $file = "show-page.php";
-            } else {
-                $file = $this->get_folder_index();
-            }
-
-            $path = $this->Theamus->file_path(ROOT."/features/$this->feature_folder$this->look_in_folder");
-
-            if ($this->feature_path_folders != false) $path .= $this->feature_path_folders;
-
-            $filepath = file_exists($path.$file) ? $path.$file : false;
-
-            $ret = array("feature_file" => $file, "complete_path" => $filepath);
-            return $ret;
+            if (!$this->check_file_existence()) return false;
         }
         return false;
+    }
+
+
+    /**
+     * Returns the name (optionally, including path of folders) of the file
+     * that has been requested
+     *
+     * @param boolean $file_only
+     * @return string
+     */
+    public function get_called_file($file_only = false) {
+        if (!$this->check_file_existence() && !$this->folder_index_implied()) {
+            $this->handle_issues();
+        } elseif ($this->check_file_existence() && $this->folder_index_implied() && $this->feature_file != NULL) {
+            if ($this->shift_parameters && $this->folder_index_implied()) {
+                array_shift($this->parameters);
+                $this->shift_parameters = false;
+            }
+
+            if ($file_only) return $this->feature_file;
+            else return $this->feature_path_folders.$this->feature_file;
+        } elseif ($this->feature_file == NULL && $this->folder_index != NULL) {
+            if ($file_only) return $this->folder_index;
+            else return $this->feature_path_folders.$this->folder_index;
+        } else {
+
+            if ($file_only) return $this->feature_file;
+            else return $this->feature_path_folders.$this->feature_file;
+        }
     }
 
 
@@ -727,6 +816,10 @@ class Call {
 
         $this->load_class_legacy();
         $data = $this->define_theme_data($settings['name']);
+
+        if (!empty($this->parameters)) {
+            if ($this->parameters[0].".php" == $this->get_called_file(true)) array_shift($this->parameters);
+        }
 
         unset($settings);
         $this->Theamus->Theme->load_theme($data);
@@ -855,7 +948,6 @@ class Call {
 
         $feature_path = $this->Theamus->file_path(ROOT."/features/$this->feature_folder/");
         $folders = array_filter(explode("/", $this->feature_path_folders));
-        $file = $this->feature_path_folders.$this->feature_file;
         $location = urldecode(filter_input(INPUT_POST, "location"));
         $post_ajax = filter_input(INPUT_POST, "ajax");
         $get_ajax = filter_input(INPUT_GET, "ajax");
@@ -908,6 +1000,7 @@ class Call {
      * @return array
      */
     private function get_custom_files($type) {
+        if (!isset($this->feature['files'])) return array();
         $files = $this->feature['files'];
         if (array_key_exists($type, $files)) {
             if (array_key_exists("file", $files[$type])) {
@@ -959,11 +1052,11 @@ class Call {
         $this->get_card_css($ret);
         return implode("", $ret);
     }
-    
-    
+
+
     /**
      * Adds the Cards css to the DOM
-     * 
+     *
      * @param array $given
      */
     private function get_card_css(&$given) {
@@ -1038,18 +1131,18 @@ class Call {
             "<script src='system/js/theamus.js'></script>",
             "<script src='".($this->developer_mode() ? "system/js/dev/instance.js" : "system/js/instance.min.js")."'></script>",
             "<script src='system/external/prettify/prettify.js'></script>",
-            $this->Theamus->User->user && $this->Theamus->User->is_admin() ? 
+            $this->Theamus->User->user && $this->Theamus->User->is_admin() ?
                 ($this->developer_mode() ? "<script src='themes/admin/js/admin.js'></script>" : "<script src='themes/admin/js/admin.min.js'></script>") : "",
             "<script>Theamus.info = ".$this->define_javascript_info()."</script>",
         );
         $this->get_card_js($ret);
         return implode("\n", $ret);
     }
-    
-    
+
+
     /**
      * Adds Theamus.Style.Cards to every pageload <3
-     * 
+     *
      * @param array $given
      */
     private function get_card_js(&$given) {
@@ -1119,6 +1212,7 @@ class Call {
      * @return array
      */
     private function get_javascript_scripts() {
+        if (!isset($this->feature['files'])) return array();
         $files = $this->feature['files'];
         if (array_key_exists("js", $files)) {
             if (array_key_exists("script", $files['js'])) {
@@ -1149,10 +1243,10 @@ class Call {
         }
         return implode("", $ret);
     }
-    
+
     /**
      * Loads a class file for a page call
-     * 
+     *
      * @param string $file
      * @param string $name
      * @param string $var
@@ -1163,32 +1257,32 @@ class Call {
         if ($file == "") throw new Exception("Failed to load a class because no class file was defined.");
         if ($name == "") throw new Exception("Failed to load a class because no class name was defined.");
         if ($var == "") $var = $name;
-        
+
         $class_folder = $this->get_class_folder();
         $folder = ROOT."/features/{$this->feature_folder}/".($class_folder == "" ? "" : $class_folder."/");
         $file_path = $this->Theamus->file_path($folder.$file);
-        
+
         if (!file_exists($file_path)) {
             throw new Exception("Failed to load a class because the class file was not found or does not exist.");
         } else include $file_path;
-        
+
         $this->init_classes[] = array($name, $var);
         return;
     }
-    
-    
+
+
     /**
      * The -old- way of doing things. Ugh.  This will be deprecated in 1.5.0
-     * 
+     *
      * FROM:
      * $feature['class']['file'] = "x"
      * $feature['class']['init'] = "xy"
      * $xy = new xy($Theamus);
-     * 
+     *
      * TO:
      * $Theamus->Call->load_class(x, xy)
      * $xy = new xy($Theamus);
-     * 
+     *
      * @return type
      */
     protected function load_class_legacy() {
@@ -1196,10 +1290,10 @@ class Call {
 
         if (!is_array($files) && !isset($files['class'])) return;
         if (!isset($files['class']['file']) || !isset($files['class']['init'])) return;
-        
+
         $this->load_class($files['class']['file'], $files['class']['init']);
         return;
-    } 
+    }
 
 
     /**
@@ -1270,7 +1364,7 @@ class Call {
     private function do_ajax() {
         $Theamus = $this->Theamus;
         $this->load_class_legacy();
-        
+
         if (is_array($this->init_classes) && !empty($this->init_classes)) {
             foreach ($this->init_classes as $class) {
                 if (count($class) < 2) continue;
@@ -1293,7 +1387,7 @@ class Call {
     private function include_page() {
         $Theamus = $this->Theamus;
         $this->load_class_legacy();
-        
+
         if (is_array($this->init_classes) && !empty($this->init_classes)) {
             foreach ($this->init_classes as $class) {
                 if (count($class) < 2) continue;
@@ -1303,6 +1397,10 @@ class Call {
 
         echo $this->get_javascript(true);
         echo $this->get_css(true);
+
+        if (!empty($this->parameters)) {
+            if ($this->parameters[0].".php" == $this->get_called_file(true)) array_shift($this->parameters);
+        }
 
         include $this->complete_file_path;
 
@@ -1453,13 +1551,13 @@ class Call {
         $return['error']['status'] = $error != false || $this->api_fail != false ? 1 : 0;
         echo json_encode($return);
     }
-    
-    
+
+
     /**
      * Runs an instance object from a javascript request
-     * 
+     *
      * See: ROOT/system/instance.class.php
-     * 
+     *
      * @return int
      */
     private function run_instance() {
@@ -1468,10 +1566,10 @@ class Call {
             echo json_encode($instance->return_instance());
         } catch (Exception $ex) {
             $code = $ex->getCode() == 0 ? 1 : $ex->getCode();
-            
+
             echo json_encode(array(
                     "error" => array(
-                        "message" => $ex->getMessage(), 
+                        "message" => $ex->getMessage(),
                         "status" => 1,
                         "code" => $code
                     ),
@@ -1480,7 +1578,7 @@ class Call {
                     )
                 ));
         }
-        
+
         return 0;
     }
 
