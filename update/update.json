@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Bug] - Not found errors on AJAX now display as a fun guy. (> ^-^ )> Specifically for admin AJAX calls. You can now determine the response status through Ajax.run. Also, 404's send a 404 response too. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/140)",
             "[Bug] - You're safe again. Now Theamus handles every. single. file. call. That's right. If you go somewhere on Theamus, it will look at what you want to do and be the judge. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/119)",
             "[Bug] - Logging in can now be done on multiple browsers, however there is a catch. Session records clean up and update properly now, too. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/102)",
             "[Feature] - Can now imply folder index files. See documentation/system/imply-folder-indexes.md fo more information [GitHub Issue](https://github.com/helllomatt/Theamus/issues/118)",

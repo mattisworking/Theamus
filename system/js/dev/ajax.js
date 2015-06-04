@@ -44,7 +44,7 @@ var ajax = new function() {
                     add_extras();
                 },
                 error: function (xhr, status, error) {
-                    console.log("AJAX Error: " + error);
+                    ajax.run_on_fail(info, xhr.status, error);
                 }
             });
         } else {
@@ -404,6 +404,13 @@ var ajax = new function() {
             }
         }
     };
+    
+    this.run_on_fail = function(info, status, error) {
+        if ("fail" in info) {
+            if (typeof info.fail === "function") info.fail(status, error);
+            else return false;
+        }
+    }
 
     this.run_return_functions = function() {
         var do_function, arguments, info;

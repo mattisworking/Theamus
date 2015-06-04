@@ -176,6 +176,15 @@ function update_admin_window_content(window_id, url) {
             resize_admin_window();
             
             show_admin_window_content(window_id);
+        },
+        fail: function(status) {
+            if (status === 404) {
+                $("#"+window_id).children("div.admin_window-inner-content").hide();
+                $('#'+window_id).parentsUntil('.admin-windows').find('.refresh').attr('data-url', url);
+                
+                $("#"+window_id).children("div.admin_window-inner-content").html("<div style='padding:10px;font-family: monospace;'>(> ^-^ )> &nbsp;&nbsp;|&nbsp;&nbsp; 404 not found.</div>").show();
+                $('#'+window_id).children("div.admin_window-loader").hide();
+            }
         }
     });
 
