@@ -4,10 +4,10 @@
 $feature['class']['file'] = 'pages.class.php';
 $feature['class']['init'] = 'Pages';
 
-define('FILE', "pages/{$Theamus->Call->get_called_file()}"); // Define the current file
+define('FILE', "pages/{$file}"); // Define the current file
 
 // Load the file related information
-switch ($Theamus->Call->get_called_file()) {
+switch ($file) {
     case 'index.php':
     case 'search.php':
     case 'create.php':
