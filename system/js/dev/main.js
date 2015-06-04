@@ -226,7 +226,7 @@ function user_logout() {
         type:       'post',
         url:        Theamus.base_url+'/accounts/logout/',
         method:     ['Accounts', 'logout'],
-        success:    go_to
+        success:    function(d){window.location = d.response.data.url;}
     });
 
     return false;

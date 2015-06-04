@@ -825,12 +825,7 @@ class Accounts {
      * @return boolean
      */
     public function logout() {
-        // Remove the session and cookies
-        session_destroy();
-        setcookie('session', '', 30, '/');
-        setcookie('userid', '', 30, '/');
-
-        return true; // Return
+        return $this->Theamus->User->force_logout();
     }
 
 
