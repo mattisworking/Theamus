@@ -823,7 +823,7 @@ class Call {
 
         if (!isset($this->feature['config']) || empty($this->feature['files'])
             || $this->feature['config'] == false) {
-            $message = 100;
+            $message = 1;
         }
 
         if ($this->complete_file_path == false
@@ -1408,10 +1408,14 @@ class Call {
      * @param string $type
      * @return boolean
      */
-    private function error_page($type="404") {
+    private function error_page($type = 404) {
         // Define the settings to use
         $settings['name'] = $this->install == false ? $this->Theamus->settings['name'] : "Theamus Installation";
 
+        http_response_code($type);
+        
+        if ($this->get_call_type() != false) return;
+        
         // Define the theme data
         $data['name']       = $settings['name'];
         $data['base']       = $this->Theamus->base_url;
