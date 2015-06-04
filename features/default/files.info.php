@@ -2,21 +2,21 @@
 
 // Define the homepage stuffs
 $HomePage = new HomePage($Theamus);
-if ($file == 'index.php') $i = $HomePage->redirect();
+if ($Theamus->Call->get_called_file() == 'index.php') $i = $HomePage->redirect();
 
 // Load the admin class if relevant
-if ($Theamus->User->is_admin() && ($folders[0] == 'admin' || $file == 'admin-index.php')) {
+if ($Theamus->User->is_admin() && (end($folders) == 'admin' || $Theamus->Call->get_called_file() == 'admin-index.php')) {
     if ($ajax == false) $Theamus->back_up();
-    define('FILE', "default/{$file}");
+    define('FILE', "default/{$Theamus->Call->get_called_file()}");
 
     $feature['class']['file'] = 'admin.class.php';
     $feature['class']['init'] = 'DefaultAdmin';
-} elseif (!$Theamus->User->is_admin() && ($folders[0] == 'admin' || $file == 'admin-index.php')) {
+} elseif (!$Theamus->User->is_admin() && (end($folders) == 'admin' || $Theamus->Call->get_called_file() == 'admin-index.php')) {
     $ajax == false ? $Theamus->back_up() : die();
 }
 
 // Load the file related information
-switch ($file) {
+switch ($Theamus->Call->get_called_file()) {
     case 'index.php':
         $feature['title']   = $i['title'];
         $feature['header']  = $i['title'];
