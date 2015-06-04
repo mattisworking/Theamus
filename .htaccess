@@ -1,4 +1,3 @@
 RewriteEngine On
-RewriteCond %{SCRIPT_FILENAME} !-f [OR]
-RewriteCond %{REQUEST_URI}  \.(php)$
+RewriteCond %{SCRIPT_FILENAME} -f [OR]
 RewriteRule ^(.*)$  index.php?params=$1 [QSA]
