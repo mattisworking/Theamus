@@ -7,7 +7,7 @@ if (!$Theamus->User->is_admin()) die("You don't have permission to this feature.
 // Initialize the navigation class
 $Theamus->Call->load_class("settings.class.php", "Settings");
 
-define('FILE', "settings/{$Theamus->Call->get_called_file()}"); // Define the file as a global variable
+define('FILE', "settings/{$file}"); // Define the file as a global variable
 
 $feature['js']['file'][] = SETTINGS_DEV_MODE ? 'dev/settings.admin.js' : 'settings.admin.min.js';
 $feature['css']['file'][] = SETTINGS_DEV_MODE ? 'dev/settings.admin.css' : 'settings.admin.min.css';
@@ -15,7 +15,7 @@ $feature['css']['file'][] = SETTINGS_DEV_MODE ? 'dev/settings.admin.css' : 'sett
 if ($folders[count($folders) - 1] == "doc") $Theamus->go_back();
 
 // Define file specifics
-switch ($Theamus->Call->get_called_file()) {
+switch ($file) {
     case "index.php":
         break;
 

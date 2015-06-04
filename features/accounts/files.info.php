@@ -1,17 +1,17 @@
 <?php
 
 // Check for a call to the administrator and for an administrator
-if (end($folders) == 'admin' && $ajax == false) $Theamus->back_up();
-if (end($folders) == "admin" && !$Theamus->User->is_admin()) die("You don't have permission to this feature.");
+if ($folders[0] == 'admin' && $ajax == false) $Theamus->back_up();
+if ($folders[0] == "admin" && !$Theamus->User->is_admin()) die("You don't have permission to this feature.");
 
 // Load the accounts class
 $feature['class']['file'] = 'accounts.class.php';
 $feature['class']['init'] = 'Accounts';
 
-if (!defined("FILE")) define('FILE', "accounts/{$Theamus->Call->get_called_file()}"); // Define the current file
+define('FILE', "accounts/{$file}"); // Define the current file
 
 // Load the file related information
-switch ($Theamus->Call->get_called_file()) {
+switch ($file) {
     case 'index.php':
         if ($ajax == false) $Theamus->back_up();
         break;
@@ -55,7 +55,7 @@ switch ($Theamus->Call->get_called_file()) {
 
         $feature['title'] = $feature['header'] = 'Edit Your Account';
 
-        switch ($Theamus->Call->get_called_file()) {
+        switch ($file) {
             case 'user/edit-account.php':
                 $feature['title']  .= ' - Account Information';
                 $feature['header'] .= ' - Account Information';

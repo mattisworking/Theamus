@@ -4,8 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
-            "[Feature] - Can now imply folder index files. See documentation/system/imply-folder-indexes.md fo more information [GitHub Issue](https://github.com/helllomatt/Theamus/issues/118)",
-            "[Feature] - Can now set custom index files for folders! See documentation/system/set-folder-index.md for information. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/117)"
+           "Hotfix update - fixing JS stuffs"
         ]
     },
     "authors": [
