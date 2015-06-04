@@ -426,6 +426,16 @@ class Call {
         }
         return $ret;
     }
+    
+    
+    /**
+     * Returns the type of call that was made (e.g. ajax, instance api)
+     * 
+     * @return string|boolean $this->ajax
+     */
+    public function get_call_type() {
+        return $this->ajax;
+    }
 
 
     /**
@@ -1616,83 +1626,5 @@ class Call {
             }
         }
         return $request;
-    }
-
-
-    /**
-     * Defines the browser that a user is using
-     *
-     * I stole this from somewhere a long time ago.  If you know who's it is, let me
-     *  know and I'll throw in the credits.
-     *
-     * @return array
-     */
-    public function get_browser() {
-        $u_agent    = $_SERVER['HTTP_USER_AGENT'];
-        $bname      = 'Unknown';
-        $platform   = 'Unknown';
-        $version    = "";
-
-        // Get the platform
-        if (preg_match('/linux/i', $u_agent)) {
-            $platform = 'linux';
-        } elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {
-            $platform = 'mac';
-        } elseif (preg_match('/windows|win32/i', $u_agent)) {
-            $platform = 'windows';
-        }
-
-        // Get the name of the agent
-        if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent)) {
-            $bname = 'Internet Explorer';
-            $ub = "MSIE";
-        } elseif(preg_match('/Firefox/i',$u_agent)) {
-            $bname = 'Mozilla Firefox';
-            $ub = "Firefox";
-        } elseif(preg_match('/Chrome/i',$u_agent)) {
-            $bname = 'Google Chrome';
-            $ub = "Chrome";
-        } elseif(preg_match('/Safari/i',$u_agent)) {
-            $bname = 'Apple Safari';
-            $ub = "Safari";
-        } elseif(preg_match('/Opera/i',$u_agent)) {
-            $bname = 'Opera';
-            $ub = "Opera";
-        } elseif(preg_match('/Netscape/i',$u_agent)) {
-            $bname = 'Netscape';
-            $ub = "Netscape";
-        } elseif(preg_match('/WOW64/i', $u_agent)) {
-            $bname = "Internet Explorer";
-            $ub = "rv";
-        }
-
-        // Get the version number
-        $known = array('Version', $ub, 'other');
-        $pattern = '#(?<browser>'.join('|', $known).')[/ |:]+(?<version>[0-9.|a-zA-Z.]*)#';
-        if (!preg_match_all($pattern, $u_agent, $matches)) {}
-
-        $i = count($matches['browser']);
-        if ($i != 1) {
-            // Check if version is before or after the name
-            if (strripos($u_agent,"Version") < strripos($u_agent,$ub)){
-                $version= $matches['version'][0];
-            } else {
-                $version= $matches['version'][1];
-            }
-        } else {
-            $version= $matches['version'][0];
-        }
-
-        // Check if we have a number
-        if ($version == null || $version == "") $version = "?";
-
-        // Return the information
-        return array(
-            'agent'     => $u_agent,
-            'name'      => $bname,
-            'version'   => $version,
-            'platform'  => $platform,
-            'pattern'   => $pattern
-        );
     }
 }
