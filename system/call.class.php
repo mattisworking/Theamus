@@ -191,7 +191,10 @@ class Call {
     public function handle_call($params) {
         // Initiate the call with the parameters from the URL
         $this->initiate($params);
-
+        
+        // Checks to make sure a file isn't PHP
+        $this->check_requested_file();
+        
         // Define the type of call
         $call = $this->define_call();
 
@@ -204,6 +207,76 @@ class Call {
         }
 
         return; // Return!
+    }
+    
+    
+    /**
+     * Figures out the URI to the file and omits the overlapping file structure
+     * to give the file path from the ROOT of the site's existence on the server
+     * 
+     * @return string
+     */
+    private function get_uri() {
+        $root_array = array_values(array_filter(explode("/", ROOT)));
+        $uri_array = array_values(array_filter(explode("/", filter_input(INPUT_SERVER, "REQUEST_URI"))));
+        
+        if (end($root_array) == $uri_array[0]) {
+            array_shift($uri_array);
+        }
+        
+        return "/".implode("/", $uri_array);
+    }
+    
+    
+    /**
+     * Checks to see if a file is valid or not. PHP = not valid. Everything
+     * else is. Includes the contents of the file when it's not a php file.
+     * 
+     * @return
+     */
+    private function check_requested_file() {
+        $uri = explode("?", $this->get_uri());
+        $paths = explode("/", $uri[0]);
+        $file_name = explode(".", end($paths));
+        
+        $file = $this->Theamus->file_path(ROOT.$uri[0]);
+        
+        if (!is_dir($file) && !file_exists($file)) return;
+        elseif (end($file_name) == "php") {
+            $this->error_page(404);
+            exit();
+        } else {
+            if (!is_dir($file) && file_exists($file)) {
+                header("Content-Type:".$this->get_content_type(end($file_name), $file));
+                echo file_get_contents($file);
+                exit();
+            }
+        }
+    }
+    
+    
+    /**
+     * Gets the content type of a file. There are some specific oddities to
+     * the way PHP gets them, so this is to clear that up.
+     * 
+     * (example: CSS content type in PHP eyes is plain/text and this turns it
+     * into text/css)
+     * 
+     * @param string $file
+     * @return string
+     */
+    private function get_content_type($extension, $filepath) {
+        $content_type = mime_content_type($filepath);
+
+        switch ($extension) {
+            case "css": $content_type = "text/css"; break;
+            case "js": $content_type = "text/javascript"; break;
+            case "eot": $content_type = "application/vnd.ms-fontobject"; break;
+            case "otf": case "ttf": $content_type = "application/font-sfnt"; break;
+            case "woff": $content_type = "application/font-woff"; break;
+        }
+        
+        return $content_type;
     }
 
 

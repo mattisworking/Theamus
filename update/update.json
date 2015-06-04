@@ -4,7 +4,8 @@
         "database": [],
         "files": [],
         "bugs": [
-            "[Bug] Logging in can now be done on multiple browsers, however there is a catch. Session records clean up and update properly now, too. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/102)",
+            "[Bug] - You're safe again. Now Theamus handles every. single. file. call. That's right. If you go somewhere on Theamus, it will look at what you want to do and be the judge. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/119)",
+            "[Bug] - Logging in can now be done on multiple browsers, however there is a catch. Session records clean up and update properly now, too. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/102)",
             "[Feature] - Can now imply folder index files. See documentation/system/imply-folder-indexes.md fo more information [GitHub Issue](https://github.com/helllomatt/Theamus/issues/118)",
             "[Feature] - Can now set custom index files for folders! See documentation/system/set-folder-index.md for information. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/117)"
         ]
