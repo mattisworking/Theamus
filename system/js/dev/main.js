@@ -1,3 +1,42 @@
+console.legacyLog = console.log;
+console.log = function (value) {
+    var log;
+    if (value === Theamus) {
+        log = [
+            "",
+            "helllo",
+            "",
+            "   _",
+            " _|_|_",
+            "|_ _ _|",
+            "  |_|  _",
+            "  |_| |_|",
+            "   \\|_|/",
+            "",
+            "Your trying to see some things, but if you really want to see some things, check out GitHub!",
+            "(https://github.com/helllomatt/Theamus)",
+            "",
+            "Made, with love and frustration, somewhere around Chicago, on days I'm feeling up to it.",
+            "",
+            ""
+        ];
+
+        if (arguments[1] === "please") {
+            log.push("----------");
+            log.push("");
+            log.push("and because you asked so nicely...\n\n");
+        }
+
+        console.legacyLog(log.join("\n"));
+
+        if (arguments[1] === "please") {
+            console.legacyLog(Theamus);
+        }
+    } else
+        console.legacyLog.apply(this, arguments);
+    return;
+};
+
 Theamus = {
     Ajax: ajax,
     base_url: (function() {
