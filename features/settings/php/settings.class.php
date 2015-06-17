@@ -345,23 +345,46 @@ class Settings {
         foreach ($temp_files as $file) if ($file != $this->Theamus->file_path($temp_directory."/blank.txt")) unlink($file);
         foreach ($temp_folders as $folder) $this->Theamus->Files->remove_folder($folder);
     }
-
-
+    
+    
     /**
-     * Gets update information from the database
-     *
+     * Gets update information from GitHub
+     * 
      * @return array
      */
     public function get_update_info() {
-        $json = @file_get_contents("{$this->update_server}/api/update-info/");
-        if (!$json) throw new Exception("Failed to get information about the update.");
+        // Repo Releases URL to GitHub API
+        $url = "https://api.github.com/repos/helllomatt/Theamus/releases";
+        
+        // Get releases information
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_USERAGENT, "helllomatt-Theamus");
+        $api_data = json_decode(curl_exec($ch), true);
+        curl_close($ch);
+        
+        $releases = array();
+        foreach ($api_data as $release) $releases[] = $release['tag_name'];
 
-        $info = json_decode($json, true);
-        if ($info === null) throw new Exception("There was an issue retrieving the data from the server.");
-
-        $info['notes'] = $this->Theamus->Parsedown->text($info['notes']);
-
-        return $info;
+        // Download the latest release
+        $needs_update = 0;
+        $update_path = "";
+        
+        if ($this->Theamus->version != $api_data[0]['tag_name']) {
+            $needs_update = 1;
+            $update_path = "https://github.com/helllomatt/Theamus/archive/{$releases[0]}.zip";
+        }
+        
+        return array(
+            "currentVersion" => $this->Theamus->version,
+            "releasedVersions" => $releases,
+            "needsUpdate" => $needs_update,
+            "updatePath" => $update_path,
+            "updateVersion" => $releases[0],
+            "updateNotes" => $this->Theamus->Parsedown->text($api_data[0]['body'])
+        );
     }
 
 
@@ -371,91 +394,63 @@ class Settings {
      * @return string
      * @throws Exception
      */
-    protected function download_update() {
-        // Define the temp directory and a temporary filename
-        $temp_directory = ROOT."/features/settings/temp/";
+    protected function download_update($update_path) {
         $temp_filename = md5(time());
+        $temp_file = $this->Theamus->file_path(ROOT."/features/settings/temp/{$temp_filename}");
 
-        // Get the update information
-        $info = $this->get_update_info();
-
-        // Define the options for cURL
-        $ch_options = array(
-            CURLOPT_URL             => "{$this->update_server_path}/{$info['file']}",
-            CURLOPT_RETURNTRANSFER  => 1,
-            CURLOPT_SSL_VERIFYHOST  => false,
-            CURLOPT_SSL_VERIFYPEER  => false,
-            CURLOPT_FOLLOWLOCATION  => true
-        );
-
-        // Download the file
-        $ch = curl_init();
-        curl_setopt_array($ch, $ch_options);
-        $data = curl_exec($ch);
-
-        // Get the http status
-        $ch_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        // Check the return status and return as necessary
-        if ($ch_status == "200") {
-            // Create the file
-            $file = fopen($this->Theamus->file_path($temp_directory.$temp_filename.".zip"), 'w+');
-            fputs($file, $data);
-            fclose($file);
-
-            // Check if the newly created file exists and return
-            if (!file_exists($this->Theamus->file_path($temp_directory.$temp_filename.".zip"))) {
-                throw new Exception("Something went wrong creating the downloaded temp file.");
-            } else {
-                return $temp_filename;
-            }
+        $server_file = @file_get_contents($update_path);
+        
+        if (!$server_file) {
+            $this->Theamus->Log->system("Failed to download update file: {$update_path}");
+            throw new Exception("Failed to download the update because it doesn't exist!");
         } else {
-            throw new Exception("There was an error downloading the master repo.");
+            $downloaded = 1;
         }
+        
+        $fp = fopen($this->Theamus->file_path($temp_file.".zip"), "w");
+        if (!$fp) {
+            $this->Theamus->Log->system("Failed to write file {$temp_file}.zip. Check file permissions.");
+            throw new Exception("Failed to download the latest update because of file permssions.");
+        } else {
+            fwrite($fp, file_get_contents($update_path));
+            fclose($fp);
+            chmod($this->Theamus->file_path($temp_file.".zip"), 0777);
+        }
+        
+        return array(
+            "downloaded" => $downloaded,
+            "foldername" => $temp_file,
+            "filename" => $temp_filename,
+            "filePath" => $temp_file
+        );
     }
 
-
+    
     /**
-     * Uploads the download count for theamus
-     *
-     * @return boolean
-     */
-    private function update_downloads() {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "{$this->update_server}/api/increment-download/{$this->update_information['version']}");
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_exec($ch);
-        curl_close($ch);
-
-        return true;
-    }
-
-
-    /**
-     * Updates the system from the Theamus website.
-     *
+     * Automatically updates Theamus from GitHub
+     * 
+     * @param array $args
      * @return boolean
      * @throws Exception
      */
-    public function auto_update() {
-        // Download the file from the update server and get the information about it
-        $filename = $this->download_update();
-
-        // Extract the file to the temp folder
-        $this->extract_update($filename);
-
-        // Perform checks to ensure this is a legit update
-        $update_information = $this->get_update_information($filename);
+    public function auto_update($args = array()) {
+        $download = $this->download_update($args['updatePath']);
+        $this->extract_update($download['filename']);
+        
+        $this->copy_files($download['filePath'], $args['updateVersion']);
+        $this->rezip($download['filePath']); // Perform checks to ensure this is a legit update
+        
+        $update_information = $this->get_update_information($download['filename']);
         $check_information = $this->check_update_information($update_information);
-        if ($check_information) $this->update_information = $this->define_update_information($update_information, $filename);
+        if ($check_information) $this->update_information = $this->define_update_information($update_information, $download['filename']);
 
         // Extract the update files to the root directory
-        $this->extract_update($filename, "root");
+        $this->extract_update($download['filename'], "root");
 
         // Run the update scripts based on what's requested
         if ($update_information['run_update_script'] == true) {
             // Include the update files, run the update function if it's there
-            $this->include_update_files($filename, $update_information['update_files']);
+            $this->include_update_files($download['filename'], $update_information['update_files']);
             if (function_exists("update")) {
                 if (!update($this->Theamus, $update_information)) {
                     throw new Exception("There was an error when running the update scripts.");
@@ -463,12 +458,54 @@ class Settings {
             }
         }
 
-        // Clean the temp folder and notify the user
         $this->clean_temp_folder();
-        $this->update_downloads();
 
-        // Return the data
         return true;
+    }
+    
+    
+    /**
+     * Github packages things differently, so we need to get everything into a root folder
+     * for the updater and then for a rezip to be overlaied on everything rewriting files.
+     * 
+     * I think this might be an extra step.
+     * 
+     * @param string $file_path
+     * @param string $version
+     */
+    private function copy_files($file_path, $version) {
+        $files = $this->Theamus->Files->scan_folder($file_path);
+        
+        foreach ($files as $file) {
+            $file_name = str_replace("Theamus-{$version}/", "", $file);
+            if (!is_dir(dirname($file_name))) mkdir(dirname($file_name), 0777, true);
+            rename($file, $file_name);
+        }
+        
+        $this->Theamus->Files->remove_folder($file_path."/Theamus-{$version}/");
+        unlink($this->Theamus->file_path($file_path.".zip"));
+    }
+    
+    
+    /**
+     * Rezip files from the GitHub version to something easier for me.
+     * 
+     * @param string $file_path
+     * @throws Exception
+     */
+    private function rezip($file_path) {
+        $files = $this->Theamus->Files->scan_folder($file_path);
+        $zip = new ZipArchive();
+        
+        if ($zip->open($file_path.".zip", ZipArchive::OVERWRITE) === true) {
+            foreach ($files as $file) {
+                $zip->addFile($file, str_replace($file_path."/", "", $file));
+            }
+            $zip->close();
+        } else {
+            $this->Theamus->Log->system("Failed to create the zip filed for the update. Check your file permissions.");
+            throw new Exception("Failed to restructure the update.");
+        }
     }
 
 

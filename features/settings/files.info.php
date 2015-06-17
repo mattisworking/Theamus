@@ -12,8 +12,6 @@ define('FILE', "settings/{$Theamus->Call->get_called_file()}"); // Define the fi
 $feature['js']['file'][] = SETTINGS_DEV_MODE ? 'dev/settings.admin.js' : 'settings.admin.min.js';
 $feature['css']['file'][] = SETTINGS_DEV_MODE ? 'dev/settings.admin.css' : 'settings.admin.min.css';
 
-if ($folders[count($folders) - 1] == "doc") $Theamus->go_back();
-
 // Define file specifics
 switch ($Theamus->Call->get_called_file()) {
     case "index.php":
