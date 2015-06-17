@@ -4,26 +4,48 @@
     </div>
     <div class="st_banner-version">
         Theamus<br>
-        version 1.3.0
+        version <?php echo $Theamus->version; ?>
     </div>
 </div>
-<!--
-<div class="st_contributors-wrapper">
-    <h1 class="st_contributors-header">People I'd like to thank for contributing to the source code:</h1>
-    <ul>
-        <li>
-            <div class="st_contributor">
-                <div class="st_contributor-image">
-                    <img src="data:image/png;base64,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" alt="">
-                </div>
-                <div class="st_contributor-name">
-                    <a href="https://github.com/helllomatt">helllomatt</a>
-                </div>
-            </div>
-        </li>
-    </ul>
+
+<div class="st_new-row left-image">
+    <a href="features/settings/img/update.png" target="new">
+        <img src="features/settings/img/update.png">
+    </a>
+    <div class="st_new-text">
+        <h2>Updates in one click.</h2>
+        <p>
+            Now Theamus updates in one click. You don't have to do anything else. Just click, wait a second, then boom! Latest and greatest right at your fingertips.
+        </p>
+    </div>
 </div>
--->
+
+<div class="st_new-row right-image">
+    <a href="features/settings/img/404.png" target="new">
+        <img src="features/settings/img/404.png">
+    </a>
+    <div class="st_new-text">
+        <h2>404 means error</h2>
+        <p>
+            No more pretty 404 errors, now when something's wrong computers will know as well.
+        </p>
+    </div>
+</div>
+
+<div class="st_new-row left-image">
+    <a href="features/settings/img/developer.png" target="new">
+        <img src="features/settings/img/developer.png">
+    </a>
+    <div class="st_new-text">
+        <h2>Developer thangs.</h2>
+        <p>
+            Firstly, there's <strong>custom index files for your features</strong>.
+            Yeah, and if that wasn't cool enough, you can <strong>imply them too</strong>.
+            Thank me later.
+        </p>
+    </div>
+</div>
+
 <div class="st_ext-libs-wrapper">
     <h2 class="st_ext-libs-header">External Libraries:</h2>
     <ul>

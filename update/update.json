@@ -4,7 +4,8 @@
         "database": [],
         "files": [],
         "bugs": [
-            "[Feature] - Download updates from the click of a button! Now Theamus will download directly from the latest releases on the GitHub repo. [GitHub issue](https://github.com/helllomatt/Theamus/issues/134)",
+            "[Feature] - Added more information to the 'About Theamus' admin window. This will be updated periodically, but especially at new releases. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/135)",
+            "[Feature] - Download updates from the click of a button! Now Theamus will download directly from the latest releases on the GitHub repo. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/134)",
             "[Bug] - Fixed the most annoying thing in the world. The drop menu for admin windows would disappear when you would try to hover over it (losing focus). [GitHub Issue](https://github.com/helllomatt/Theamus/issues/137)",
             "[Update] - Updated the system's README.md file. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/122)",
             "[Bug] - Error when there's a table in the database that doesn't have a prefix (missing an underscore _ ) in the table name. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/144)",
