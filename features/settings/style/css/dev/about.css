@@ -12,6 +12,10 @@
     font-style: normal;
 }
 
+#about-theamus {
+    width: 800px;
+}
+
 
 /**
     Logo & Version Banner
@@ -25,7 +29,7 @@
     clear: both;
 }
 .st_banner-wrapper {
-    margin: 100px auto 0;
+    margin: 70px auto 120px;
     position: relative;
     width: 500px;
 }
@@ -117,6 +121,51 @@
     .st_contributors-wrapper ul li:not(:first-child):not(:nth-child(4)) {
         margin: 0 0 25px 50px;
     }
+}
+
+.st_new-row:before,
+.st_new-row:after {
+    content: "";
+    display: table;
+}
+.st_new-row:after {
+    clear: both;
+}
+.st_new-row:not(:last-of-type) {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 50px;
+    padding-bottom: 25px;
+}
+.st_new-row {
+    margin: 0 auto;
+    width: 90%;
+}
+.st_new-row img {
+    width: 40%;
+}
+.st_new-row .st_new-text {
+    width: 55%;
+}
+.st_new-row .st_new-text h2 {
+    color: #888;
+    font-family: "Roboto", sans-serif;
+    font-size: 1.8em;
+    margin-top: 10px;
+}
+.st_new-row .st_new-text p {
+    font: 14px/20px sans-serif;
+}
+.left-image img {
+    float: left;
+}
+.left-image .st_new-text {
+    float: right;
+}
+.right-image img {
+    float: right;
+}
+.right-image .st_new-text {
+    float: left;
 }
 
 /**
