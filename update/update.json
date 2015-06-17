@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Update] - Updated the system's README.md file. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/122)",
             "[Bug] - Error when there's a table in the database that doesn't have a prefix (missing an underscore _ ) in the table name. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/144)",
             "[Bug] - Not found errors on AJAX now display as a fun guy. (> ^-^ )> Specifically for admin AJAX calls. You can now determine the response status through Ajax.run. Also, 404's send a 404 response too. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/140)",
             "[Bug] - You're safe again. Now Theamus handles every. single. file. call. That's right. If you go somewhere on Theamus, it will look at what you want to do and be the judge. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/119)",
