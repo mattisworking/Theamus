@@ -249,7 +249,7 @@ class DB {
             $table_array = explode('_', is_array($table) ? $table[0] : $table);
 
             // Continue on if there wasn't a prefix to look for
-            if (count($table_array) == 0) continue;
+            if (count($table_array) == 0 || !isset($table_array[1])) continue;
 
             // Look for the 'settings' table for a default
             if ($table_array[1] == 'settings') return $table_array[0];
