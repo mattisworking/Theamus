@@ -1,19 +1,10 @@
 {
-    "version": "1.4.0",
+    "version": "1.4.1",
     "changes": {
         "database": [],
         "files": [],
         "bugs": [
-            "[Feature] - Added more information to the 'About Theamus' admin window. This will be updated periodically, but especially at new releases. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/135)",
-            "[Feature] - Download updates from the click of a button! Now Theamus will download directly from the latest releases on the GitHub repo. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/134)",
-            "[Bug] - Fixed the most annoying thing in the world. The drop menu for admin windows would disappear when you would try to hover over it (losing focus). [GitHub Issue](https://github.com/helllomatt/Theamus/issues/137)",
-            "[Update] - Updated the system's README.md file. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/122)",
-            "[Bug] - Error when there's a table in the database that doesn't have a prefix (missing an underscore _ ) in the table name. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/144)",
-            "[Bug] - Not found errors on AJAX now display as a fun guy. (> ^-^ )> Specifically for admin AJAX calls. You can now determine the response status through Ajax.run. Also, 404's send a 404 response too. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/140)",
-            "[Bug] - You're safe again. Now Theamus handles every. single. file. call. That's right. If you go somewhere on Theamus, it will look at what you want to do and be the judge. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/119)",
-            "[Bug] - Logging in can now be done on multiple browsers, however there is a catch. Session records clean up and update properly now, too. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/102)",
-            "[Feature] - Can now imply folder index files. See documentation/system/imply-folder-indexes.md fo more information [GitHub Issue](https://github.com/helllomatt/Theamus/issues/118)",
-            "[Feature] - Can now set custom index files for folders! See documentation/system/set-folder-index.md for information. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/117)"
+            "[Bug] - Handling all of the calls wasn't finding the proper Theamus directory (no loops!)"
         ]
     },
     "authors": [
