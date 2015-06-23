@@ -3,7 +3,7 @@
 /**
  * DB - Theamus database access class
  * PHP Version 5.5.3
- * Version 1.3.1
+ * Version 1.4.0
  * @package Theamus
  * @link http://www.theamus.com/
  * @author MMT (helllomatt) <mmt@itsfake.com>
@@ -249,7 +249,7 @@ class DB {
             $table_array = explode('_', is_array($table) ? $table[0] : $table);
 
             // Continue on if there wasn't a prefix to look for
-            if (count($table_array) == 0) continue;
+            if (count($table_array) == 0 || !isset($table_array[1])) continue;
 
             // Look for the 'settings' table for a default
             if ($table_array[1] == 'settings') return $table_array[0];

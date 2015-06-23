@@ -4,7 +4,7 @@
 
 <div id='checker-wrapper'></div>
 
-<input type='hidden' id='current_version' value='<?php echo $Theamus->settings['version']; ?>'>
+<input type='hidden' id='current_version' value='<?php echo $Theamus->version; ?>'>
 
 <script>
     admin_window_run_on_load('change_settings_tab');

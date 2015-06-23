@@ -90,7 +90,7 @@
     <div class='form-group'>
         <label class='control-label col-4'>Current Version</label>
         <div class='col-8'>
-            <?php echo $Theamus->settings['version']; ?>
+            <?php echo $Theamus->version; ?>
         </div>
     </div>
 

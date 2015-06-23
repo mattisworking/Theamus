@@ -3,7 +3,7 @@
 /**
  * User - Theamus user information class
  * PHP Version 5.5.3
- * Version 1.3.1
+ * Version 1.4.0
  * @package Theamus
  * @link http://www.theamus.com/
  * @author MMT (helllomatt) <mmt@itsfake.com>
@@ -96,15 +96,20 @@ class User {
             $this->user = $this->Theamus->DB->fetch_rows($query);
 
             $this->get_user_sessions();
+            $browser_info = $this->get_browser();
+            $browser = "{$browser_info['name']} {$browser_info['version']}";
 
             // Get the user's session and IP address
-            $user_ip = $_SERVER['REMOTE_ADDR'];
+            $user_ip = filter_input(INPUT_SERVER, "REMOTE_ADDR");
 
             // Force a logout and go to the default page if the user isn't logged in
             $logout = array();
             foreach ($this->user_sessions as $user_session) {
                 if (!isset($user_session['ip_address'])) continue;
                 if ($user_session['ip_address'] == $user_ip && $user_session['session_key'] == $_COOKIE['session']) $logout[] = false;
+                if (strtotime($user_session['expires']) < time() && $browser == $user_session['browser']) {
+                    $this->force_logout();
+                }
             }
 
             if (!in_array(false, $logout)) $this->force_logout();
@@ -197,15 +202,24 @@ class User {
      *
      * @return boolean
      */
-    private function force_logout() {
+    public function force_logout() {
         if (session_id() == "") session_start();
+        
+        $browser = $this->get_browser();
+        
+        $this->Theamus->DB->delete_table_row(
+                $this->Theamus->DB->system_table("user-sessions"),
+                array("operator" => "&&",
+                    "conditions" => array(
+                        'ip_address' => filter_input(INPUT_SERVER, "REMOTE_ADDR"),
+                        'user_id'    => $this->user['id'],
+                        'browser'    => "{$browser['name']} {$browser['version']}"
+                    )));
 
         session_destroy();
         setcookie("session", null, -1, "/");
         setcookie("userid", null, -1, "/");
-        header("Location: ./");
-
-        return true;
+        return array("url" => $this->send_to_login(true));
     }
 
 
@@ -270,9 +284,8 @@ class User {
                 $this->Theamus->DB->system_table('user-sessions'));
         }
 
-        // Check if the query failes
+        // Check if the query fails
         if (!$query) {
-            echo 3;
             $this->user_sessions = $user_sessions;
             return $user_sessions;
         }
@@ -298,22 +311,22 @@ class User {
      */
     public function update_user_session($user_id = 0, $session_key = '', $expire = 0, $ip = '', $session = array()) {
         // Get the user browser information
-        $browser = $this->Theamus->Call->get_browser();
+        $browser = $this->get_browser();
         $user_browser   = $browser['name']." ".$browser['version'];
 
         // Define the update queries
         $query_data['data'] = array(
             array(
                 'session_key' => $session_key,
-                'expires'     => date('Y-m-d H:i:s', strtotime($expire)),
-                'last_seen'   => '[func]now()',
-                'browser'     => $user_browser));
+                'expires'     => date('Y-m-d H:i:s', $expire),
+                'last_seen'   => '[func]now()'));
 
         $query_data['clause'] = array(
             array('operator' => 'AND',
                 'conditions' => array(
                     'ip_address' => $ip,
-                    'user_id'    => $user_id)));
+                    'user_id'    => $user_id,
+                    'browser'    => $user_browser)));
 
         // Query the database updating the user session information
         if ($this->Theamus->DB->update_table_row(
@@ -363,7 +376,7 @@ class User {
         }
 
         // Get the user browser information
-        $browser = $this->Theamus->Call->get_browser();
+        $browser = $this->get_browser();
 
         // Define SQL friendly variables
         $ip             = $_SERVER['REMOTE_ADDR'];
@@ -375,7 +388,7 @@ class User {
         // Check if the user already has a session on this computer, it's just expired
         foreach ($this->user_sessions as $user_session) {
             if (!isset($user_session['ip_address'])) continue;
-            if ($user_session['ip_address'] == $ip) {
+            if ($user_session['ip_address'] == $ip && $user_session['browser'] == $user_browser) {
                 if (strtotime($user_session['expires']) > time()) {
                     // Define the session key, set the cookies and return
                     $this->set_cookies($user_id, $user_session['session_key'], $expire);
@@ -411,11 +424,101 @@ class User {
     /**
     * Sends a user to the login form with the current address attached for routing
     */
-   public function send_to_login() {
-       $protocol = isset($_SERVER['HTTPS']) ? "https://" : "http://";
-       $url = urlencode($protocol.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
-       $login_url = $this->Theamus->base_url."accounts/login?redirect=$url";
-       header("Location: $login_url");
-   }
+    public function send_to_login($return_location = false) {
+        $protocol = filter_input(INPUT_SERVER, "HTTPS") == "" ? "http://" : "https://";
+        
+        if (!is_object($this->Theamus->Call) || $this->Theamus->Call->get_call_type() == false) {
+            $url = $protocol.filter_input(INPUT_SERVER, "HTTP_HOST").filter_input(INPUT_SERVER, "REQUEST_URI");
+        } else {
+            $url = filter_input(INPUT_SERVER, "HTTP_REFERER");
+        }
+        
+        $login_url = $this->Theamus->base_url."accounts/login?redirect={$url}";
 
+        if ($return_location == false) {
+            header("Refresh: 0");
+            //header("Location: {$login_url}");
+            exit();
+        } else {
+            return $login_url;
+        }
+    }
+   
+   
+    /**
+     * Defines the browser that a user is using
+     *
+     * I stole this from somewhere a long time ago.  If you know who's it is, let me
+     *  know and I'll throw in the credits.
+     *
+     * @return array
+     */
+    public function get_browser() {
+        $u_agent    = $_SERVER['HTTP_USER_AGENT'];
+        $bname      = 'Unknown';
+        $platform   = 'Unknown';
+        $version    = "";
+
+        // Get the platform
+        if (preg_match('/linux/i', $u_agent)) {
+            $platform = 'linux';
+        } elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {
+            $platform = 'mac';
+        } elseif (preg_match('/windows|win32/i', $u_agent)) {
+            $platform = 'windows';
+        }
+
+        // Get the name of the agent
+        if(preg_match('/MSIE/i',$u_agent) && !preg_match('/Opera/i',$u_agent)) {
+            $bname = 'Internet Explorer';
+            $ub = "MSIE";
+        } elseif(preg_match('/Firefox/i',$u_agent)) {
+            $bname = 'Mozilla Firefox';
+            $ub = "Firefox";
+        } elseif(preg_match('/Chrome/i',$u_agent)) {
+            $bname = 'Google Chrome';
+            $ub = "Chrome";
+        } elseif(preg_match('/Safari/i',$u_agent)) {
+            $bname = 'Apple Safari';
+            $ub = "Safari";
+        } elseif(preg_match('/Opera/i',$u_agent)) {
+            $bname = 'Opera';
+            $ub = "Opera";
+        } elseif(preg_match('/Netscape/i',$u_agent)) {
+            $bname = 'Netscape';
+            $ub = "Netscape";
+        } elseif(preg_match('/WOW64/i', $u_agent)) {
+            $bname = "Internet Explorer";
+            $ub = "rv";
+        }
+
+        // Get the version number
+        $known = array('Version', $ub, 'other');
+        $pattern = '#(?<browser>'.join('|', $known).')[/ |:]+(?<version>[0-9.|a-zA-Z.]*)#';
+        if (!preg_match_all($pattern, $u_agent, $matches)) {}
+
+        $i = count($matches['browser']);
+        if ($i != 1) {
+            // Check if version is before or after the name
+            if (strripos($u_agent,"Version") < strripos($u_agent,$ub)){
+                $version= $matches['version'][0];
+            } else {
+                $version= $matches['version'][1];
+            }
+        } else {
+            $version= $matches['version'][0];
+        }
+
+        // Check if we have a number
+        if ($version == null || $version == "") $version = "?";
+
+        // Return the information
+        return array(
+            'agent'     => $u_agent,
+            'name'      => $bname,
+            'version'   => $version,
+            'platform'  => $platform,
+            'pattern'   => $pattern
+        );
+    }
 }

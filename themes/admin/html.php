@@ -2,13 +2,7 @@
     <div class='admin-header'>
         <ul class='nav nav-inline'>
             <li class='admin-logo'>
-                <a href='#'><img src='themes/admin/img/theamus-logo.svg' alt='t'></a>
-                <ul>
-                    <li><a href='#' name='admin-nav-item' data-id='about-theamus' data-title='About Theamus' data-url='/settings/about-theamus/'>About Theamus</a></li>
-                    <li class='nav-split'></li>
-                    <li><a href='http://www.theamus.com' target='_blank'>Theamus Website</a></li>
-                    <li><a href='http://www.theamus.com/wiki/' target='_blank'>Documentation</a></li>
-                </ul>
+                <a href='#' name='admin-nav-item' data-id='about-theamus' data-title='About Theamus' data-url='/settings/about-theamus/'><img src='themes/admin/img/theamus-logo.svg' alt='t'></a>
             </li>
             <li><a href='#' id='ad_open-nav'><span class='glyphicon ion-navicon'></span></a></li>
             <li>
