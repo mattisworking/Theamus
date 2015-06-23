@@ -3,7 +3,7 @@
 /**
  * Call - Theamus content control class
  * PHP Version 5.5.3
- * Version 1.4.0
+ * Version 1.4.1
  * @package Theamus
  * @link http://www.theamus.com/
  * @author MMT
@@ -220,11 +220,13 @@ class Call {
         $root_array = array_values(array_filter(explode("/", ROOT)));
         $uri_array = array_values(array_filter(explode("/", filter_input(INPUT_SERVER, "REQUEST_URI"))));
         
-        if (end($root_array) == $uri_array[0]) {
-            array_shift($uri_array);
-        }
+        $pre = array_intersect($root_array, $uri_array);
         
-        return "/".implode("/", $uri_array);
+        for ($i = 0; $i < count($pre); $i++) array_shift($uri_array);
+        
+        $root = array_merge($root_array, $uri_array);
+        
+        return "/".implode("/", $root);
     }
     
     
@@ -239,7 +241,7 @@ class Call {
         $paths = explode("/", $uri[0]);
         $file_name = explode(".", end($paths));
         
-        $file = $this->Theamus->file_path(ROOT.$uri[0]);
+        $file = $this->Theamus->file_path($uri[0]);
         
         if (!is_dir($file) && !file_exists($file)) return;
         elseif (end($file_name) == "php") {
