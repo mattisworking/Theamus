@@ -8,13 +8,13 @@ if (!$Theamus->User->is_admin()) die("You don't have permission to this feature.
 $feature['class']['file'] = 'media.class.php';
 $feature['class']['init'] = 'Media';
 
-define('FILE', "media/{$Theamus->Call->get_called_file()}"); // Define the current file
+define('FILE', "media/{$file}"); // Define the current file
 
 // Add the JS and CSS
 $feature['css']['file'][] = MEDIA_DEV_MODE ? 'dev/media.admin.css' : 'media.admin.min.css';
 $feature['js']['file'][] = MEDIA_DEV_MODE ? 'dev/media.admin.js' : 'media.admin.min.js';
 
-switch ($Theamus->Call->get_called_file()) {
+switch ($file) {
     case 'index.php':
         break;
 
