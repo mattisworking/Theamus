@@ -39,3 +39,6 @@ try {
 } catch (Exception $e) {
     echo '<h2 style="color: #555; font-family: sans-serif; font-weight: normal; margin: 0; padding: 0;">'.$e->getMessage().'</h2>';
 }
+
+// Show the page load information
+$Theamus->Call->show_page_information();

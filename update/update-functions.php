@@ -156,3 +156,14 @@ function update_130() {
 
     return true;
 }
+
+
+/**
+ * Adds the show_page_information column to the settings table
+ * 
+ * @param object $Theamus
+ * @return boolean
+ */
+function update_150($Theamus) {
+    if (!$Theamus->DB->custom_query("ALTER TABLE `{$Theamus->DB->system_table("settings")}` ADD `show_page_information` VARCHAR(500) NOT NULL after `favicon_path`")) return false;
+}

@@ -309,6 +309,9 @@ class Settings {
             $query_data['email_user'] = $args['email'];
             $query_data['email_password'] = $this->Theamus->encrypt_string($args['password']);
         }
+        
+        // Save the page information
+        $query_data['show_page_information'] = $args['page_information'] == "" ? "" : json_encode(explode(",", $args['page_information']));
 
         // Check for display errors variable
         if (!isset($args['errors'])) throw new Exception('Invalid developer errors value.');

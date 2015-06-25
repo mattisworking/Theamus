@@ -4,7 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
-            "[Bug] - Handling all of the calls wasn't finding the proper Theamus directory (no loops!)"
+            "[Feature] - Show page load information like time and query count! [GitHub Issue](https://github.com/helllomatt/Theamus/issues/153)"
         ]
     },
     "authors": [
