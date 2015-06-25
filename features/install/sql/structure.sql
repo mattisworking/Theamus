@@ -154,6 +154,7 @@ CREATE TABLE IF NOT EXISTS `tm_settings` (
   `version` varchar(50) NOT NULL,
   `logging` text NOT NULL,
   `favicon_path` varchar(2083) NOT NULL,
+  `show_page_information` varchar(500) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 

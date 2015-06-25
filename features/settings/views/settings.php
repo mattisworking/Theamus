@@ -78,6 +78,19 @@
             <option value="query" <?php if (strpos($Theamus->settings['logging'], "query") !== false) echo "selected"; ?>>Query</option>
         </select>
     </div>
+    
+    <div class="form-group">
+        <label class="control-label"
+               for="settings_page-information">Show Page Information</label>
+        <select class="form-control"
+                if="settings_page-information"
+                name="page_information"
+                multiple="multiple"
+                size="2">
+            <option value="load_time" <?php if (strpos($Theamus->settings['show_page_information'], "load_time") !== false) echo "selected"; ?>>Page Load Time</option>
+            <option value="query_count" <?php if (strpos($Theamus->settings['show_page_information'], "query_count") !== false) echo "selected"; ?>>Query Count</option>
+        </select>
+    </div>
 
     <h2 class='form-header'>Update Theamus</h2>
     <div class='form-group'>
