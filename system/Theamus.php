@@ -346,4 +346,25 @@ class Theamus {
         $decrypted_string = mcrypt_decrypt(MCRYPT_BLOWFISH, $encryption_key, $encrypted_string, MCRYPT_MODE_ECB, $iv);
         return trim($decrypted_string);
     }
+    
+    
+    /**
+     * Finds the server specified memory limit and turns it from human readable to bytes.
+     * 
+     * Thanks you to Muhammad Alvin for this answer. http://stackoverflow.com/a/10209530/3777524
+     * You helped me!
+     * 
+     * @return number
+     */
+    function get_server_memory_limit() {
+        $memory_limit = ini_get('memory_limit');
+        if (preg_match('/^(\d+)(.)$/', $memory_limit, $matches)) {
+            if ($matches[2] == 'M') {
+                $memory_limit = $matches[1] * 1024 * 1024;
+            } else if ($matches[2] == 'K') {
+                $memory_limit = $matches[1] * 1024;
+            }
+        }
+        return $memory_limit;
+    }
 }

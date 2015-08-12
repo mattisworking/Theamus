@@ -4,7 +4,8 @@
         "database": [],
         "files": [],
         "bugs": [
-            "[Bug] - Fixed an issue with redirecting to the accounts/login page with an auto redirector in the URL. It was refreshing instead of going to the URL. :( [Github Issue](https://github.com/helllomatt/Theamus/issues/167)"
+            "[Bug] - Fixed an issue with redirecting to the accounts/login page with an auto redirector in the URL. It was refreshing instead of going to the URL. :( [GitHub Issue](https://github.com/helllomatt/Theamus/issues/167)",
+            "[Bug] - Fixed an issue with big files not being sent out properly. Now sends in chunks based on the max memory limit of the server. I don't know how I feel about this. Control comes at a cost? [GitHub Issue](https://github.com/helllomatt/Theamus/issues/168)"
         ]
     },
     "authors": [
