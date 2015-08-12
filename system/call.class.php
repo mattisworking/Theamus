@@ -246,6 +246,7 @@ class Call {
         if (!is_dir($file) && !file_exists($file)) return;
         elseif (end($file_name) == "php") {
             $this->error_page(404);
+            exit();
         } else {
             if (!is_dir($file) && file_exists($file)) {
                 header("Content-Type:".$this->get_content_type(end($file_name), $file));
@@ -258,10 +259,9 @@ class Call {
                   flush();
                 }
                 fclose($handle);
+                exit();
             }
         }
-
-        exit();
     }
     
     
