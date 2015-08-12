@@ -436,8 +436,7 @@ class User {
         $login_url = $this->Theamus->base_url."accounts/login?redirect={$url}";
 
         if ($return_location == false) {
-            header("Refresh: 0");
-            //header("Location: {$login_url}");
+            header("Location: {$login_url}");
             exit();
         } else {
             return $login_url;

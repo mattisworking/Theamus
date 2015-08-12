@@ -1,10 +1,10 @@
 {
-    "version": "1.4.1",
+    "version": "1.4.2",
     "changes": {
         "database": [],
         "files": [],
         "bugs": [
-            "[Bug] - Handling all of the calls wasn't finding the proper Theamus directory (no loops!)"
+            "[Bug] - Fixed an issue with redirecting to the accounts/login page with an auto redirector in the URL. It was refreshing instead of going to the URL. :( [Github Issue](https://github.com/helllomatt/Theamus/issues/167)"
         ]
     },
     "authors": [
