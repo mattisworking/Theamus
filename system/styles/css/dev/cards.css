@@ -71,6 +71,20 @@ section[type="card"] section[type="card_collapsible"] header[type="card_collapsi
     position: relative;
     z-index: 2;
 }
+section[type="card"] section[type="card_collapsible"] header[type="card_collapsible-header"].selectable {
+    cursor: default;
+    transition: background-color .2s;
+    -moz-transition: background-color .2s;
+    -ms-transition: background-color .2s;
+    -webkit-transition: background-color .2s;
+}
+section[type="card"] section[type="card_collapsible"] header[type="card_collapsible-header"].selectable:hover {
+    background-color: #eee;
+}
+
+section[type="card"] section[type="card_collapsible"] header[type="card_collapsible-header"].selected {
+    background-color: #ddd;
+}
 section[type="card"] section[type="card_collapsible"].collapsible-expanded header[type="card_collapsible-header"] {
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
@@ -80,11 +94,19 @@ section[type="card"] section[type="card_collapsible"] div.collapsible-chevron {
     margin: 11px;
     transition: transform .1s ease-in;
 }
+section[type="card"] section[type="card_collapsible"] div.selectable-collapsible-chevron {
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+}
 section[type="card"] section[type="card_collapsible"] div.collapsible-chevron-flipped {
     transform: rotate(180deg);
 }
 section[type="card"] section[type="card_collapsible"] div.collapsible-chevron span.glyphicon {
     color: #888;
+}
+section[type="card"] section[type="card_collapsible"] input.card_collapsible-selectable {
+    visibility: hidden;
 }
 section[type="card"] section[type="card_collapsible"] section[type="card_collapsible-expansion"] {
     margin: 0;
