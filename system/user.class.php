@@ -3,7 +3,7 @@
 /**
  * User - Theamus user information class
  * PHP Version 5.5.3
- * Version 1.4.1
+ * Version 1.4.2
  * @package Theamus
  * @link http://www.theamus.com/
  * @author MMT (helllomatt) <mmt@itsfake.com>
@@ -436,8 +436,7 @@ class User {
         $login_url = $this->Theamus->base_url."accounts/login?redirect={$url}";
 
         if ($return_location == false) {
-            header("Refresh: 0");
-            //header("Location: {$login_url}");
+            header("Location: {$login_url}");
             exit();
         } else {
             return $login_url;
