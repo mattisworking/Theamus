@@ -3,7 +3,7 @@
 /**
  * API - Theamus API handling class
  * PHP Version 5.5.3
- * Version 1.4.1
+ * Version 1.4.2
  * @package Theamus
  * @link http://www.theamus.com/
  * @author MMT (helllomatt) <mmt@itsfake.com>

@@ -3,7 +3,7 @@
 /**
  * Theamus
  * PHP Version 5.5.3
- * Version 1.4.1
+ * Version 1.4.2
  * @package Theamus
  * @link http://www.theamus.com/
  * @author MMT
@@ -22,7 +22,7 @@ class Theamus {
     public $Parsedown;
     protected $timer;
 
-    public $version = '1.4.1';
+    public $version = '1.4.2';
 
 
     /**
