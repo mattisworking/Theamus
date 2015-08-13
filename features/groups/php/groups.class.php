@@ -60,8 +60,10 @@ class Groups {
         if (strlen($args['name']) > 75 || strlen($args['alias']) > 100) throw new Exception('Group name is too long.');
 
         // Check the user's permissions based on the ones selected
-        foreach (explode(',', $args['permissions']) as $permission) {
-            if (!$this->Theamus->User->has_permission($permission)) throw new Exception('Cannot create groups with permissions you do not already have.');
+        if (!$this->Theamus->User->is_admin()) {
+            foreach (explode(',', $args['permissions']) as $permission) {
+                if (!$this->Theamus->User->has_permission($permission)) throw new Exception('Cannot create groups with permissions you do not already have.');
+            }
         }
 
         // Add the information to the database
