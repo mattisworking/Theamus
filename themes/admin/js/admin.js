@@ -71,7 +71,7 @@ function admin_window_run_on_load(func) {
     }
 }
 
-function create_admin_window(window_id, window_title, window_url, pre_style) {
+function create_admin_window(window_id, window_title, window_url, window_forceopen, pre_style) {
     if (!pre_style) pre_style = "";
 
     var theamus_ls = JSON.parse(localStorage.getItem("Theamus"));
@@ -81,7 +81,7 @@ function create_admin_window(window_id, window_title, window_url, pre_style) {
         return false;
     }
 
-    if (theamus_ls['admin_open'] === true) {
+    if (theamus_ls['admin_open'] === true || window_forceopen === '1') {
         $('.admin-header').addClass('admin-header-on');
         $('.admin-navigation').addClass('admin-navigation-'+admin_position)
         $('.admin-navigation').addClass('admin-navigation-open');
@@ -124,7 +124,7 @@ function create_admin_window(window_id, window_title, window_url, pre_style) {
     $('.admin-windows').append(ad_window);
 
     setTimeout(function() {
-        if (theamus_ls['admin_open'] === true) {
+        if (theamus_ls['admin_open'] === true || window_forceopen === '1') {
             $(ad_window).addClass('admin-window-open');
         }
         admin_window_listeners();
@@ -375,9 +375,10 @@ $(document).ready(function() {
 
         var window_title = $(this).attr('data-title'),
             window_id = $(this).attr('data-id'),
-            window_url = $(this).attr('data-url');
+            window_url = $(this).attr('data-url')
+            window_forceopen = $(this).attr('data-forceopen');
 
-        create_admin_window(window_id, window_title, window_url);
+        create_admin_window(window_id, window_title, window_url, window_forceopen);
 
         for (var i = 0; i < $('.admin-window').length; i++) {
             if (Theamus.Mobile === false) {
