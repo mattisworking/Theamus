@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Enhancement] - Updated the refresh rate of admin windows resizing. Should be less noticable now. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/176)",
             "[Bug] - Fixed the admin panel opening on page load when it shouldn't have been. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/175)",
             "[Bug] - Clicking on the Theamus 't' now opens the 'About Theamus' window, even if the admin panel is hidden. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/174)",
             "[Bug] - Fixed the styling of the 'About Theamus' admin window. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/173)",

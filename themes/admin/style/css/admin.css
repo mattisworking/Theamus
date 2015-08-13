@@ -5,6 +5,21 @@
     font-style: normal;
 }
 
+.admin-window-maxheight:before,
+.admin-window-maxheight:after,
+.window-content:before,
+.window-content:after,
+.admin_window-inner-content:before,
+.admin_window-inner-content:after {
+    content: "";
+    display: table;
+}
+.admin-window-maxheight:after,
+.window-content:after,
+.admin_window-inner-content:after {
+    clear: both;
+}
+
 .admin {
     left: 0;
     opacity: 0;
