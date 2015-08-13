@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Enhancement] - Card collapsible updates. You can how create selectable lists in a card! [GitHub Issue](https://github.com/helllomatt/Theamus/issues/169)",
             "[Feature] - Show page load information like time and query count! [GitHub Issue](https://github.com/helllomatt/Theamus/issues/153)"
         ]
     },

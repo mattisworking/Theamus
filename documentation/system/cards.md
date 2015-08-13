@@ -38,6 +38,7 @@ Theamus.Style.getCard("card-id").expansion.expand();
   - [Expandable Text](#expandable-text)
  - [Columns](#columns)
  - [Collapsibles](#collapsibles)
+  - [Selectable Collapsibles](#selectable-collapsibles)
 - [Inputs & Labels](#inputs)
  - [Labels](#labels)
  - [Input Types](#input-types)
@@ -53,6 +54,7 @@ Theamus.Style.getCard("card-id").expansion.expand();
  - [Get 'em All](#getting-cards)
  - [Expansions](#card-expansions)
  - [Collapsibles](#card-collapsibles)
+  - [Selectable Collapsibles](#JS_selectable-collapsibles)
  - [Content Expansions](#js-content-expansions)
  - [Progress Bars](#js-progress)
  - [Inputs](#js-inputs)
@@ -157,6 +159,36 @@ These can be cool, if you're in the mood to be cool.
 ```
 
 There's also the option of showing them as a list. If all you need is a list, then just add the `.card_collapsible-list` class to the card section element. (not the card_collapsible element) That will beautify all of the collapsibles into a reasonable looking list.
+
+####<a title="Back to Top" href="#html" name="selectable-collapsibles">Selectable Collapsibles</a>
+The purpose of doing something like this would be so you can have a list, that acts as a checkbox, but has the option to provide more information.
+
+```html
+<section type="card" class="card_collapsible-list">
+    <header type="card_header">Collapsible Listing</header>
+
+    <section type="card_collapsible"
+             data-selectname="selection"
+             data-selectvalue="1">
+        <header type="card_collapsible-header">Collapsible Numero Uno</header>
+        <section type="card_collapsible-expansion">
+            // Extra content!
+        </section>
+    </section>
+
+    <section type="card_collapsible"
+             data-selectname="selection"
+             data-selectvalue="2">
+        <header type="card_collapsible-header">Collapsible Numero Due</header>
+        <section type="card_collapsible-expansion">
+            // Extra content!
+        </section>
+    </section>
+</section>
+```
+
+This automatically generates a hidden checkbox and gives it the name and value that you defined in the collapsible element attributes. They will be sent with any form submissions, or any Theamus sent AJAX requests. You can access them via JavaScript and give them listeners (when checked/unchecked) as well as modify attributes of the checkbox element.
+__Note__: _Theamus won't register this as a selectable class if `data-selectname` is not defined. That's the only required attribute._
 
 &nbsp;
 
@@ -334,6 +366,49 @@ Theamus.Style.getCard("card-id").getCollapsible("collapsible-id").expand();
 Theamus.Style.getCard("card-id").getCollapsible("collapsible-id").collapse();
     //>undefined
 ```
+
+For on-the-fly collapsibles
+```js
+var collapsible = document.createElement("section");
+collapsible.setAttribute("type", "card_collapsible");
+
+var collapsibleHeader = document.createElement("header");
+collapsibleHeader.setAttribute("type", "card_collapsible-header");
+collapsibleHeader.innerHTML = "I'm a generated collapsible!";
+collapsible.appendChild(collapsibleHeader);
+
+var collapsibleContent = document.createElement("section");
+collapsibleContent.setAttribute("type", "card_collapsible-expansion");
+collapsibleContent.innerHTML = "<div class='card_text-wrapper'>Hi, I'm new!</div>";
+collapsible.appendChild(collapsibleContent);
+
+Theamus.Style.getCard("card-id").registerCollapsible(collapsible);
+    //><section type='card_collapsible-header'></section>
+
+Theamus.Style.getCard("card-id").deleteCollapsible(collapsible);
+    //>undefined
+```
+
+
+####<a title="Back to Top" href="#js" name="JS_selectable-collapsibles">Selectable Collapsibles</a>
+```js
+Theamus.Style.getCard("card-id").getCollapsible("collapsible-id").setSelectableAttribute("attributeName", "attributeValue");
+    //>undefined
+
+Theamus.Style.getCard("card-id").getCollapsible("collapsible-id").removeSelectableAttribute("attributeName");
+    //>undefined
+
+// Triggers when the row is selected
+Theamus.Style.getCard("card-id").getCollapsible("collapsible-id").functions.selected = function() {
+    console.log("Selected!");
+}
+
+// Triggers when the row is unselected
+Theamus.Style.getCard("card-id").getCollapsible("collapsible-id").functions.unselected = function() {
+    console.log("Unselected!");
+}
+```
+
 
 ####<a title="Back to Top" href="#js" name="js-content-expansions">Content Expansions</a>
 Open, close?
