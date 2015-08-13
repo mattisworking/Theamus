@@ -159,7 +159,6 @@ function show_admin_window_content(window_id) {
 }
 
 function update_admin_window_content(window_id, url) {
-    $('.admin').addClass('admin-panel-open');
     $('#'+window_id).parentsUntil('.admin-windows').removeClass('admin-window-maxheight');
 
     bring_admin_window_to_front($('#'+window_id).parentsUntil('.admin-windows'));
