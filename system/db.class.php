@@ -87,6 +87,14 @@ class DB {
      * @var array $table_prefixes
      */
     private $table_prefixes = array();
+    
+    
+    /**
+     * Holds the total count of queries that were called in a page load/run
+     * 
+     * @var number $query_count
+     */
+    private $query_count = 0;
 
 
     /**
@@ -557,6 +565,7 @@ class DB {
             if ($this->use_pdo == false) {
                 $query = $this->connection->query($sql['statement']);
                 if ($query) {
+                    $this->increment_query_count();
                     return $query;
                 } else {
                     $this->query_errors[] = $this->connection->error;
@@ -571,6 +580,7 @@ class DB {
             } else {
                 $query = $this->connection->prepare($sql['statement']);
                 if ($query->execute($sql['prepare_values'])) {
+                    $this->increment_query_count();
                     return $query;
                 } else {
                     $query_error = $query->errorInfo();
@@ -679,6 +689,7 @@ class DB {
                 $return = $this->connection->multi_query($sql['statement']) ? true : false;
                 if ($return) {
                     while ($this->connection->next_result()) continue;
+                    $this->increment_query_count();
                     return $return;
                 } else {
                     $this->query_errors[] = $this->connection->error;
@@ -693,6 +704,7 @@ class DB {
             } else {
                 $query = $this->connection->prepare($sql['statement']);
                 if ($query->execute($sql['prepare_values'])) {
+                    $this->increment_query_count();
                     return $query;
                 } else {
                     $query_error = $query->errorInfo();
@@ -769,6 +781,7 @@ class DB {
             if ($this->use_pdo == false) {
                 $query = $this->connection->query($sql['statement']);
                 if ($query) {
+                    $this->increment_query_count();
                     return $query;
                 } else {
                     $this->query_errors[] = $this->connection->error;
@@ -783,6 +796,7 @@ class DB {
             } else {
                 $query = $this->connection->prepare($sql['statement']);
                 if ($query->execute($sql['prepare_values'])) {
+                    $this->increment_query_count();
                     return $query;
                 } else {
                     $query_error = $query->errorInfo();
@@ -869,6 +883,7 @@ class DB {
             if ($this->use_pdo == false) {
                 $query = $this->connection->query($sql['statement']);
                 if ($query) {
+                    $this->increment_query_count();
                     return $query;
                 } else {
                     $this->query_errors[] = $this->connection->error;
@@ -883,6 +898,7 @@ class DB {
             } else {
                 $query = $this->connection->prepare($sql['statement']);
                 if ($query->execute($sql['prepare_values'])) {
+                    $this->increment_query_count();
                     return $query;
                 } else {
                     $query_error = $query->errorInfo();
@@ -969,6 +985,7 @@ class DB {
 
                 $sql_query = $this->connection->query($query);
                 if ($sql_query) {
+                    $this->increment_query_count();
                     return $sql_query;
                 } else {
                     $this->query_errors[] = $this->connection->error;
@@ -983,6 +1000,7 @@ class DB {
             } else {
                 $query = $this->connection->prepare($query);
                 if ($query->execute($variables)) {
+                    $this->increment_query_count();
                     return $query;
                 } else {
                     $query_error = $query->errorInfo();
@@ -1038,5 +1056,25 @@ class DB {
 
         // Return the completed table name
         return $this->table_prefixes[$feature_alias].$name;
+    }
+    
+    
+    /**
+     * Adds +1 to the query counter
+     * 
+     * @returns boolean
+     */
+    private function increment_query_count() {
+        $this->query_count++;
+        return true;
+    }
+    
+    /**
+     * Returns the total amount of times a query has been called
+     * 
+     * @return number
+     */
+    public function get_query_count() {
+        return $this->query_count;
     }
 }
