@@ -15,6 +15,7 @@ function accounts_next_page(page) {
                 $('#accounts-list').html(Theamus.Notify('danger', data.error.message));
             } else {
                 $('#accounts-list').html(data.response.data);
+                add_account_listeners();
             }
         }
     });

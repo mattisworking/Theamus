@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Bug] - Fixed the issue where you couldn't click on anything after turning the page in the accounts feature. - [GitHub Issue](https://github.com/helllomatt/Theamus/issues/93)",
             "[Bug] - Administrators can now create groups with any set of permissions. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/136)",
             "[Bug] - Fixed a function call in the Media feature. Was trying to log to a function that doesn't exist. Now logs as 'system'. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/148)",
             "[Enhancement] - Updated the refresh rate of admin windows resizing. Should be less noticable now. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/176)",
