@@ -76,7 +76,7 @@ class Media {
 
         // Try to move the file to the respective folder
         if (!move_uploaded_file($_FILES['upload_file']['tmp_name'], $this->Theamus->file_path($this->{$type.'s_folder'}.$alias))) {
-            $this->Theamus->Log->error('Failed to upload media to the media/'.$type.'s/ folder. Check file permissions.');
+            $this->Theamus->Log->system('Failed to upload media to the media/'.$type.'s/ folder. Check file permissions.');
             throw new Exception('Failed to upload to the media folder.');
         }
 
@@ -166,7 +166,7 @@ class Media {
         // Try to remove the file
         if (!unlink($this->Theamus->file_path(ROOT.'/media/'.$media['path']))) {
             $this->Theamus->DB->use_pdo == true ? $this->Theamus->DB->connection->rollBack() : $this->Theamus->DB->connection->rollback();
-            $this->Theamus->Log->error('Failed to remove a media file. Check file permissions.');
+            $this->Theamus->Log->system('Failed to remove a media file. Check file permissions.');
             throw new Exception('Failed to remove media.');
         }
 
