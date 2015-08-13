@@ -45,6 +45,8 @@ Theamus.Style.Card.prototype = {
     }
 
     , defineCardFunctions: function() {
+        this.card.registerCollapsible = this.registerCollapsible;
+        this.card.deleteCollapsible = this.deleteCollapsible;
         this.card.getAllCollapsibles = this.getAllCollapsibles;
         this.card.getCollapsible = this.getCollapsible;
         this.card.isExpandable = this.isExpandable;
@@ -183,5 +185,25 @@ Theamus.Style.Card.prototype = {
 
     , removeNotification: function() {
         this.removeChild(this.notification.object);
+    }
+    
+    , registerCollapsible: function(collapsible) {
+        if (!collapsible) {
+            console.error("Failed to register collapsible object because it was undefined.");
+        }
+        
+        this.appendChild(collapsible);
+        if (!collapsible.id) collapsible.id = Theamus.Style.makeID();
+        this.collapsibles.object[collapsible.id] = new Theamus.Style.Card.Collapsible(collapsible);
+        return this.collapsibles.object[collapsible.id].collapsible;
+    }
+    
+    , deleteCollapsible: function(collapsible) {
+        if (!collapsible) {
+            console.error("Failed to delete collapsible object because it was undefined.");
+        }
+        
+        collapsible.parentNode.removeChild(collapsible);
+        delete this.collapsibles.object[collapsible.id];
     }
 };

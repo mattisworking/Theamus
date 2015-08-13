@@ -1737,12 +1737,16 @@ class Call {
         if (in_array("load_time", $setting_array)) $info[] = $this->show_page_load_time();
         if (in_array("query_count", $setting_array)) $info[] = $this->show_page_query_count();
         
-        echo "<style>.theamus_page-information{position:fixed;bottom:10px;right:10px;}.theamus_page-information-container{float:left;font-size:10px;margin-right:10px;box-shadow:0 0 5px #888;padding:0pxfont-size:10px;width:0px;overflow:hidden;white-space:nowrap;background:white;}.theamus_page-information:hover .theamus_page-information-container{padding:5px 15px;width:auto}</style>";
+        $position = "fixed";
+        if ($call == "include") $position = "absolute";
         
-        echo "<div class='theamus_page-information'>";
-        echo "<svg version='1.1' style='margin-top: 10px' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='10px' height='10px' viewBox='0 0 10 10' xml:space='preserve'><rect x='1.5' y='5.984' fill='#414042' width='1' height='4'/><rect x='3.5' y='4' fill='#414042' width='1' height='6'/><rect x='5.5' y='2' fill='#414042' width='1' height='8'/></svg>";
+        echo "<style></style>";        
+        echo "<style>.theamus_page-information:hover .theamus_page-information-container{padding:5px 15px !important;width:auto !important;}</style>";
         
-        echo "<div class='theamus_page-information-container'>".implode(" | ", $info)."</div>";
+        echo "<div class='theamus_page-information' style='height:22px;position:{$position};bottom:10px;right:10px;font-size:8pt;font-family:sans-serif;margin-top:1px;'>";
+        echo "<svg version='1.1' style='margin-top: 6px' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='15px' height='10px' viewBox='0 0 10 10' xml:space='preserve'><rect x='1.5' y='5.984' fill='#414042' width='1' height='6'/><rect x='3.5' y='4' fill='#414042' width='1' height='8'/><rect x='5.5' y='2' fill='#414042' width='1' height='10'/></svg>";
+        
+        echo "<div class='theamus_page-information-container' style='float:left;margin-right:10px;box-shadow:0 0 5px #888;padding:0px;width:0px;overflow:hidden;white-space:nowrap;background:white;'>".implode(" | ", $info)."</div>";
         
         echo "</div>";
     }
