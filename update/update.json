@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Bug] - Fixed the styling of the 'About Theamus' admin window. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/173)",
             "[Bug] - Applied static width and height to the Theamus 't' in the admin panel. Should be better for slower servers now. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/165)",
             "[Feature] - Show page load information like time and query count! [GitHub Issue](https://github.com/helllomatt/Theamus/issues/153)"
         ]
