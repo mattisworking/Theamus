@@ -180,7 +180,7 @@ function create_link() {
 
                     setTimeout(function() {
                         change_admin_window_title('theamus-navigation', 'Theamus Navigation');
-                        update_admin_window_content('theamus-navigation', 'navigation/');
+                        update_admin_window_content('theamus-navigation', '/navigation/');
                     }, 1500);
                 }
             }
