@@ -106,7 +106,6 @@ Theamus.Style.Card.Collapsible.prototype = {
     }
 
     , headerClick: function(e) {
-        console.log(this.parentNode.isSelectable);
         if (this.parentNode.isSelectable) {
             if (this.parentNode.checkbox.checked) {
                 this.parentNode.checkbox.checked = false;
