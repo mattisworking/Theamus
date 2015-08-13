@@ -4,6 +4,15 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Bug] - Fixed a navigation issue when creating a new link. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/177)",
+            "[Bug] - Fixed the issue where you couldn't click on anything after turning the page in the accounts feature. - [GitHub Issue](https://github.com/helllomatt/Theamus/issues/93)",
+            "[Bug] - Administrators can now create groups with any set of permissions. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/136)",
+            "[Bug] - Fixed a function call in the Media feature. Was trying to log to a function that doesn't exist. Now logs as 'system'. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/148)",
+            "[Enhancement] - Updated the refresh rate of admin windows resizing. Should be less noticable now. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/176)",
+            "[Bug] - Fixed the admin panel opening on page load when it shouldn't have been. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/175)",
+            "[Bug] - Clicking on the Theamus 't' now opens the 'About Theamus' window, even if the admin panel is hidden. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/174)",
+            "[Bug] - Fixed the styling of the 'About Theamus' admin window. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/173)",
+            "[Bug] - Applied static width and height to the Theamus 't' in the admin panel. Should be better for slower servers now. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/165)",
             "[Enhancement] - Card collapsible updates. You can how create selectable lists in a card! [GitHub Issue](https://github.com/helllomatt/Theamus/issues/169)",
             "[Feature] - Show page load information like time and query count! [GitHub Issue](https://github.com/helllomatt/Theamus/issues/153)"
         ]

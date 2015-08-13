@@ -48,7 +48,7 @@
 
 <div class="st_ext-libs-wrapper">
     <h2 class="st_ext-libs-header">External Libraries:</h2>
-    <ul>
+    <ul style="list-style-type:none;">
         <li>
             <a href="http://jquery.com/">jQuery</a>
         </li>
