@@ -59,6 +59,8 @@ CREATE TABLE IF NOT EXISTS `tm_links` (
   `alias` varchar(100) NOT NULL,
   `text` varchar(75) NOT NULL,
   `path` text NOT NULL,
+  `title` varchar(500) NOT NULL,
+  `target` varchar(50) NOT NULL,
   `weight` int(11) NOT NULL,
   `groups` text NOT NULL,
   `type` varchar(50) NOT NULL,

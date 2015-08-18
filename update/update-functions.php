@@ -166,4 +166,5 @@ function update_130() {
  */
 function update_150($Theamus) {
     if (!$Theamus->DB->custom_query("ALTER TABLE `{$Theamus->DB->system_table("settings")}` ADD `show_page_information` VARCHAR(500) NOT NULL after `favicon_path`")) return false;
+    if (!$Theamus->DB->custom_query("ALTER TABLE `{$Theamus->DB->system_table("pages")}` ADD (`title` VARCHAR(500) NOT NULL, `target` VARCHAR(50) NOT NULL) after `path`")) return false;
 }
