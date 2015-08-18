@@ -96,6 +96,24 @@
             <select class='form-control' name='groups' id='group-select' multiple='multiple' size='13'></select>
         </div>
     </div>
+    
+    <h2 class='form-header'>Extra Attributes</h2>
+    <div class='form-group'>
+        <label class="control-label col-3" for="title">Title</label>
+        <div class="col-9">
+            <input type="text" class="form-control" name="title" id="title" autocomplete="off">
+        </div>
+    </div>
+    
+    <div class='form-group'>
+        <label class="control-label col-3" for="target">Target</label>
+        <div class="col-9">
+            <select class="form-control" name="target" id="target">
+                <option value="_self">None</option>
+                <option value="_blank">New Window</option>
+            </select>
+        </div>
+    </div>
 
     <hr class='form-split'>
 

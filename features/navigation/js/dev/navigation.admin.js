@@ -83,7 +83,7 @@ function load_feature_files_select() {
         url: Theamus.base_url+'/navigation/',
         method: ['Navigation', 'get_feature_files_select'],
         data: { custom: {
-                feature: $('#feature').length > 0 && $('#feature').val() !== '' ? $('#feature').val() : $('#feature-select').val(),
+                feature: $('#feature-select').val(),
                 file:  $('#feature-file').length > 0 ? $('#feature-file').val() : ''
             } },
         success: function(data) {

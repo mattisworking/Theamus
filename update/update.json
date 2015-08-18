@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Enhancement] - Links created in the Navigation manager can now support the 'title' and 'target' attributes. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/116)",
             "[Feature] - You can now set the permalink for pages instead of having it automatically generated. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/115)",
             "[Bug] - Fixed a navigation issue when creating a new link. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/177)",
             "[Bug] - Fixed the issue where you couldn't click on anything after turning the page in the accounts feature. - [GitHub Issue](https://github.com/helllomatt/Theamus/issues/93)",

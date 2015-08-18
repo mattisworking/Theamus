@@ -372,7 +372,7 @@ class Theme {
 
         $query_data = array(
             "table"     => $this->Theamus->DB->system_table("links"),
-            "columns"   => array("groups", "path", "text", "id"),
+            "columns"   => array("groups", "path", "text", "id", "target", "title"),
             "clause"    => array(
                 "operator"  => "AND",
                 "conditions"=> array("location" => $loc, "child_of" => $child_of)
@@ -394,9 +394,12 @@ class Theme {
                 }
 
                 if (in_array("true", $in)) {
+                    if ($link['title'] == "") $link['title'] = $link['text'];
+                    if ($link['target'] == "") $link['target'] = "_self";
+                    
                     $c = $this->Theamus->DB->select_from_table($query_data['table'], array(), array("operator" => "", "conditions" => array("child_of" => $link['id'])));
                     $ret[] = "<li>";
-                    $ret[] = "<a href='".$link['path']."'>".$link['text']."</a>";
+                    $ret[] = "<a href='".$link['path']."' title='{$link['title']}' target='{$link['target']}'>".$link['text']."</a>";
                     if ($this->Theamus->DB->count_rows($c) > 0) $ret[] = "<ul>";
                     $ret[] = $this->show_page_navigation($loc, $link['id']);
                     if ($this->Theamus->DB->count_rows($c) > 0) $ret[] = "</ul>";
