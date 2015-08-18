@@ -4,8 +4,15 @@
 
 <form class='form' id='create-page-form' style='width: 800px;'>
     <h2 class='form-header'>Page Title</h2>
-    <div class='form-group col-12'>
+    <div class='form-group'>
         <input type='text' class='form-control' id='title' name='title' autocomplete='off' placeholder='e.g. About My Site'>
+    </div>
+        
+    <div class='form-group'>
+        <div class='input-group'>
+            <span class="input-group-addon">Permalink</span>
+            <input type='text' class='form-control' id='alias' name='alias' autocomplete='off' placeholder='(auto-generated if blank)'>
+        </div>
     </div>
 
     <h2 class='form-header'>Page Content</h2>
@@ -71,4 +78,5 @@
     admin_window_run_on_load('create_page');
     admin_window_run_on_load('remove_link');
     admin_window_run_on_load('load_layout_navigation');
+    admin_window_run_on_load('generate_permalink');
 </script>

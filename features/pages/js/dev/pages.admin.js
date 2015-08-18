@@ -148,6 +148,7 @@ function create_page() {
     $('#create-page-form').submit(function(e) {
         e.preventDefault(); // Go nowhere, do nothing.
 
+        generate_permalink(); // Do it just in case.
         aggregate_navigation(); // Define the navigation!
 
         // Notify the user and make them see it
@@ -197,6 +198,7 @@ function edit_page() {
     $('#save-page-form').submit(function(e) {
         e.preventDefault(); // Go nowhere, do nothing.
 
+        generate_permalink(); // Do it just in case.
         aggregate_navigation(); // Define the navigation!
 
         // Notify the user and make them see it
@@ -260,5 +262,22 @@ function remove_page() {
                 }
             }
         });
+    });
+}
+
+function generate_permalink() {
+    var title = document.getElementById("title"),
+        permalink = document.getElementById("alias");
+
+    title.addEventListener("blur", function() {
+        var generated = this.value.replace(/ /g, "-").replace(/[^A-Za-z0-9-]/g, "").toLowerCase();
+        
+        if (permalink.value === "") {
+            permalink.value = generated;
+        }
+    });
+    
+    permalink.addEventListener("blur", function() {
+        this.value = this.value.replace(/ /g, "-").replace(/[^A-Za-z0-9-]/g, "").toLowerCase();
     });
 }
