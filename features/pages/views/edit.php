@@ -20,10 +20,17 @@ catch (Exception $ex) { die($Theamus->notify('danger', $ex->getMessage())); }
 
     <!-- Title -->
     <h2 class='form-header'>Page Title</h2>
-    <div class='form-group col-12'>
+    <div class='form-group'>
         <input type='text' class='form-control' id='title' name='title' autocomplete='off' placeholder='e.g. About My Site' value='<?php echo $page['title']; ?>'>
     </div>
-
+        
+    <div class='form-group'>
+        <div class='input-group'>
+            <span class="input-group-addon">Permalink</span>
+            <input type='text' class='form-control' id='alias' name='alias' autocomplete='off' placeholder='(auto-generated if blank)' value='<?php echo $page['alias']; ?>'>
+        </div>
+    </div>
+    
     <!-- Content -->
     <h2 class='form-header'>Page Content</h2>
     <div class='form-group'>
@@ -113,4 +120,5 @@ catch (Exception $ex) { die($Theamus->notify('danger', $ex->getMessage())); }
     admin_window_run_on_load('edit_page');
     admin_window_run_on_load('remove_link');
     admin_window_run_on_load('load_layout_navigation');
+    admin_window_run_on_load('generate_permalink');
 </script>
