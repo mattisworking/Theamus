@@ -67,5 +67,8 @@
         <li>
             <a href="http://www.chartjs.org/">Chart.js</a>
         </li>
+        <li>
+            <a href="https://github.com/rgrove/jsmin-php">JSMin.php</a>
+        </li>
     </ul>
 </div>
