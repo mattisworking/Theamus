@@ -40,7 +40,7 @@ class Call {
      *
      * @var string $page_alias
      */
-    private $page_alias;
+    protected $page_alias;
 
 
     /**
@@ -169,6 +169,14 @@ class Call {
      * @var boolean $shift_parameters
      */
     protected $shift_parameters = true;
+    
+    
+    /**
+     * Return the content as JSON instead of the theme?
+     * 
+     * @var boolean $return_json
+     */
+    protected $return_json = false;
 
 
     /**
@@ -223,6 +231,11 @@ class Call {
         $pre = array_intersect($root_array, $uri_array);
         
         for ($i = 0; $i < count($pre); $i++) array_shift($uri_array);
+        
+        if (in_array(":json", $uri_array)) {
+            $this->return_json = true;
+            unset($uri_array[array_search(":json", $uri_array)]);
+        }
         
         $root = array_merge($root_array, $uri_array);
         
@@ -533,7 +546,13 @@ class Call {
             $temp = trim($params, "/");
             $ret = explode("/", $temp);
         }
-        return $ret;
+        
+        if (in_array(":json", $ret)) {
+            $this->return_json = true;
+            unset($ret[array_search(":json", $ret)]);
+        }
+        
+        return array_values($ret);
     }
 
 
@@ -610,7 +629,6 @@ class Call {
         } elseif (array_key_exists(0, $params)) {
             $feature_folder = strtolower($params[0]);
             $feature_path = $this->Theamus->file_path(ROOT."/features/$feature_folder");
-
             if (is_dir($feature_path)) {
                 $feature = $feature_folder;
             } elseif ($this->determine_page()) {
@@ -878,6 +896,51 @@ class Call {
         }
         return false;
     }
+    
+    
+    /**
+     * Strips spaces from a block of HTML code. From a new line to the next different
+     * character, all of the spaces will be removed.
+     * 
+     * @param string $content
+     * @return string
+     */
+    private function strip_spaces($content = "") {
+        if ($content == "") return "";
+        return preg_replace("/(\r\n)[ ]*/", " ", $content);
+    }
+    
+    
+    /**
+     * Extracts the script from a block of HTML code to be loaded separately
+     * from the HTML.
+     * 
+     * @param string $content
+     * @return array $scripts
+     */
+    private function extract_scripts($content = "") {
+        if ($content == "") return array();
+        preg_match_all("/<script\b[^>]*>([\s\S]*?)<\/script>/", $content, $matches);
+        $scripts = array();
+        foreach ($matches[1] as $script) $scripts[] = JSMin::minify($script);
+        return $scripts;
+    }
+    
+    
+    /**
+     * Cleans the JSON return data. Strips slashes, and removes the script blocks
+     * from the HTML code
+     * 
+     * @param string $content
+     * @return string
+     */
+    private function clean_json($content = "") {
+        if ($content == "") return "";
+        $content = $this->strip_spaces($content);
+        preg_match_all("/<script\b[^>]*>([\s\S]*?)<\/script>/", $content, $matches);
+        foreach ($matches[0] as $script) $content = str_replace($script, "", $content);
+        return $content;
+    }
 
 
     /**
@@ -910,13 +973,30 @@ class Call {
         $this->load_class_legacy();
         $data = $this->define_theme_data($settings['name']);
 
-        if (!empty($this->parameters)) {
-            if ($this->parameters[0].".php" == $this->get_called_file(true)) array_shift($this->parameters);
-        }
+        if ($this->return_json) {
+            $json = array();
+            
+            $Theamus = $this->Theamus;
+            
+            ob_start();
+            include($data['file_path']);
+            $json['content'] = ob_get_contents();
+            ob_end_clean();
+            
+            $json['scripts'] = $this->extract_scripts($json['content']);
+            $json['content'] = $this->clean_json($json['content']);
+            
+            header('Content-Type: application/json');
+            exit(json_encode($json));
+        } else {
+            if (!empty($this->parameters)) {
+                if ($this->parameters[0].".php" == $this->get_called_file(true)) array_shift($this->parameters);
+            }
 
-        unset($settings);
-        $this->Theamus->Theme->load_theme($data);
-        return;
+            unset($settings);
+            $this->Theamus->Theme->load_theme($data);
+            return;
+        }
     }
 
 
@@ -1576,6 +1656,9 @@ class Call {
      * Runs an API request from a front end somewhere
      */
     private function run_api() {
+        // JSON request? Let another function deal with that.
+        if ($this->return_json) $this->show_page();
+        
         // Define both of the inputs
         $post = filter_input_array(INPUT_POST);
         $get = filter_input_array(INPUT_GET);
@@ -1769,5 +1852,15 @@ class Call {
      */
     public function show_page_query_count() {
         return "<strong>Queries ran:</strong> ".$this->Theamus->DB->get_query_count();
+    }
+    
+    
+    /**
+     * Returns the alias of a page 
+     * 
+     * @return string $this->page_alias
+     */
+    public function get_page_alias() {
+        return $this->page_alias;
     }
 }

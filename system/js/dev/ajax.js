@@ -613,7 +613,7 @@ var ajax = new function() {
             } else {
                 this.api_fail = "Invalid API method defined.";
             }
-        } else {
+        } else if (ret.type !== "get") {
             this.api_fail = "API method not defined.";
         }
 

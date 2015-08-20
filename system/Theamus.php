@@ -105,7 +105,8 @@ class Theamus {
         $external_files = array(
             'phpmailer/class.phpmailer.php',
             'parsedown/Parsedown.php',
-            'parsedown/ParsedownExtra.php'
+            'parsedown/ParsedownExtra.php',
+            'jsmin/jsmin.php'
         );
 
         // Loop through all of the external files
