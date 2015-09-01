@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Bug] - Pages that have 'Everyone' in their permissible groups can now be accessed by everyone. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/192)",
             "[Feature] - Pages and feature files can now be requested as JSON. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/183)",
             "[Enhancement] - Links created in the Navigation manager can now support the 'title' and 'target' attributes. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/116)",
             "[Feature] - You can now set the permalink for pages instead of having it automatically generated. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/115)",
