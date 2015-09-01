@@ -580,9 +580,12 @@ class Call {
         $page = $this->Theamus->DB->fetch_rows($query);
 
         // Check if a user has permission to view the page or not
-        foreach (explode(',', $page['groups']) as $group) {
-            if (!$this->Theamus->User->user) $this->Theamus->User->send_to_login();
-            if (!$this->Theamus->User->in_group($group)) die($this->error_page());
+        $page_groups = explode(',', $page['groups']);
+        if (!in_array("everyone", $page_groups)) {
+            foreach ($page_groups as $group) {
+                if (!$this->Theamus->User->user) $this->Theamus->User->send_to_login();
+                if (!$this->Theamus->User->in_group($group)) die($this->error_page());
+            }
         }
 
         // Define the theme and theme file desired for the page
