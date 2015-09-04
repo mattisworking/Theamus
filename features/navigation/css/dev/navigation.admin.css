@@ -1,6 +1,6 @@
 #navigation-list {
     margin: 10px 0;
-    width: 600px;
+    width: 750px;
 }
 #navigation-list > ul,
 #navigation-list > ul li ul {
@@ -28,7 +28,23 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 200px;
+    width: 175px;
+}
+#navigation-list > ul li .link-path {
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 300px;
+}
+#navigation-list > ul li .link-position {
+    color: #aaa;
+    display: inline-block;
+    font-style: italic;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 150px;
 }
 #navigation-list > ul li .link-views {
     display: inline-block;
