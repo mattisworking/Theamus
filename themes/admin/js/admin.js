@@ -324,8 +324,6 @@ $(document).ready(function() {
 
     resize = null;
 
-    add_css('themes/admin/style/css/admin.css');
-
     if (Theamus.Mobile === true) {
         $('.admin').addClass('admin-mobile');
     }
@@ -418,10 +416,12 @@ $(document).ready(function() {
     });
     switch_position_text();
 
-    setTimeout(function() {
+
+    add_css('themes/admin/style/css/admin.css');
+    document.querySelector("link[href='themes/admin/style/css/admin.css']").addEventListener("load", function() {
         $('.admin').removeAttr('style');
         $('.admin').addClass('admin-on');
-    }, 200);
+    });
 
     if (theamus_ls['admin_cache'] !== undefined && Theamus.Mobile === false) {
         for (var key in theamus_ls['admin_cache']) {

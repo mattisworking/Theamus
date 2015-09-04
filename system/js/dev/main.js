@@ -10,14 +10,11 @@ console.log = function (value) {
             " _|_|_",
             "|_ _ _|",
             "  |_|  _",
-            "  |_| |_|",
+            "  |_|_|_|",
             "   \\|_|/",
             "",
             "Your trying to see some things, but if you really want to see some things, check out GitHub!",
             "(https://github.com/helllomatt/Theamus)",
-            "",
-            "Made, with love and frustration, somewhere around Chicago, on days I'm feeling up to it.",
-            "",
             ""
         ];
 
