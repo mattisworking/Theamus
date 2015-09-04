@@ -379,7 +379,7 @@ class Theme {
             )
         );
 
-        $query = $this->Theamus->DB->select_from_table($query_data['table'], $query_data['columns'], $query_data['clause']);
+        $query = $this->Theamus->DB->select_from_table($query_data['table'], $query_data['columns'], $query_data['clause'], "ORDER BY `weight` ASC");
 
         if ($query != false && $this->Theamus->DB->count_rows($query) > 0) {
             $results = $this->Theamus->DB->fetch_rows($query);
