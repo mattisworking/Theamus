@@ -421,12 +421,12 @@ $(document).ready(function() {
     document.querySelector("link[href='themes/admin/style/css/admin.css']").addEventListener("load", function() {
         $('.admin').removeAttr('style');
         $('.admin').addClass('admin-on');
-    });
 
-    if (theamus_ls['admin_cache'] !== undefined && Theamus.Mobile === false) {
-        for (var key in theamus_ls['admin_cache']) {
-            if (key === "1") continue;
-            create_admin_window(key, theamus_ls['admin_cache'][key][0], theamus_ls['admin_cache'][key][1], theamus_ls['admin_cache'][key][2]);
+        if (theamus_ls['admin_cache'] !== undefined && Theamus.Mobile === false) {
+            for (var key in theamus_ls['admin_cache']) {
+                if (key === "1") continue;
+                create_admin_window(key, theamus_ls['admin_cache'][key][0], theamus_ls['admin_cache'][key][1], theamus_ls['admin_cache'][key][2]);
+            }
         }
-    }
+    });
 });
