@@ -4,6 +4,9 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Bug] - Fixed an issue when uploading a single media file would list it (and upload it) twice.",
+            "[Bug] - Styling was broken on the listing for media items in browsers other than Chrome :( [GitHub Issue](https://github.com/helllomatt/Theamus/issues/194)",
+            "[Bug] - Admin panel was loading before the stylesheet was, making it look bad on page loads from slow servers. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/191)",
             "[Bug] - Pages that have 'Everyone' in their permissible groups can now be accessed by everyone. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/192)",
             "[Feature] - Pages and feature files can now be requested as JSON. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/183)",
             "[Enhancement] - Links created in the Navigation manager can now support the 'title' and 'target' attributes. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/116)",
