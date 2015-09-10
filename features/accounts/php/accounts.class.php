@@ -1111,4 +1111,162 @@ class Accounts {
         // Return the data returned by the remove_account function from the parent class
         return $this->remove_account($args['id']);
     }
+    
+    
+    /**
+     * Gets user information from the database based on a user's username and email address
+     * 
+     * @param string $username
+     * @param string $email
+     * @throws Exception
+     * @return array
+     */
+    private function get_user($username, $email) {
+        $query = $this->Theamus->DB->select_from_table(
+            $this->Theamus->DB->system_table("users"),
+            array("id", "username", "email", "admin", "activation_code"),
+            array("operator" => "&&",
+                "conditions" => array("username" => $username, "email" => $email)));
+                
+        if (!$query) {
+            $this->Theamus->Log->query($this->Theamus->DB->get_last_error());
+            throw new Exception("Failed to find the user in the database right now. Please try again later.");
+        }
+        
+        if ($this->Theamus->DB->count_rows($query) == 0) throw new Exception("No user was found matching the information provided.");
+        
+        return $this->Theamus->DB->fetch_rows($query);
+    }
+    
+    
+    /**
+     * Sends a password reset code to the user. Will default to creating a file 
+     * with the reset code in it if no email server has been set up.
+     * 
+     * @param array $args
+     * @throws Exception
+     * @return array
+     */
+    public function send_password_reset($args = array()) {
+        // Validate user and given variables
+        if ($this->Theamus->User->user) throw new Exception("You're already logged in!");
+        if (!isset($args['username']) || $args['username'] == "") throw new Exception("Please give a username to look for.");
+        if (!isset($args['email']) || $args['email'] == "") throw new Exception("Please give an email to send to. The username must have this email address associated to it.");
+
+        // Find the user in the database        
+        $user = $this->get_user($args['username'], $args['email']);
+        
+        // Genertate a reset code based on the time
+        $reset_code = md5(microtime(true));
+
+        // Update the users "activation code" with the password reset code so we
+        // can check against it later when they reset their password.
+        $record_code_query = $this->Theamus->DB->update_table_row(
+            $this->Theamus->DB->system_table("users"),
+            array("activation_code" => $reset_code),
+            array("operator" => "&&",
+                "conditions" => array("username" => $args['username'], "email" => $args['email'])));
+                
+        // Check the update query for errors
+        if (!$record_code_query) {
+            $this->Theamus->Log->query($this->Theamus->DB->get_last_error());
+            throw new Exception("Failed to record the reset code on our end. Please try again later.");
+        }
+        
+        // If the website has email settings set up
+        if ($this->Theamus->settings['email_host'] == "") {
+            // Only administrators can get a reset code file made for them
+            if ($user['admin'] == "0") {
+                throw new Exception("Cannot email your password reset code.");
+            } else {
+                // Create the file with the code in it and return OK
+                $this->create_reset_code_file($reset_code);
+                return array("message" => "A password reset code file has been created for you to use.",
+                    "from_file" => 1,
+                    "username" => $user['username'],
+                    "email" => $user['email']);
+            }
+            
+        // Email the user the reset code
+        } else {
+            $message = "Your password reset code is: <strong>{$reset_code}</strong>";
+            // Try to send out the email
+            if (!$this->Theamus->mail($user['email'], "Password Reset Code", $message)) {
+                throw new Exception("Failed to send out your password reset code. Please try again later.");
+            } else {
+                return array("message" => "A password reset code has been emailed to you.",
+                    "from_file" => 0,
+                    "username" => $user['username'],
+                    "email" => $user['email']);
+            }
+        }
+    }
+    
+    
+    /**
+     * Creates a file in the root of the Theamus installation folder that holds
+     * the contents of a password reset code.
+     * 
+     * @param string $reset_code
+     * @throws Exception
+     */
+    private function create_reset_code_file($reset_code) {
+        $file = $this->Theamus->file_path(ROOT."/password-reset-code.txt");
+        if (file_put_contents($file, $reset_code) === false) {
+            $this->Theamus->Log->system("Failed to create the password reset code file. Probably because of file permissions.");
+            throw new Exception("Failed to create the password reset code file.");
+        }
+    }
+    
+    
+    /**
+     * Resets the user's password with the requested reset code
+     * 
+     * @param array $args
+     * @throws Exception
+     * @returns boolean
+     */
+    public function reset_password($args = array()) {
+        // Check the user and the given variables
+        if ($this->Theamus->User->user) throw new Exception("You're already logged in!");
+        if (!isset($args['username']) || $args['username'] == "") throw new Exception("Please give a username to look for.");
+        if (!isset($args['email']) || $args['email'] == "") throw new Exception("Please give an email to send to. The username must have this email address associated to it.");
+
+        // Verify the user exists in the database        
+        $user = $this->get_user($args['username'], $args['email']);
+        
+        // Check more variables
+        $file = $this->Theamus->file_path(ROOT."/password-reset-code.txt");
+        if (!isset($args['from_file']) || !is_numeric($args['from_file'])) $args['from_file'] = 0;
+        if (!isset($args['reset_code']) || $args['reset_code'] == "") throw new Exception("Please give the reset code you received.");
+        if (!isset($args['password']) || $args['password'] == "") throw new Exception("Please fill out the 'New Password' field.");
+        if (!isset($args['repeat_password'])) throw new Exception("Please fill out the 'Repeat New Password' field.");
+        if ($args['repeat_password'] != $args['password']) throw new Exception("The passwords given don't match up.");
+
+        // Check the given reset code against the one in the database
+        if ($args['from_file'] == 1) {
+            if ($args['reset_code'] != file_get_contents($file)) throw new Exception("The reset code you have doesn't matche the one in the file.");
+        } else {
+            if ($args['reset_code'] != $user['activation_code']) throw new Exception("The reset code you have doesn't match the one we have.");
+        }
+        
+        // Update the user's password
+        $password = hash('SHA256', urldecode($args['password']).$this->Theamus->DB->get_config_salt('password'));
+        $query = $this->Theamus->DB->update_table_row(
+            $this->Theamus->DB->system_table("users"),
+            array("password" => $password),
+            array("operator" => "&&",
+                "conditions" => array("id" => $user['id'])));
+
+        // Check the update query
+        if (!$query) {
+            $this->Theamus->Log->query($this->Theamus->DB->get_last_error());
+            throw new Exception("Failed to reset your password. Please try again later.");
+        }
+        
+        // Delete the reset code file, if it exists.
+        if (file_exists($file)) unlink($file);
+        
+        return true;
+    }
 }
