@@ -851,7 +851,6 @@ section[type="card"] button[type="button"] {
     background-color: #FFF;
     border: none;
     border-radius: 2px;
-    box-shadow: 0 0 3px #888;
     color: #444;
     font-weight: bold;
     outline: none;
@@ -859,6 +858,11 @@ section[type="card"] button[type="button"] {
     text-align: center;
     text-transform: uppercase;
     transition: background-color .1s ease-in, box-shadow .1s ease-in;
+}
+section[type="card"] button[type="submit"]:disabled,
+section[type="card"] button[type="button"]:disabled {
+    background-color: #888 !important;
+    color: #666 !important;
 }
 section[type="card"] button[type="submit"]:hover,
 section[type="card"] button[type="button"]:hover {
