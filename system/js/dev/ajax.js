@@ -456,6 +456,8 @@ var ajax = new function() {
 
     // Theamus AJAX API --------------------------------------------------------
     this.api = function(args) {
+        if (!this.iterating) this.iterating = false;
+        
         api_return = false;
 
         this.allow_file_upload = true;
@@ -497,8 +499,9 @@ var ajax = new function() {
 
         // Run the AJAX to call the API
         if (this.api_fail === false) {
+            console.log(this.has_file);
             $.ajax({
-                async: this.has_file ? true : false,
+                async: this.iterating ? false : true,
                 type: api_vars.type,
                 url: api_vars.url,
                 data: api_vars.form_data,
@@ -745,6 +748,8 @@ var ajax = new function() {
 	};
 
     this.iterate_calls = function(functions, pause, count) {
+        this.iterating = true;
+        
         // Define variables
         var original_pause = pause,
             pause = pause !== undefined ? parseFloat(pause)*1000 : 0,

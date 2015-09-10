@@ -1674,6 +1674,7 @@ class Call {
         // Define the return array, which will be shown as JSON and the error
         $return = array();
         $error = false;
+        $code = 0;
         $response = "";
         $function_variables = $this->define_api_variables($inp);
         if (array_key_exists("data", $function_variables)) $function_variables = $function_variables['data'];
@@ -1704,7 +1705,7 @@ class Call {
                     if (class_exists($inp['method_class']) && method_exists($inp['method_class'], $inp['method'])) {
                         $class = ${$inp['method_class']} = new $inp['method_class']($this->Theamus);
                         try { $response = call_user_func(array($class, $inp['method']), $function_variables); }
-                        catch (Exception $e) { $error = $e->getMessage(); }
+                        catch (Exception $e) { $error = $e->getMessage(); $code = $e->getCode(); }
                     } else {
                         $error = "The class or method requested doesn't exist or couldn't be found.";
                     }
@@ -1727,11 +1728,13 @@ class Call {
         $return['response']['status'] = 200;
         if ($error != false || $this->api_fail != false) {
             $return['error']['message'] = $this->api_fail == false ? $error : $this->api_fail;
+            $return['error']['code'] = $code;
         } else {
             $return['response']['data'] = $response;
             $return['error']['message'] = "";
         }
         $return['error']['status'] = $error != false || $this->api_fail != false ? 1 : 0;
+        $return['error']['code'] = $code;
         echo json_encode($return);
     }
 
