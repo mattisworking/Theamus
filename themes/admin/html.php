@@ -10,7 +10,7 @@
                 <ul>
                     <li><a href='accounts/user/edit-account/'>Edit Profile</a></li>
                     <li class='nav-split'></li>
-                    <li><a href='javascript:user_logout();'>Logout</a></li>
+                    <li><a href='#' onclick="return user_logout();">Logout</a></li>
                 </ul>
             </li>
         </ul>

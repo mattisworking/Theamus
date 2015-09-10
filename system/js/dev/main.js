@@ -264,7 +264,7 @@ function user_logout() {
         method:     ['Accounts', 'logout'],
         success:    function(d){window.location = d.response.data.url;}
     });
-
+    
     return false;
 }
 

@@ -4,6 +4,10 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Enhancement] - Added error codes to AJAX responses determined by Exception codes. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/206)",
+            "[Bug] - Turned asynchronization on for AJAX by default. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/207)",
+            "[Enhancement] - Updated card notifications to update instead of create new, along with changes to button styling [Notification GitHub Issue](https://github.com/helllomatt/Theamus/issues/205) [Styling GitHub Issue](https://github.com/helllomatt/Theamus/issues/208)",
+            "[Feature] - Added functionality to reset your account password. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/181)",
             "[Enhancement] - Added the link area location to the navigation list and formatted the text to stop wrapping, but now on hover show the complete URL. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/197)",
             "[Bug] - Fix to an issue where links weren't respecting their weight. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/196)",
             "[Bug] - Fixed an issue with the admin windows on page load being gigantic and silly. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/195)",
