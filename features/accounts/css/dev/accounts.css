@@ -66,3 +66,13 @@
 #remove-account-result {
     margin: 15px 0 20px;
 }
+
+#password_reset {
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.accounts_reset-from-file {
+    display: none;
+}
