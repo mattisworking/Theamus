@@ -32,7 +32,7 @@ Theamus.Style.Card.prototype = {
                     danger: "ion-close",
                     warning: "ion-alert",
                     info: "ion-information",
-                    spinner: "spinner spinner-fixed-size"
+                    spinner: ["spinner", "spinner-fixed-size"]
                 }
             }
         }
@@ -160,11 +160,16 @@ Theamus.Style.Card.prototype = {
 
     , addNotification: function(type, message) {
         if (!type || type === "" || !message || message === "") return;
-        this.notification.type = type;
-        this.notification.message = message;
-        this.notification.create();
-        
-        this.insertBefore(this.notification.object, this.header.nextSibling);
+        if (!this.notification.object) {
+            this.notification.type = type;
+            this.notification.message = message;
+            this.notification.create();
+            
+            this.insertBefore(this.notification.object, this.header.nextSibling);
+        } else {
+            this.removeNotification();
+            this.addNotification(type, message);
+        }
     }
     
     , createNotificationElement: function() {
@@ -179,12 +184,20 @@ Theamus.Style.Card.prototype = {
     , makeNotificationIcon: function() {
         var icon = document.createElement(this.icon.element);
         icon.classList.add(this.icon.class);
-        icon.classList.add(this.icon.type[this.type]);
+        if (typeof this.icon.type[this.type] === "string") {
+            icon.classList.add(this.icon.type[this.type]);
+        } else {
+            for (var i = 0; i < this.icon.type[this.type].length; i++) {
+                icon.classList.add(this.icon.type[this.type][i]);
+            }
+        }
         this.object.appendChild(icon);
     }
 
     , removeNotification: function() {
+        if (!this.notification.object) return;
         this.removeChild(this.notification.object);
+        this.notification.object = null;
     }
     
     , registerCollapsible: function(collapsible) {
