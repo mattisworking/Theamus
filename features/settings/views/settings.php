@@ -26,7 +26,7 @@
     <div id='email-container' class='col-12' style='display: none;'>
         <h3 class='form-header'>Email Configuration</h3>
         <div class='form-group'>
-            <label class='control-label' for='host'>Host</label>
+            <label class='control-label' for='host'>SMTP Host</label>
             <input type='text' class='form-control' name='host' id='host' autocomplete='off' value='<?php echo $Theamus->settings['email_host']; ?>'>
         </div>
 
@@ -53,7 +53,7 @@
 
         <div class='form-group'>
             <label class='control-label' for='password'>Password</label>
-            <input type='password' class='form-control' name='password' id='password' value='<?php echo $Theamus->decrypt_string($Theamus->settings['email_password']); ?>'>
+            <input type='password' class='form-control' name='password' id='password' value='<?php if ($Theamus->settings['email_password'] != "") echo $Theamus->decrypt_string($Theamus->settings['email_password']); ?>'>
         </div>
     </div>
 

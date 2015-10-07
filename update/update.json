@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Bug] - Empty email settings password is now truely empty, and you can now clear out email information. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/209)",
             "Documentation. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/199)",
             "[Enhancement] - Added error codes to AJAX responses determined by Exception codes. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/206)",
             "[Bug] - Turned asynchronization on for AJAX by default. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/207)",
