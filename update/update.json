@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "Documentation. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/199)",
             "[Enhancement] - Added error codes to AJAX responses determined by Exception codes. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/206)",
             "[Bug] - Turned asynchronization on for AJAX by default. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/207)",
             "[Enhancement] - Updated card notifications to update instead of create new, along with changes to button styling [Notification GitHub Issue](https://github.com/helllomatt/Theamus/issues/205) [Styling GitHub Issue](https://github.com/helllomatt/Theamus/issues/208)",
