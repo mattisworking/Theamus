@@ -285,23 +285,6 @@ class Settings {
 
         // Check for the email setup to be changed
         if ($args['config-email'] !== 'false') {
-            // Check for the email host
-            if (!isset($args['host']) || $args['host'] == '') throw new Exception('Invalid email host.');
-
-            // Check for an email protocol
-            if (!isset($args['protocol']) || $args['protocol'] == '') throw new Exception('Invalid email protocol.');
-
-            // Check for an email port
-            if (!isset($args['port']) || $args['port'] == '') throw new Exception('Invalid email port.');
-
-            // Check for an email username
-            if (!isset($args['email']) || $args['email'] == '' || !filter_var($args['email'], FILTER_VALIDATE_EMAIL)) {
-                throw new Exception('Invalid email login username.');
-            }
-
-            // Check for an email password
-            if (!isset($args['password']) || $args['password'] == '') throw new Exception('Invlaid email login password.');
-
             // Add this information to the query data
             $query_data['email_host'] = $args['host'];
             $query_data['email_protocol'] = $args['protocol'];
