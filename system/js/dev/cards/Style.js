@@ -14,14 +14,34 @@ Theamus.Style = {
         this.createCardObjects();
     }
     
+    , loadCard: function(el) {
+        if (!el) {
+            console.error("Failed to add a new card because no element object was given.");
+            return false;
+        }
+        
+        this.cards.raw.push(el);
+        this.giveCardsIDs();
+        this.createCardObjects();
+    }
+    
+    , toArray: function(nl) {
+        var ret = [];
+        for (var i = 0; i < nl.length; i++) {
+            ret.push(nl[i]);
+        }
+        return ret;
+    }
+    
     , findCards: function() {
         var cards = document.querySelectorAll(this.locale.cards.query);
         if (cards.length < 1) return;
-        this.cards.raw = cards;
+        this.cards.raw = this.toArray(cards);
     }
     
     , giveCardsIDs: function() {
         var i, card;
+        
         for (i = 0; i < this.cards.raw.length; i++) {
             card = this.cards.raw[i];
             if (!card.id) card.id = this.makeID();
@@ -42,7 +62,9 @@ Theamus.Style = {
         var i, card;
         for (i = 0; i < this.cards.good.length; i++) {
             card = this.cards.good[i];
-            this.cards.object[card.id] = new Theamus.Style.Card(card);
+            if (!this.cards.object[card.id]) {
+                this.cards.object[card.id] = new Theamus.Style.Card(card);
+            }
         }
     }
 
