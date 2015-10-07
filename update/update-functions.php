@@ -165,6 +165,38 @@ function update_130() {
  * @return boolean
  */
 function update_150($Theamus) {
-    if (!$Theamus->DB->custom_query("ALTER TABLE `{$Theamus->DB->system_table("settings")}` ADD `show_page_information` VARCHAR(500) NOT NULL after `favicon_path`")) return false;
-    if (!$Theamus->DB->custom_query("ALTER TABLE `{$Theamus->DB->system_table("pages")}` ADD (`title` VARCHAR(500) NOT NULL, `target` VARCHAR(50) NOT NULL) after `path`")) return false;
+    function update_150($Theamus) {
+    $no = array();
+    $columns = $Theamus->DB->fetch_rows(
+        $Theamus->DB->custom_query("SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE `TABLE_SCHEMA`=DATABASE()"));
+    
+    foreach ($columns as $column) {
+        if ($column['TABLE_NAME'] == $Theamus->DB->system_table("settings") && $column['COLUMN_NAME'] == "show_page_information") $no[] = "show_page_information";
+        if ($column['TABLE_NAME'] == $Theamus->DB->system_table("links") && $column['COLUMN_NAME'] == "title") $no[] = "title";
+        if ($column['TABLE_NAME'] == $Theamus->DB->system_table("links") && $column['COLUMN_NAME'] == "target") $no[] = "target";
+    }
+    
+    if (!in_array("show_page_information", $no)) {
+        if (!$Theamus->DB->custom_query("ALTER TABLE `{$Theamus->DB->system_table("settings")}` ADD `show_page_information` VARCHAR(500) NOT NULL after `favicon_path`")) {
+            $Theamus->Log->system($Theamus->DB->get_last_error());
+            return false;
+        }
+    }
+    
+    if (!in_array("title", $no)) {
+        if (!$Theamus->DB->custom_query("ALTER TABLE `{$Theamus->DB->system_table("links")}` ADD `title` VARCHAR(500) NOT NULL AFTER `path`")) {
+            $Theamus->Log->system($Theamus->DB->get_last_error());
+            return false;
+        }
+    }
+    
+    if (!in_array("target", $no)) {
+        if (!$Theamus->DB->custom_query("ALTER TABLE `{$Theamus->DB->system_table("links")}` ADD `target` VARCHAR(50) NOT NULL AFTER `path`")) {
+            $Theamus->Log->system($Theamus->DB->get_last_error());
+            return false;
+        }
+    }
+    
+    return true;
+}
 }
