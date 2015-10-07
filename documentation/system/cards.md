@@ -39,12 +39,15 @@ Theamus.Style.getCard("card-id").expansion.expand();
  - [Columns](#columns)
  - [Collapsibles](#collapsibles)
   - [Selectable Collapsibles](#selectable-collapsibles)
+  - [With Floats](#collapsibles-float)
 - [Inputs & Labels](#inputs)
  - [Labels](#labels)
  - [Input Types](#input-types)
  - [Attachments](#input-attachments)
  - [Helpers](#input-helpers)
 - [Buttons](#buttons)
+- [Pagination](#pagination)
+- [Corner Extensions](#corner-extensions)
 
 ---
 ## <a name="js">JavaScript Contents</a>
@@ -147,7 +150,7 @@ These can be cool, if you're in the mood to be cool.
 
 ```html
 <section type="card">
-    <header type="card_header">Card Header<header>
+    <header type="card_header">Card Header</header>
 
     <section type="card_collapsible">
         <header type="card_collapsible-header">Collapsible Header</header>
@@ -190,6 +193,28 @@ The purpose of doing something like this would be so you can have a list, that a
 
 This automatically generates a hidden checkbox and gives it the name and value that you defined in the collapsible element attributes. They will be sent with any form submissions, or any Theamus sent AJAX requests. You can access them via JavaScript and give them listeners (when checked/unchecked) as well as modify attributes of the checkbox element.
 __Note__: _Theamus won't register this as a selectable class if `data-selectname` is not defined. That's the only required attribute._
+
+#### <a title="Back to Top" href="#html" name="collapsibles-float">Collapsibles With Floats</a>
+```html
+<section type="card" class="card_collapsible-list">
+    <header type="card_header">Collapsible Listing</header>
+
+    <section type="card_collapsible">
+        <header type="card_collapsible-header">
+            Collapsible Header
+            <div class="flright">
+                <a href="#">Edit</a>
+            </div>
+        </header>
+        
+        <section type="card_collapsible-expansion">
+            // Extra content!
+        </section>
+    </section>
+</section>
+```
+
+Use `flright` to float:right and `flleft` to float:left.
 
 &nbsp;
 
@@ -304,6 +329,33 @@ __Note:__ _Having the button wrapper is completely optional._
 .flat-info
 .flat-warn
 .flat-danger
+```
+
+### <a title="Back to Top" href="#js" name="pagination">Pagination</a> 
+Pagination is important, when showing lists of things. This card will be formatted to show numbers. However, this is mostly just styling. You're in charge of creating the numbers and giving them purpose.
+```html 
+<section type="card" class="pagination">
+    <ul>
+        <li class="current"><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+    </ul>
+</section>
+```
+
+### <a title="Back to Top" href="#js" name="corner-extensions">Corner Extensions</a> 
+This will add an area for buttons or notifications to show up outside of the card, but still as a part of the card. Use class `left` to have it on the top left corner, or class `right` for it to be on the top right corner.
+```html 
+<section type="card">
+    <section type="card_corner-extension" class="right">
+        <button type="button" class="success">Submit</button>
+        <button type="button" class="danger">Cancel</button>
+    </section>
+    
+    <header type="card_header">Card Header</header>
+    
+    // Content!
+</section>
 ```
 
 ---

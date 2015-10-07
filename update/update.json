@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Enhancement] - More features for Cards, including Corner Extensions, Headerless, Floating Elements, and Pagination Cards! [GitHub Issue](https://github.com/helllomatt/Theamus/issues/216)",
             "[Enhancement] - You can now initialize cards on the fly. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/214)",
             "[Bug] - Update to the easy feature builder, since some of the backend has changed. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/213)",
             "[Bug] - Empty email settings password is now truely empty, and you can now clear out email information. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/209)",

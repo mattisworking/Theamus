@@ -117,9 +117,11 @@ Theamus.Style.Card.Collapsible.prototype = {
                 this.parentNode.functions.selected();
             }
         } else {
-            e.preventDefault();
-            if (this.expansion.classList.contains(this.expandedClass)) this.collapse();
-            else this.expand();
+            if (e.target === this) {
+                e.preventDefault();
+                if (this.expansion.classList.contains(this.expandedClass)) this.collapse();
+                else this.expand();
+            }
         }
     }
 

@@ -6,6 +6,7 @@ Theamus.Style.Card = function(card) {
     this.handleContentCards();
     this.giveIDs();
     this.createObjects();
+    this.checkCornerExtensions();
     this.defineCardFunctions();
 };
 
@@ -40,8 +41,17 @@ Theamus.Style.Card.prototype = {
     
     , defineHeader: function() {
         var header = this.card.querySelector(this.locale.headerQuery);
-        if (header === null) this.header = null;
-        else this.card.header = header;
+        if (header === null) {
+            this.header = null;
+            this.card.classList.add("no-header");
+        } else this.card.header = header;
+    }
+    
+    , checkCornerExtensions: function() {
+        var exts = this.card.querySelectorAll("section[type='card_corner-extension']");
+        if (exts.length > 0) {
+            this.card.style.marginTop = (exts[0].offsetHeight + 5) + "px";
+        }
     }
 
     , defineCardFunctions: function() {

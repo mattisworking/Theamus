@@ -34,7 +34,10 @@ Theamus.Style.Card.Expansion.prototype = {
     
     , getHeader: function() {
         var header = this.card.querySelector(this.locale.query.header);
-        if (!header) return false;
+        if (!header) {
+            this.card.classList.add("no-header-expansion");
+            this.header = false;
+        }
         this.header = header;
     }
     
@@ -44,7 +47,8 @@ Theamus.Style.Card.Expansion.prototype = {
         chevron.classList.add(this.locale.chevron.class);
         chevron.removeEventListener("click", function(){return;}, false);
         
-        this.header.appendChild(chevron);
+        if (this.header) this.header.appendChild(chevron);
+        else this.card.appendChild(chevron);
         this.chevron = chevron;
         
         this.addChevronListeners();
