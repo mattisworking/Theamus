@@ -59,6 +59,8 @@ CREATE TABLE IF NOT EXISTS `tm_links` (
   `alias` varchar(100) NOT NULL,
   `text` varchar(75) NOT NULL,
   `path` text NOT NULL,
+  `title` varchar(500) NOT NULL,
+  `target` varchar(50) NOT NULL,
   `weight` int(11) NOT NULL,
   `groups` text NOT NULL,
   `type` varchar(50) NOT NULL,
@@ -154,6 +156,7 @@ CREATE TABLE IF NOT EXISTS `tm_settings` (
   `version` varchar(50) NOT NULL,
   `logging` text NOT NULL,
   `favicon_path` varchar(2083) NOT NULL,
+  `show_page_information` varchar(500) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 

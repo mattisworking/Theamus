@@ -24,7 +24,7 @@ switch ($Theamus->Call->get_called_file()) {
         break;
 
     case "about-theamus.php":
-        if ($ajax != "include" || $location != "admin") $Theamus->go_back();
+        if ($ajax != "include") $Theamus->back_up();
         $feature['css']['file'][] = SETTINGS_DEV_MODE ? 'dev/about.css' : 'about.min.css';
         break;
         

@@ -1,9 +1,19 @@
-<?php $redirect = isset($_GET['redirect']) ? filter_input(INPUT_GET, 'redirect') : $Theamus->Call->base_url; ?>
+<?php
+
+$redirect = isset($_GET['redirect']) ? filter_input(INPUT_GET, 'redirect') : $Theamus->Call->base_url;
+$show_password_reset = false;
+if (count($Theamus->Call->parameters) > 0) {
+    if ($Theamus->Call->parameters[0] == "reset") $show_password_reset = true;
+}
+
+?>
 
 <div id='login-result'></div>
 
 <form class='form' id='login-form'>
     <input type='hidden' id='redirect_url' value='<?php echo $redirect; ?>' />
+    
+    <?php if ($show_password_reset) echo $Theamus->notify("info", "Your password has been reset."); ?>
 
     <div class='form-group'>
         <label class='control-label' for='username'>Username</label>

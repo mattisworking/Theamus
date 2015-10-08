@@ -8,7 +8,7 @@ if (end($folders) == "admin" && !$Theamus->User->is_admin()) die("You don't have
 $feature['class']['file'] = 'accounts.class.php';
 $feature['class']['init'] = 'Accounts';
 
-if (!defined("FILE")) define('FILE', "accounts/{$Theamus->Call->get_called_file()}"); // Define the current file
+if (!defined("FILE")) define('FILE', "accounts/".$Theamus->Call->get_called_file()); // Define the current file
 
 // Load the file related information
 switch ($Theamus->Call->get_called_file()) {
@@ -40,6 +40,15 @@ switch ($Theamus->Call->get_called_file()) {
         if ($Theamus->User->user) $Theamus->back_up();
         $feature['title']  = 'Activate Your Account';
         $feature['header'] = 'Activate Your Account';
+        break;
+        
+    case "password-reset.php":
+        if ($Theamus->User->user) $Theamus->back_up();
+        $feature['title'] = $feature['header'] = "Reset Your Password";
+        $feature['css']['file'][] = ACCOUNTS_DEV_MODE ? "dev/accounts.css" : "accounts.min.css";
+        $feature['js']['file'][] = ACCOUNTS_DEV_MODE ? "dev/accounts.js" : "accounts.min.js";
+        
+        $feature['theme'] = "password-reset";
         break;
 
 

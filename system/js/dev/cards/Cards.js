@@ -6,6 +6,7 @@ Theamus.Style.Card = function(card) {
     this.handleContentCards();
     this.giveIDs();
     this.createObjects();
+    this.checkCornerExtensions();
     this.defineCardFunctions();
 };
 
@@ -32,7 +33,7 @@ Theamus.Style.Card.prototype = {
                     danger: "ion-close",
                     warning: "ion-alert",
                     info: "ion-information",
-                    spinner: "spinner spinner-fixed-size"
+                    spinner: ["spinner", "spinner-fixed-size"]
                 }
             }
         }
@@ -40,11 +41,22 @@ Theamus.Style.Card.prototype = {
     
     , defineHeader: function() {
         var header = this.card.querySelector(this.locale.headerQuery);
-        if (header === null) this.header = null;
-        else this.card.header = header;
+        if (header === null) {
+            this.header = null;
+            this.card.classList.add("no-header");
+        } else this.card.header = header;
+    }
+    
+    , checkCornerExtensions: function() {
+        var exts = this.card.querySelectorAll("section[type='card_corner-extension']");
+        if (exts.length > 0) {
+            this.card.style.marginTop = (exts[0].offsetHeight + 5) + "px";
+        }
     }
 
     , defineCardFunctions: function() {
+        this.card.registerCollapsible = this.registerCollapsible;
+        this.card.deleteCollapsible = this.deleteCollapsible;
         this.card.getAllCollapsibles = this.getAllCollapsibles;
         this.card.getCollapsible = this.getCollapsible;
         this.card.isExpandable = this.isExpandable;
@@ -158,11 +170,16 @@ Theamus.Style.Card.prototype = {
 
     , addNotification: function(type, message) {
         if (!type || type === "" || !message || message === "") return;
-        this.notification.type = type;
-        this.notification.message = message;
-        this.notification.create();
-        
-        this.insertBefore(this.notification.object, this.header.nextSibling);
+        if (!this.notification.object) {
+            this.notification.type = type;
+            this.notification.message = message;
+            this.notification.create();
+            
+            this.insertBefore(this.notification.object, this.header.nextSibling);
+        } else {
+            this.removeNotification();
+            this.addNotification(type, message);
+        }
     }
     
     , createNotificationElement: function() {
@@ -177,11 +194,39 @@ Theamus.Style.Card.prototype = {
     , makeNotificationIcon: function() {
         var icon = document.createElement(this.icon.element);
         icon.classList.add(this.icon.class);
-        icon.classList.add(this.icon.type[this.type]);
+        if (typeof this.icon.type[this.type] === "string") {
+            icon.classList.add(this.icon.type[this.type]);
+        } else {
+            for (var i = 0; i < this.icon.type[this.type].length; i++) {
+                icon.classList.add(this.icon.type[this.type][i]);
+            }
+        }
         this.object.appendChild(icon);
     }
 
     , removeNotification: function() {
+        if (!this.notification.object) return;
         this.removeChild(this.notification.object);
+        this.notification.object = null;
+    }
+    
+    , registerCollapsible: function(collapsible) {
+        if (!collapsible) {
+            console.error("Failed to register collapsible object because it was undefined.");
+        }
+        
+        this.appendChild(collapsible);
+        if (!collapsible.id) collapsible.id = Theamus.Style.makeID();
+        this.collapsibles.object[collapsible.id] = new Theamus.Style.Card.Collapsible(collapsible);
+        return this.collapsibles.object[collapsible.id].collapsible;
+    }
+    
+    , deleteCollapsible: function(collapsible) {
+        if (!collapsible) {
+            console.error("Failed to delete collapsible object because it was undefined.");
+        }
+        
+        collapsible.parentNode.removeChild(collapsible);
+        delete this.collapsibles.object[collapsible.id];
     }
 };

@@ -9,46 +9,44 @@
 </div>
 
 <div class="st_new-row left-image">
-    <a href="features/settings/img/update.png" target="new">
-        <img src="features/settings/img/update.png">
+    <a href="features/settings/img/stats.png" target="new">
+        <img src="features/settings/img/stats.png">
     </a>
     <div class="st_new-text">
-        <h2>Updates in one click.</h2>
+        <h2>Information for you, my dear.</h2>
         <p>
-            Now Theamus updates in one click. You don't have to do anything else. Just click, wait a second, then boom! Latest and greatest right at your fingertips.
+            It's not much right now, but you can see the amount of database queries made and the time it took for a page to render on your website now.
         </p>
     </div>
 </div>
 
 <div class="st_new-row right-image">
-    <a href="features/settings/img/404.png" target="new">
-        <img src="features/settings/img/404.png">
+    <a href="features/settings/img/json.png" target="new">
+        <img src="features/settings/img/json.png">
     </a>
     <div class="st_new-text">
-        <h2>404 means error</h2>
+        <h2>Talk like a computer</h2>
         <p>
-            No more pretty 404 errors, now when something's wrong computers will know as well.
+            Every page can now be returned as if it were JSON. Strip out all of the HTML and just get the content and scripts when you request it.
         </p>
     </div>
 </div>
 
 <div class="st_new-row left-image">
-    <a href="features/settings/img/developer.png" target="new">
-        <img src="features/settings/img/developer.png">
+    <a href="features/settings/img/password.png" target="new">
+        <img src="features/settings/img/password.png">
     </a>
     <div class="st_new-text">
-        <h2>Developer thangs.</h2>
+        <h2>Password Reset!</h2>
         <p>
-            Firstly, there's <strong>custom index files for your features</strong>.
-            Yeah, and if that wasn't cool enough, you can <strong>imply them too</strong>.
-            Thank me later.
+            Oh boy, password resets for you and all of your users. How cool!
         </p>
     </div>
 </div>
 
 <div class="st_ext-libs-wrapper">
     <h2 class="st_ext-libs-header">External Libraries:</h2>
-    <ul>
+    <ul style="list-style-type:none;">
         <li>
             <a href="http://jquery.com/">jQuery</a>
         </li>
@@ -66,6 +64,9 @@
         </li>
         <li>
             <a href="http://www.chartjs.org/">Chart.js</a>
+        </li>
+        <li>
+            <a href="https://github.com/rgrove/jsmin-php">JSMin.php</a>
         </li>
     </ul>
 </div>

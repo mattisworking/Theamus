@@ -5,7 +5,7 @@ $query = $Theamus->DB->select_from_table(
     $Theamus->DB->system_table('pages'),
     array('groups', 'views', 'raw_content'),
     array('operator' => '',
-        'conditions' => array('alias' => $Theamus->Theme->get_page_variable('page_alias'))));
+        'conditions' => array('alias' => $Theamus->Call->get_page_alias())));
 
 // Check the query for errors
 if (!$query) {
@@ -26,4 +26,4 @@ $Theamus->DB->update_table_row(
     $Theamus->DB->system_table('pages'),
     array('views' => $views),
     array('operator' => '',
-        'conditions' => array('alias' => $Theamus->Theme->get_page_variable('page_alias'))));
+        'conditions' => array('alias' => $Theamus->Call->get_page_alias())));

@@ -283,3 +283,70 @@ function edit_contact() {
         return false;
     });
 }
+
+function send_password_reset() {
+    document.getElementById("send_password_reset-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        
+        var alerts = Theamus.Style.getCard("reset_code").querySelectorAll(".alert");
+        if (alerts.length > 0) {
+            for (var i = 0; i < alerts.length; i++) Theamus.Style.getCard("password_reset").removeNotification();
+        }
+        
+        Theamus.Ajax.api({
+            type: "get",
+            url: Theamus.base_url + "/accounts",
+            method: ["Accounts", "send_password_reset"],
+            data: {form: this},
+            success: function(r) {
+                console.log(r);
+                if (r.error.status === 1) {
+                    Theamus.Style.getCard("reset_code").addNotification("danger", r.error.message);
+                    return;
+                }
+                
+                Theamus.Style.getCard("reset_code").querySelector("button[type='submit']").setAttribute("disabled", true);
+                document.getElementById("send_password_reset-form").removeEventListener("submit", function(){;}, true);
+                document.getElementById("send_password_reset-form").addEventListener("submit", function(e){e.preventDefault();});
+                
+                Theamus.Style.getCard("reset_code").addNotification("success", r.response.data.message);
+                reset_password_listen(r.response.data.username, r.response.data.email, r.response.data.from_file);
+            }
+        });
+    });
+}
+
+function reset_password_listen(username, email, from_file) {
+    Theamus.Style.getCard("password_reset").style.visibility = "visible";
+    Theamus.Style.getCard("password_reset").style.height = "auto";
+    
+    if (from_file == 1) {
+        Theamus.Style.getCard("password_reset").querySelector(".accounts_reset-from-file").style.display = "block";
+        Theamus.Style.getCard("password_reset").querySelector("#accounts_reset-from-file-split").style.display = "block";
+    }
+    
+    Theamus.Style.getCard("password_reset").querySelector("form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        Theamus.Ajax.api({
+            type: "post",
+            url: Theamus.base_url + "/accounts",
+            method: ["Accounts", "reset_password"],
+            data: {
+                form: this,
+                custom: {
+                    username: username,
+                    email: email,
+                    from_file: from_file
+                }
+            },
+            success: function(r) {
+                if (r.error.status === 1) {
+                    Theamus.Style.getCard("password_reset").addNotification("danger", r.error.message);
+                    return;
+                }
+                
+                window.location = Theamus.base_url + "/accounts/login/reset/";
+            }
+        })
+    });
+}

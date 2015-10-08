@@ -26,7 +26,7 @@
     <div id='email-container' class='col-12' style='display: none;'>
         <h3 class='form-header'>Email Configuration</h3>
         <div class='form-group'>
-            <label class='control-label' for='host'>Host</label>
+            <label class='control-label' for='host'>SMTP Host</label>
             <input type='text' class='form-control' name='host' id='host' autocomplete='off' value='<?php echo $Theamus->settings['email_host']; ?>'>
         </div>
 
@@ -53,7 +53,7 @@
 
         <div class='form-group'>
             <label class='control-label' for='password'>Password</label>
-            <input type='password' class='form-control' name='password' id='password' value='<?php echo $Theamus->decrypt_string($Theamus->settings['email_password']); ?>'>
+            <input type='password' class='form-control' name='password' id='password' value='<?php if ($Theamus->settings['email_password'] != "") echo $Theamus->decrypt_string($Theamus->settings['email_password']); ?>'>
         </div>
     </div>
 
@@ -76,6 +76,19 @@
             <option value="general" <?php if (strpos($Theamus->settings['logging'], "general") !== false) echo "selected"; ?>>General</option>
             <option value="developer" <?php if (strpos($Theamus->settings['logging'], "developer") !== false) echo "selected"; ?>>Developer</option>
             <option value="query" <?php if (strpos($Theamus->settings['logging'], "query") !== false) echo "selected"; ?>>Query</option>
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label class="control-label"
+               for="settings_page-information">Show Page Information</label>
+        <select class="form-control"
+                if="settings_page-information"
+                name="page_information"
+                multiple="multiple"
+                size="2">
+            <option value="load_time" <?php if (strpos($Theamus->settings['show_page_information'], "load_time") !== false) echo "selected"; ?>>Page Load Time</option>
+            <option value="query_count" <?php if (strpos($Theamus->settings['show_page_information'], "query_count") !== false) echo "selected"; ?>>Query Count</option>
         </select>
     </div>
 

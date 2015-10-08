@@ -3,10 +3,10 @@
 /**
  * Call - Theamus content control class
  * PHP Version 5.5.3
- * Version 1.4.2
+ * Version 1.5.0
  * @package Theamus
- * @link http://www.theamus.com/
- * @author MMT
+ * @link http://github.com/helllomatt/Theamus
+ * @author MMT (helllomatt)
  */
 class Call {
     /**
@@ -40,7 +40,7 @@ class Call {
      *
      * @var string $page_alias
      */
-    private $page_alias;
+    protected $page_alias;
 
 
     /**
@@ -169,6 +169,14 @@ class Call {
      * @var boolean $shift_parameters
      */
     protected $shift_parameters = true;
+    
+    
+    /**
+     * Return the content as JSON instead of the theme?
+     * 
+     * @var boolean $return_json
+     */
+    protected $return_json = false;
 
 
     /**
@@ -223,6 +231,11 @@ class Call {
         $pre = array_intersect($root_array, $uri_array);
         
         for ($i = 0; $i < count($pre); $i++) array_shift($uri_array);
+        
+        if (in_array(":json", $uri_array)) {
+            $this->return_json = true;
+            unset($uri_array[array_search(":json", $uri_array)]);
+        }
         
         $root = array_merge($root_array, $uri_array);
         
@@ -497,11 +510,6 @@ class Call {
                     if (isset($get['api-from']) && $api_from == false) $api_from = $get['api-from'];
 
                     break;
-                case "instance":
-                    $ret['type'] = "instance";
-                    $ret['look_folder'] = "";
-                    $ret['do_call'] = "run_instance";
-                    break;
                 default: false;
             }
 
@@ -533,7 +541,13 @@ class Call {
             $temp = trim($params, "/");
             $ret = explode("/", $temp);
         }
-        return $ret;
+        
+        if (in_array(":json", $ret)) {
+            $this->return_json = true;
+            unset($ret[array_search(":json", $ret)]);
+        }
+        
+        return array_values($ret);
     }
 
 
@@ -561,9 +575,12 @@ class Call {
         $page = $this->Theamus->DB->fetch_rows($query);
 
         // Check if a user has permission to view the page or not
-        foreach (explode(',', $page['groups']) as $group) {
-            if (!$this->Theamus->User->user) $this->Theamus->User->send_to_login();
-            if (!$this->Theamus->User->in_group($group)) die($this->error_page());
+        $page_groups = explode(',', $page['groups']);
+        if (!in_array("everyone", $page_groups)) {
+            foreach ($page_groups as $group) {
+                if (!$this->Theamus->User->user) $this->Theamus->User->send_to_login();
+                if (!$this->Theamus->User->in_group($group)) die($this->error_page());
+            }
         }
 
         // Define the theme and theme file desired for the page
@@ -610,7 +627,6 @@ class Call {
         } elseif (array_key_exists(0, $params)) {
             $feature_folder = strtolower($params[0]);
             $feature_path = $this->Theamus->file_path(ROOT."/features/$feature_folder");
-
             if (is_dir($feature_path)) {
                 $feature = $feature_folder;
             } elseif ($this->determine_page()) {
@@ -878,6 +894,51 @@ class Call {
         }
         return false;
     }
+    
+    
+    /**
+     * Strips spaces from a block of HTML code. From a new line to the next different
+     * character, all of the spaces will be removed.
+     * 
+     * @param string $content
+     * @return string
+     */
+    private function strip_spaces($content = "") {
+        if ($content == "") return "";
+        return preg_replace("/(\r\n)[ ]*/", " ", $content);
+    }
+    
+    
+    /**
+     * Extracts the script from a block of HTML code to be loaded separately
+     * from the HTML.
+     * 
+     * @param string $content
+     * @return array $scripts
+     */
+    private function extract_scripts($content = "") {
+        if ($content == "") return array();
+        preg_match_all("/<script\b[^>]*>([\s\S]*?)<\/script>/", $content, $matches);
+        $scripts = array();
+        foreach ($matches[1] as $script) $scripts[] = JSMin::minify($script);
+        return $scripts;
+    }
+    
+    
+    /**
+     * Cleans the JSON return data. Strips slashes, and removes the script blocks
+     * from the HTML code
+     * 
+     * @param string $content
+     * @return string
+     */
+    private function clean_json($content = "") {
+        if ($content == "") return "";
+        $content = $this->strip_spaces($content);
+        preg_match_all("/<script\b[^>]*>([\s\S]*?)<\/script>/", $content, $matches);
+        foreach ($matches[0] as $script) $content = str_replace($script, "", $content);
+        return $content;
+    }
 
 
     /**
@@ -910,13 +971,30 @@ class Call {
         $this->load_class_legacy();
         $data = $this->define_theme_data($settings['name']);
 
-        if (!empty($this->parameters)) {
-            if ($this->parameters[0].".php" == $this->get_called_file(true)) array_shift($this->parameters);
-        }
+        if ($this->return_json) {
+            $json = array();
+            
+            $Theamus = $this->Theamus;
+            
+            ob_start();
+            include($data['file_path']);
+            $json['content'] = ob_get_contents();
+            ob_end_clean();
+            
+            $json['scripts'] = $this->extract_scripts($json['content']);
+            $json['content'] = $this->clean_json($json['content']);
+            
+            header('Content-Type: application/json');
+            exit(json_encode($json));
+        } else {
+            if (!empty($this->parameters)) {
+                if ($this->parameters[0].".php" == $this->get_called_file(true)) array_shift($this->parameters);
+            }
 
-        unset($settings);
-        $this->Theamus->Theme->load_theme($data);
-        return;
+            unset($settings);
+            $this->Theamus->Theme->load_theme($data);
+            return;
+        }
     }
 
 
@@ -1222,7 +1300,6 @@ class Call {
             "<script src='".($this->developer_mode() ? "system/js/dev/ajax.js" : "system/js/ajax.min.js")."'></script>",
             "<script src='".($this->developer_mode() ? "system/js/dev/main.js" : "system/js/main.min.js")."'></script>",
             "<script src='system/js/theamus.js'></script>",
-            "<script src='".($this->developer_mode() ? "system/js/dev/instance.js" : "system/js/instance.min.js")."'></script>",
             "<script src='system/external/prettify/prettify.js'></script>",
             $this->Theamus->User->user && $this->Theamus->User->is_admin() ?
                 ($this->developer_mode() ? "<script src='themes/admin/js/admin.js'></script>" : "<script src='themes/admin/js/admin.min.js'></script>") : "",
@@ -1576,6 +1653,9 @@ class Call {
      * Runs an API request from a front end somewhere
      */
     private function run_api() {
+        // JSON request? Let another function deal with that.
+        if ($this->return_json) $this->show_page();
+        
         // Define both of the inputs
         $post = filter_input_array(INPUT_POST);
         $get = filter_input_array(INPUT_GET);
@@ -1588,6 +1668,7 @@ class Call {
         // Define the return array, which will be shown as JSON and the error
         $return = array();
         $error = false;
+        $code = 0;
         $response = "";
         $function_variables = $this->define_api_variables($inp);
         if (array_key_exists("data", $function_variables)) $function_variables = $function_variables['data'];
@@ -1618,7 +1699,7 @@ class Call {
                     if (class_exists($inp['method_class']) && method_exists($inp['method_class'], $inp['method'])) {
                         $class = ${$inp['method_class']} = new $inp['method_class']($this->Theamus);
                         try { $response = call_user_func(array($class, $inp['method']), $function_variables); }
-                        catch (Exception $e) { $error = $e->getMessage(); }
+                        catch (Exception $e) { $error = $e->getMessage(); $code = $e->getCode(); }
                     } else {
                         $error = "The class or method requested doesn't exist or couldn't be found.";
                     }
@@ -1641,43 +1722,16 @@ class Call {
         $return['response']['status'] = 200;
         if ($error != false || $this->api_fail != false) {
             $return['error']['message'] = $this->api_fail == false ? $error : $this->api_fail;
+            $return['error']['code'] = $code;
         } else {
             $return['response']['data'] = $response;
             $return['error']['message'] = "";
         }
         $return['error']['status'] = $error != false || $this->api_fail != false ? 1 : 0;
+        $return['error']['code'] = $code;
         echo json_encode($return);
     }
 
-
-    /**
-     * Runs an instance object from a javascript request
-     *
-     * See: ROOT/system/instance.class.php
-     *
-     * @return int
-     */
-    private function run_instance() {
-        try {
-            $instance = new Instance($this->Theamus);
-            echo json_encode($instance->return_instance());
-        } catch (Exception $ex) {
-            $code = $ex->getCode() == 0 ? 1 : $ex->getCode();
-
-            echo json_encode(array(
-                    "error" => array(
-                        "message" => $ex->getMessage(),
-                        "status" => 1,
-                        "code" => $code
-                    ),
-                    "response" => array(
-                        "data" => array()
-                    )
-                ));
-        }
-
-        return 0;
-    }
 
 
     /**
@@ -1713,5 +1767,71 @@ class Call {
             }
         }
         return $request;
+    }
+    
+    
+    /**
+     * Shows a little icon on every HTML load that you can hover over and get
+     * load statistics
+     * 
+     * @return 
+     */
+    public function show_page_information() {
+        $setting = $this->Theamus->settings['show_page_information'];
+        
+        $call = $this->get_call_type();
+        
+        if ($setting == "" || ($call != false && $call != "include")) return;
+        
+        $setting_array = json_decode($setting, true);
+        
+        if ($setting_array == NULL || empty($setting_array)) return;
+        
+        $info = array();
+        if (in_array("load_time", $setting_array)) $info[] = $this->show_page_load_time();
+        if (in_array("query_count", $setting_array)) $info[] = $this->show_page_query_count();
+        
+        $position = "fixed";
+        if ($call == "include") $position = "absolute";
+        
+        echo "<style></style>";        
+        echo "<style>.theamus_page-information:hover .theamus_page-information-container{padding:5px 15px !important;width:auto !important;}</style>";
+        
+        echo "<div class='theamus_page-information' style='height:22px;position:{$position};bottom:10px;right:10px;font-size:8pt;font-family:sans-serif;margin-top:1px;'>";
+        echo "<svg version='1.1' style='margin-top: 6px' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='15px' height='10px' viewBox='0 0 10 10' xml:space='preserve'><rect x='1.5' y='5.984' fill='#414042' width='1' height='6'/><rect x='3.5' y='4' fill='#414042' width='1' height='8'/><rect x='5.5' y='2' fill='#414042' width='1' height='10'/></svg>";
+        
+        echo "<div class='theamus_page-information-container' style='float:left;margin-right:10px;box-shadow:0 0 5px #888;padding:0px;width:0px;overflow:hidden;white-space:nowrap;background:white;'>".implode(" | ", $info)."</div>";
+        
+        echo "</div>";
+    }
+    
+    
+    /**
+     * Gets the page's load time for the load stats
+     * 
+     * @return string
+     */
+    public function show_page_load_time() {
+        return "<strong>Page load time:</strong> ".round($this->Theamus->get_run_time(), 5)." seconds";
+    }
+    
+    
+    /**
+     * Gets the page's query count for the load stats
+     * 
+     * @return string
+     */
+    public function show_page_query_count() {
+        return "<strong>Queries ran:</strong> ".$this->Theamus->DB->get_query_count();
+    }
+    
+    
+    /**
+     * Returns the alias of a page 
+     * 
+     * @return string $this->page_alias
+     */
+    public function get_page_alias() {
+        return $this->page_alias;
     }
 }

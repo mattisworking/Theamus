@@ -3,11 +3,11 @@
 **/
 @font-face {
     font-family: 'Roboto';
-    src: url('fonts/roboto/roboto.eot');
-    src: url('fonts/roboto/roboto.eot?#iefix') format('embedded-opentype'),
-         url('fonts/roboto/roboto.woff') format('woff'),
-         url('fonts/roboto/roboto.ttf') format('truetype'),
-         url('fonts/roboto/roboto.svg#roboto') format('svg');
+    src: url('../../fonts/roboto/roboto.eot');
+    src: url('../../fonts/roboto/roboto.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/roboto/roboto.woff') format('woff'),
+         url('../../fonts/roboto/roboto.ttf') format('truetype'),
+         url('../../fonts/roboto/roboto.svg#roboto') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -44,11 +44,14 @@
 }
 .st_banner-wrapper .st_banner-version {
     color: #ccc;
-    font-family: "Roboto", sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-size: 3em;
     left: 225px;
     position: absolute;
     top: 50%;
+    transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
     -webkit-transform: translateY(-50%);
 }
 
@@ -64,7 +67,7 @@
     text-align: center;
 }
 .st_contributors-wrapper ul {
-    list-style: none;
+    list-style-type: none;
     margin: 25px 0 0 0;
 }
 .st_contributors-wrapper ul li {
@@ -107,6 +110,9 @@
     right: 0;
     text-overflow: ellipsis;
     top: 50%;
+    transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
     -webkit-transform: translateY(-50%);
     white-space: nowrap;
 }
@@ -141,6 +147,8 @@
     width: 90%;
 }
 .st_new-row img {
+    border: 0px;
+    outline: 0px;
     width: 40%;
 }
 .st_new-row .st_new-text {
@@ -180,7 +188,6 @@
     text-align: center;
 }
 .st_ext-libs-wrapper ul {
-    list-style: none;
     margin: 25px auto 0;
     padding: 0;
     text-align: center;

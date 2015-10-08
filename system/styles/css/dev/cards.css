@@ -2,6 +2,7 @@ section[type="card"] {
     background-color: #fff;
     box-shadow: 0 0 2px #666;
     padding-bottom: 10px;
+    position: relative;
 }
 section[type="card"]:before,
 section[type="card"]:after
@@ -41,6 +42,12 @@ section[type="card"]:not(:first-of-type) {
 section[type="card"].expansion-only {
     padding: 0;
 }
+section[type="card"].no-header {
+    padding: 10px 0;
+}
+section[type="card"].no-header-expansion {
+    padding-right: 50px;
+}
 section[type="card"].card_collapsible-list {
     padding-bottom: 0 !important;
 }
@@ -71,6 +78,20 @@ section[type="card"] section[type="card_collapsible"] header[type="card_collapsi
     position: relative;
     z-index: 2;
 }
+section[type="card"] section[type="card_collapsible"] header[type="card_collapsible-header"].selectable {
+    cursor: default;
+    transition: background-color .2s;
+    -moz-transition: background-color .2s;
+    -ms-transition: background-color .2s;
+    -webkit-transition: background-color .2s;
+}
+section[type="card"] section[type="card_collapsible"] header[type="card_collapsible-header"].selectable:hover {
+    background-color: #eee;
+}
+
+section[type="card"] section[type="card_collapsible"] header[type="card_collapsible-header"].selected {
+    background-color: #ddd;
+}
 section[type="card"] section[type="card_collapsible"].collapsible-expanded header[type="card_collapsible-header"] {
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
@@ -80,11 +101,19 @@ section[type="card"] section[type="card_collapsible"] div.collapsible-chevron {
     margin: 11px;
     transition: transform .1s ease-in;
 }
+section[type="card"] section[type="card_collapsible"] div.selectable-collapsible-chevron {
+    cursor: pointer;
+    position: relative;
+    z-index: 10;
+}
 section[type="card"] section[type="card_collapsible"] div.collapsible-chevron-flipped {
     transform: rotate(180deg);
 }
 section[type="card"] section[type="card_collapsible"] div.collapsible-chevron span.glyphicon {
     color: #888;
+}
+section[type="card"] section[type="card_collapsible"] input.card_collapsible-selectable {
+    visibility: hidden;
 }
 section[type="card"] section[type="card_collapsible"] section[type="card_collapsible-expansion"] {
     margin: 0;
@@ -169,7 +198,8 @@ section[type="card"] header[type="card_header"].grey { background-color: #9E9E9E
 section[type="card"] header[type="card_header"].blue-grey { background-color: #607D8B; }
 section[type="card"] header[type="card_header"].black { background-color: #000; }
 section[type="card"] header[type="card_header"].white { background-color: #fff; }
-section[type="card"] header[type="card_header"] div.card_expander {
+section[type="card"] header[type="card_header"] div.card_expander,
+section[type="card"].no-header-expansion div.card_expander {
     cursor: default;
     float: right;
     font-size: initial;
@@ -182,7 +212,18 @@ section[type="card"] header[type="card_header"] div.card_expander {
     -ms-user-select: none;
     -webkit-user-select: none;
 }
-section[type="card"] header[type="card_header"] div.chevron-flip {
+section[type="card"].no-header-expansion div.card_expander {
+    right: 23px;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+}
+section[type="card"] header[type="card_header"] div.chevron-flip,
+section[type="card"].no-header-expansion div.chevron-flip {
     margin-top: -1px;
     transform: rotate(180deg);
 }
@@ -829,7 +870,6 @@ section[type="card"] button[type="button"] {
     background-color: #FFF;
     border: none;
     border-radius: 2px;
-    box-shadow: 0 0 3px #888;
     color: #444;
     font-weight: bold;
     outline: none;
@@ -837,6 +877,11 @@ section[type="card"] button[type="button"] {
     text-align: center;
     text-transform: uppercase;
     transition: background-color .1s ease-in, box-shadow .1s ease-in;
+}
+section[type="card"] button[type="submit"]:disabled,
+section[type="card"] button[type="button"]:disabled {
+    background-color: #888 !important;
+    color: #666 !important;
 }
 section[type="card"] button[type="submit"]:hover,
 section[type="card"] button[type="button"]:hover {
@@ -1107,4 +1152,88 @@ section[type="card"] div.card_progress-wrapper div.card_progress-percentage {
 }
 section[type="card"] div.alert {
     margin: -10px 10px 10px;
+}
+section[type="card"] div.flright,
+section[type="card"] div.flleft {
+    position: relative;
+    z-index: 3;
+}
+section[type="card"] div.flright {
+    float: right;
+}
+section[type="card"] div.flleft {
+    float: left;
+}
+section[type="card"].pagination {
+    display: inline-block;
+    padding: 0;
+}
+section[type="card"].pagination ul {
+    cursor: default;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+section[type="card"].pagination ul li {
+    display: inline-block;
+}
+section[type="card"].pagination ul li a {
+    color: #333;
+    display: block;
+    padding: 8px 10px;
+    transition: background-color .2s ease-in-out;
+    -moz-transition: background-color .2s ease-in-out;
+    -ms-transition: background-color .2s ease-in-out;
+    -webkit-transition: background-color .2s ease-in-out;
+}
+section[type="card"].pagination ul li a:hover {
+    background-color: #ccc;
+    text-decoration: none;
+}
+section[type="card"].pagination ul li.current a {
+    background-color: #eee;
+}
+section[type="card"].pagination ul li.current a:hover {
+    background-color: #ccc;
+}
+section[type="card"] section[type="card_corner-extension"] {
+    position: absolute;
+    transform: translateY(-100%);
+    -moz-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+    -webkit-transform: translateY(-100%);
+}
+section[type="card"] section[type="card_corner-extension"] button {
+    border-radius: 0px;
+}
+section[type="card"] section[type="card_corner-extension"] button:first-child {
+    border-radius: 2px 0px 0px 0px;
+}
+section[type="card"] section[type="card_corner-extension"] button:last-child {
+    border-radius: 0px 2px 0px 0px;
+}
+section[type="card"] section[type="card_corner-extension"] button:only-child {
+    border-radius: 2px 2px 0px 0px;
+}
+section[type="card"] section[type="card_corner-extension"] button:not(:first-child) {
+    margin-left: -4px;
+}
+section[type="card"] section[type="card_corner-extension"].left {
+    left: -1px;
+}
+section[type="card"] section[type="card_corner-extension"].right {
+    right: -1px;
+}
+section[type="card"] section[type="card_corner-extension"] .alert {
+    border-bottom: 1px solid #ccc;
+    border-radius: 2px 2px 0 0;
+    border-right: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    box-shadow: none;
+    margin: 0;
+    padding: 15px;
+}
+section[type="card"] section[type="card_corner-extension"] button.default {
+    border: 1px solid #ccc;
+    padding: 7px 24px;
 }

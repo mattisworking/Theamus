@@ -16,15 +16,16 @@ $template = implode('', array(
     $Theamus->User->has_permission('edit_links') ? '<li><a href="#" name="edit-navigation-link" data-id="%id%"><span class="glyphicon ion-edit"></span></a></li>' : '',
     $Theamus->User->has_permission('remove_links') ? '<li><a href="#" name="remove-navigation-link" data-id="%id%"><span class="glyphicon ion-close"></span></a></li>' : '',
     '</ul>',
-    '<span class="link-text">%text%</span>',
-    '<span class="link-path">%path%</span>',
+    '<span class="link-text" title="%text%">%text%</span>',
+    '<span class="link-position" title="Theme Location: %location%">%location%</span>',
+    '<span class="link-path" title="%path%">%path%</span>',
     '</li>'
 ));
 
 // Query the database for links
 $query = $Theamus->DB->select_from_table(
         $Theamus->DB->system_table('links'),
-        array('id', 'text', 'path', 'groups'),
+        array('id', 'text', 'path', 'groups', 'location'),
         array('operator' => 'OR',
             'conditions' => array(
                 '[%]text' => $search.'%',

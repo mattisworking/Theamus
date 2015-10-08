@@ -393,6 +393,9 @@ class Navigation {
 
         // Check the link path
         if (!isset($args['path-type']) || $args['path-type'] == '') throw new Exception('Invalid link path.');
+        
+        if (!isset($args['title']) || $args['title'] == "") $args['title'] = $args['text'];
+        if (!isset($args['target']) || !in_array($args['target'], array("_self", "_blank"))) $args['target'] = "_self";
 
         // Check the theme position
         if (!isset($args['position']) || $args['position'] == '') throw new Exception('Invalid position.');
@@ -459,6 +462,8 @@ class Navigation {
                 array('alias'   => $args['alias'],
                     'text'      => $args['text'],
                     'path'      => $args['path'],
+                    'title'     => $args['title'],
+                    'target'    => $args['target'],
                     'weight'    => $args['weight'],
                     'groups'    => $args['groups'],
                     'type'      => $args['path-type'],
@@ -501,6 +506,8 @@ class Navigation {
                 array('alias'   => $args['alias'],
                     'text'      => $args['text'],
                     'path'      => $args['path'],
+                    'title'     => $args['title'],
+                    'target'    => $args['target'],
                     'weight'    => $args['weight'],
                     'groups'    => $args['groups'],
                     'type'      => $args['path-type'],

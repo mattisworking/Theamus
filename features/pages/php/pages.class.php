@@ -164,7 +164,12 @@ class Pages {
         if (!isset($args['navigation'])) throw new Exception('Failed to find page navigation.');
 
         // Define the page alias
-        $args['alias'] = strtolower(preg_replace("/[^A-Za-z0-9-]/", "", str_replace(' ', '-', $args['title'])));
+        if (!isset($args['alias'])) {
+            $args['alias'] = strtolower(preg_replace("/[^A-Za-z0-9-]/", "", str_replace(' ', '-', $args['title'])));
+        } else {
+            // just in case!
+            $args['alias'] = strtolower(preg_replace("/[^A-Za-z0-9-]/", "", str_replace(' ', '-', $args['alias'])));
+        }
 
         // Check the page title and alias length
         if (strlen($args['title']) > 200 || strlen($args['alias']) > 250) throw new Exception('Page title is too long.');

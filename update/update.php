@@ -18,7 +18,7 @@ if (class_exists('tData')) {
             if (!$update_function()) return false;
         }
 
-        update_version('1.4.2'); // Update the version
+        update_version('1.5.0'); // Update the version
 
         update_cleanup(); // Cleanup!
 
@@ -33,15 +33,15 @@ if (class_exists('tData')) {
      */
     function update($Theamus, $update_information) {
         // Define the update 'functions' to run
-        $updates = array();
+        $updates = array("150");
 
         // Run updates
         foreach ($updates as $update) {
             $update_function = 'update_'.$update;
-            if (!$update_function()) return false;
+            if (!$update_function($Theamus)) return false;
         }
 
-        update_version($update_information, $Theamus); // Update the version
+        update_version($update_information['version'], $Theamus); // Update the version
 
         update_cleanup($Theamus); // Cleanup!
 

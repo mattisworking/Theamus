@@ -3,10 +3,10 @@
 /**
  * Theamus
  * PHP Version 5.5.3
- * Version 1.4.2
+ * Version 1.5.0
  * @package Theamus
- * @link http://www.theamus.com/
- * @author MMT
+ * @link http://github.com/helllomatt/Theamus
+ * @author MMT (helllomatt)
  */
 class Theamus {
     /**
@@ -22,7 +22,7 @@ class Theamus {
     public $Parsedown;
     protected $timer;
 
-    public $version = '1.4.2';
+    public $version = '1.5.0';
 
 
     /**
@@ -73,8 +73,7 @@ class Theamus {
             'user.class.php',
             'theme.class.php',
             'files.class.php',
-            'pagination.class.php',
-            'instance.class.php'
+            'pagination.class.php'
         );
 
         // Loop through each of the system files
@@ -105,7 +104,8 @@ class Theamus {
         $external_files = array(
             'phpmailer/class.phpmailer.php',
             'parsedown/Parsedown.php',
-            'parsedown/ParsedownExtra.php'
+            'parsedown/ParsedownExtra.php',
+            'jsmin/jsmin.php'
         );
 
         // Loop through all of the external files
