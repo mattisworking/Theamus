@@ -165,7 +165,6 @@ function update_130() {
  * @return boolean
  */
 function update_150($Theamus) {
-    function update_150($Theamus) {
     $no = array();
     $columns = $Theamus->DB->fetch_rows(
         $Theamus->DB->custom_query("SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE `TABLE_SCHEMA`=DATABASE()"));
@@ -198,5 +197,4 @@ function update_150($Theamus) {
     }
     
     return true;
-}
 }
