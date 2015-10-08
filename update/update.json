@@ -1,5 +1,5 @@
 {
-    "version": "1.4.2",
+    "version": "1.5.0",
     "changes": {
         "database": [],
         "files": [],
@@ -37,7 +37,7 @@
         ]
     },
     "authors": [
-        ["MMT", "helllomatt", "mmt@itsfake.com"]
+        ["MMT", "helllomatt"]
     ],
     "run_update_script": true,
     "update_files": ["update-functions.php", "update.php"]
