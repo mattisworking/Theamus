@@ -3,10 +3,10 @@
 /**
  * Call - Theamus content control class
  * PHP Version 5.5.3
- * Version 1.4.2
+ * Version 1.5.0
  * @package Theamus
- * @link http://www.theamus.com/
- * @author MMT
+ * @link http://github.com/helllomatt/Theamus
+ * @author MMT (helllomatt)
  */
 class Call {
     /**
@@ -509,11 +509,6 @@ class Call {
                     if (isset($post['api-from'])) $api_from = $post['api-from'];
                     if (isset($get['api-from']) && $api_from == false) $api_from = $get['api-from'];
 
-                    break;
-                case "instance":
-                    $ret['type'] = "instance";
-                    $ret['look_folder'] = "";
-                    $ret['do_call'] = "run_instance";
                     break;
                 default: false;
             }
@@ -1305,7 +1300,6 @@ class Call {
             "<script src='".($this->developer_mode() ? "system/js/dev/ajax.js" : "system/js/ajax.min.js")."'></script>",
             "<script src='".($this->developer_mode() ? "system/js/dev/main.js" : "system/js/main.min.js")."'></script>",
             "<script src='system/js/theamus.js'></script>",
-            "<script src='".($this->developer_mode() ? "system/js/dev/instance.js" : "system/js/instance.min.js")."'></script>",
             "<script src='system/external/prettify/prettify.js'></script>",
             $this->Theamus->User->user && $this->Theamus->User->is_admin() ?
                 ($this->developer_mode() ? "<script src='themes/admin/js/admin.js'></script>" : "<script src='themes/admin/js/admin.min.js'></script>") : "",
@@ -1738,35 +1732,6 @@ class Call {
         echo json_encode($return);
     }
 
-
-    /**
-     * Runs an instance object from a javascript request
-     *
-     * See: ROOT/system/instance.class.php
-     *
-     * @return int
-     */
-    private function run_instance() {
-        try {
-            $instance = new Instance($this->Theamus);
-            echo json_encode($instance->return_instance());
-        } catch (Exception $ex) {
-            $code = $ex->getCode() == 0 ? 1 : $ex->getCode();
-
-            echo json_encode(array(
-                    "error" => array(
-                        "message" => $ex->getMessage(),
-                        "status" => 1,
-                        "code" => $code
-                    ),
-                    "response" => array(
-                        "data" => array()
-                    )
-                ));
-        }
-
-        return 0;
-    }
 
 
     /**
