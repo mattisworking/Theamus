@@ -24,6 +24,8 @@ function handle_single_file() {
     for (var i = 0; i < files.length; i++) {
         tempfiles.push(files[i]);
     }
+    
+    tempfiles.push(tempfile.files[0]);
 
     files = tempfiles;
     $(tempfile).replaceWith($(tempfile).clone(true));
