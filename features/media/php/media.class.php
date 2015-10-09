@@ -38,6 +38,35 @@ class Media {
         // Return the HTML tabs
         return $this->Theamus->Theme->generate_admin_tabs("media-tab", $tabs, $file);
     }
+    
+    
+    /**
+     * Throws a more specific error message for reasons as to why a file failed to upload. 
+     * 
+     * @param number $code - The error code from PHP 
+     * @param boolean $throw - A boolean on whether the function should throw the error for the frontend or return it for logging
+     * @throws Exception
+     **/
+    private function throw_specific_error($code, $throw = true) {
+        switch ($code) {
+            case 1:
+                if ($throw) {
+                    throw new Exception("File is too big to upload. (>".ini_get("upload_max_filesize").")", 9001);
+                } else return "Filesize is too big for uploading. Increase the 'upload_max_filesize' value in 'php.ini' to upload larger files.";
+            case 3:
+                if ($throw) {
+                    throw new Exception("Failed. Only partially uploaded.", 9003);
+                } else return "Only part of the file was uploaded.";
+            case 4:
+                if ($throw) {
+                    throw new Exception("No file was uploaded.", 9004);
+                } else return "PHP didn't recieve a file to upload.";
+            case 6:
+                if ($throw) {
+                    throw new Exception("Failed. Can't write to the upload folder.", 9006);
+                } else return "The write permissions on the media folder don't allow Theamus to upload files to it.";
+        }
+    }
 
 
     /**
@@ -76,8 +105,8 @@ class Media {
 
         // Try to move the file to the respective folder
         if (!move_uploaded_file($_FILES['upload_file']['tmp_name'], $this->Theamus->file_path($this->{$type.'s_folder'}.$alias))) {
-            $this->Theamus->Log->system('Failed to upload media to the media/'.$type.'s/ folder. Check file permissions.');
-            throw new Exception('Failed to upload to the media folder.');
+            $this->Theamus->Log->system("Failed to upload media to the media/{$type}s/ folder. ".$this->throw_specific_error($_FILES['upload_file']['error'], false));
+            $this->throw_specific_error($_FILES['upload_file']['error']);
         }
 
         // Upload the information to the database
