@@ -499,7 +499,6 @@ var ajax = new function() {
 
         // Run the AJAX to call the API
         if (this.api_fail === false) {
-            console.log(this.has_file);
             $.ajax({
                 async: this.iterating ? false : true,
                 type: api_vars.type,
