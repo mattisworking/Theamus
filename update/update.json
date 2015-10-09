@@ -4,7 +4,8 @@
         "database": [],
         "files": [],
         "bugs": [
-           "[Enhancement] - The media feature will now show more descriptive errors on why a file failed to upload. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/146)"
+            "[Bug] - Something strange with the upload media feature... vagueness... [GitHub Issue](https://github.com/helllomatt/Theamus/issues/147)",
+            "[Enhancement] - The media feature will now show more descriptive errors on why a file failed to upload. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/146)"
         ]
     },
     "authors": [
