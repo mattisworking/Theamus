@@ -198,3 +198,14 @@ function update_150($Theamus) {
     
     return true;
 }
+
+function update_160($Theamus) {
+    $Theamus->DB->insert_table_row(
+        $Theamus->DB->system_table("features"),
+        array("alias" => "sandbox",
+            "name" => "Sandbox",
+            "groups" => "administrators",
+            "permanent" => 1,
+            "enabled" => 1,
+            "prefix" => "tm_")); // Insert the sandbox feature into the database
+}
