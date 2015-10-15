@@ -22,7 +22,8 @@ INSERT IGNORE INTO `tm_features` (`id`, `alias`, `name`, `groups`, `permanent`, 
 (5, 'features', 'Features', 'administrators', 1, 1, 'tm_'),
 (6, 'pages', 'Pages', 'everyone', 1, 1, 'tm_'),
 (7, 'settings', 'Settings', 'administrators', 1, 1, 'tm_'),
-(8, 'media', 'Media', 'administrators', 1, 1, 'tm_');
+(8, 'media', 'Media', 'administrators', 1, 1, 'tm_'),
+(8, 'sandbox', 'Sandbox', 'administrators', 1, 1, 'tm_');
 
 --
 -- Dumping data for table `tm_groups`
