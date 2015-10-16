@@ -39,7 +39,7 @@ class Log {
         if (!$this->Theamus->DB->connection) return;
         $this->commit_logs();
     }
-
+    
 
     /**
      * Commit any logs that were gathered to the database table
@@ -74,45 +74,40 @@ class Log {
 
         return $new_path; // Return the path like it should be!
     }
-
+    
 
     /**
      * Gets the class name and function about where the log function was called from
      *
      * @return array $call_info
      */
-    protected function get_call_info() {
-        $backtrace = debug_backtrace(); // Define all of the information for this call
-
-        $call_info = array(); // Define the call information
-
-        // Loop through all of the backtrace information
-        foreach ($backtrace as $item) {
-             // Ignore info that doesn't have the necessary data
-            if (!isset($item['class']) || !isset($item['function']) || !isset($item['file']) || !isset($item['line'])) continue;
-
-            // Only if the class has a name, it's not an included file and it's not this LOG file
-            if ($item['class'] != '' && $item['function'] != 'include' && $item['file'] != __FILE__) {
-                // Add the call information to the return array
-                $call_info[] = array(
-                    'class'     => $item['class'],
-                    'function'  => $item['function'],
-                    'line'      => $item['line'],
-                    'file'      => $this->clean_file_path($item['file']));
-            }
-        }
-
-        /**
-         * This part is where things get tricky.
-         *
-         * The condition for the return is there to let the log know wether or
-         *  not the call came from the inside of a file that's being run from
-         *  Theme->content() or an actual class and function.
-         *
-         * Because of this, any logs that come from Theme won't be 100% accurate
-         *  at the cost of knowing where the log was called in a feature file
+    public function get_call_info() {
+        // Get the trace of the call
+        $e = new Exception();
+        $trace = $e->getTrace();
+        
+        // Array for the functions to ignore
+        $log_functions = array("general", "query", "developer", "system", "include");
+        
+        /* The way that the trace follows files back is strange. trace[0] will give the 
+         * file and line that called this function, but not the function itself. All of the 
+         * numbers greater than 0 will be the trace back from the file calling this function.
          */
-        return $call_info[1]['class'] == 'Theme' ? $call_info[0] : $call_info[1];
+        $file = $trace[0]['file'] == __FILE__ ? $trace[1]['file'] : $trace[0]['file'];
+        $line = $trace[0]['file'] == __FILE__ ? $trace[1]['line'] : $trace[0]['line'];
+
+        /* So, the class and functions are strange too. Because they aren't 0, or 1 in the trace 
+         * (which 0 = this->get_called_info() and 1 = the logging function) the actual class 
+         * and function name is stored in the 3rd call from this function. Weird, but consistent.
+         */
+        $class = !isset($trace[2]['class']) ? "" : $trace[2]['class'];
+        $function = in_array($trace[2]['function'], $log_functions) ? "" : $trace[2]['function'];
+        
+        // Return the information about the call stack 
+        return array('class'   => $class,
+                    'function' => $function,
+                    'line'     => $line,
+                    'file'     => $this->clean_file_path($file));
     }
 
 
