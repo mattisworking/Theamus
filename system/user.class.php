@@ -56,7 +56,7 @@ class User {
         // Set the hash cookie
         $cookie_hash = isset($_COOKIE['420hash']) ? $_COOKIE['420hash'] : false;
         if ($cookie_hash == false || $cookie_hash != $hash) {
-            setcookie("420hash", $hash, (time()+60*60*24), "/");
+            setcookie("420hash", $hash, (time()+60*60*24), $this->get_cookie_path());
         }
     }
 
@@ -354,10 +354,23 @@ class User {
         if ($user_id == 0 || $session_key == "" || $expire == 0) {
             return false;
         }
-
+        
         // Set the cookie for the user id and session id
-        setcookie("userid", $user_id, $expire, "/");
-        setcookie("session", $session_key, $expire, "/");
+        setcookie("userid", $user_id, $expire, $this->get_cookie_path());
+        setcookie("session", $session_key, $expire, $this->get_cookie_path());
+    }
+    
+    
+    /**
+     * Gets the folder path from the domain for the cookies to be set with
+     * 
+     * @returns string of base folder path
+     */
+    public function get_cookie_path() {
+        $http = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? "https" : "http";
+        $domain = "{$http}://{$_SERVER['HTTP_HOST']}";
+        
+        return str_replace($domain, "", $this->Theamus->base_url);
     }
 
 
