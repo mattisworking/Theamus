@@ -4,6 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
+            "[Bug] - Logging functions now accurately say where the log was called from. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/230)",
             "[Bug] - Multiple site login from the same domain. Cookies are now set to the path of the installation instead of the base domain. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/229)",
             "[Feature] - Introduced the Sandbox. A place for you to test out all of your API needs. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/224)",
             "[Bug] - Something strange with the upload media feature... vagueness... [GitHub Issue](https://github.com/helllomatt/Theamus/issues/147)",

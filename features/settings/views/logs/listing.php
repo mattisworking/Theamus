@@ -32,7 +32,10 @@ else:
         <span class="settings_logs-row-message"><?php echo $log['message']; ?></span>
         <div class="settings_logs-row-details-wrapper">
             <span class="settings_logs-row-details-classfunc">
-                <?php echo "{$log['class']}->{$log['function']}()"; ?>
+                <?php 
+                if ($log['class'] != "") echo $log['class']."->";
+                if ($log['function'] != "") echo $log['function']."()";
+                ?>
             </span> on line
             <span class="settings_logs-row-details-line">
                 <?php echo $log['line']; ?>
