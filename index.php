@@ -34,8 +34,10 @@ define("ROOT", dirname(__FILE__)); // Define the root of the system
 require 'system/Theamus.php';
 
 try {
-    $Theamus = new Theamus();
-    $Theamus->Call->handle_call(isset($_GET['params']) ? $_GET['params'] : "");
+    $cli = php_sapi_name() == "cli" ? true : false;
+    $Theamus = new Theamus($cli);
+    if ($cli) $Theamus->CLI->run($argv);
+    else $Theamus->Call->handle_call(isset($_GET['params']) ? $_GET['params'] : "");
 } catch (Exception $e) {
     echo '<h2 style="color: #555; font-family: sans-serif; font-weight: normal; margin: 0; padding: 0;">'.$e->getMessage().'</h2>';
 }

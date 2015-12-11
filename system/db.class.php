@@ -3,7 +3,7 @@
 /**
  * DB - Theamus database access class
  * PHP Version 5.5.3
- * Version 1.5.0
+ * Version 1.6.0
  * @package Theamus
  * @link http://github.com/helllomatt/Theamus
  * @author MMT (helllomatt)
@@ -646,8 +646,8 @@ class DB {
                 // If using PDO
                 } else {
                     // Loop through the values, defining them to be used in the statement
-                    foreach (array_keys($data['prepare_values']) as $key) {
-                        $set[] = "`".trim(trim($key, ":"), $data['random_number'])."` = ".$key;
+                    for ($i = 0; $i < count($data['columns']); $i++) {
+                        $set[] = $data['columns'][$i]." = ".$data['prepare_keys'][$i];
                     }
                 }
 
