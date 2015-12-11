@@ -27,7 +27,3 @@ I've been trying to document everything as much as I can. I have some stuff scat
 [Found a bug? Would like to see something added? Let me know!](https://github.com/helllomatt/Theamus/issues)
 
 If you would like to help, submit a repo! If you have any questions or anything else, tweet [@helllomatt](https://www.twitter.com/helllomatt)
-
-<sub><sub><sub><sub>
-Made, with love and frustration, somewhere around Chicago, on days I'm feeling up to it. (> ^_^ )>
-</sub></sub></sub></sub>

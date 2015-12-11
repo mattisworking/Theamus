@@ -18,6 +18,23 @@ CREATE TABLE IF NOT EXISTS `dflt_home-apps` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tm_crons`
+--
+
+CREATE TABLE IF NOT EXISTS `tm_crons` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `feature` varchar(250) NOT NULL,
+  `command` varchar(500) NOT NULL,
+  `arguments` text NOT NULL,
+  `recurrence` int(11) NOT NULL,
+  `last_run_time` datetime NOT NULL,
+  `active` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1  AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tm_features`
 --
 

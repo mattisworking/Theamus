@@ -76,6 +76,7 @@
             <option value="general" <?php if (strpos($Theamus->settings['logging'], "general") !== false) echo "selected"; ?>>General</option>
             <option value="developer" <?php if (strpos($Theamus->settings['logging'], "developer") !== false) echo "selected"; ?>>Developer</option>
             <option value="query" <?php if (strpos($Theamus->settings['logging'], "query") !== false) echo "selected"; ?>>Query</option>
+            <option value="cli" <?php if (strpos($Theamus->settings['logging'], "cli") !== false) echo "selected"; ?>>CLI</option>
         </select>
     </div>
     

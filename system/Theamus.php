@@ -3,7 +3,7 @@
 /**
  * Theamus
  * PHP Version 5.5.3
- * Version 1.5.0
+ * Version 1.6.0
  * @package Theamus
  * @link http://github.com/helllomatt/Theamus
  * @author MMT (helllomatt)
@@ -18,11 +18,15 @@ class Theamus {
     public $User;
     public $Theme;
     public $Files;
+    public $CLI;
     public $Pagination;
     public $Parsedown;
+    
+    public $using_cli = false;
+    
     protected $timer;
 
-    public $version = '1.5.0';
+    public $version = '1.6.0';
 
 
     /**
@@ -30,13 +34,15 @@ class Theamus {
      *
      * @return
      */
-    public function __construct() {
+    public function __construct($cli = false) {
         $this->start_timer();
+        
+        $this->using_cli = $cli; // Define, for the system, if this is a CLI call or not
 
         $this->load_system_classes(); // Load the system classes to be initialized
         $this->load_external_sources(); // Load the external system classes
 
-        $this->define_url(); // Define the base of the URL
+        if (!$cli) $this->define_url(); // Define the base of the URL
 
         $this->DB           = new DB($this);            // Database access and management class
 
@@ -49,6 +55,7 @@ class Theamus {
         $this->Call         = new Call($this);          // Page call handling class
         $this->Theme        = new Theme($this);         // Theme handling class
         $this->Files        = new Files($this);         // File manipulation/control class
+        $this->CLI          = new CLI($this);           // Command line interface class
         $this->Pagination   = new Pagination($this);    // Pagination made ez class
 
         $this->Parsedown    = new ParsedownExtra();     // Parsedown text class
@@ -73,6 +80,7 @@ class Theamus {
             'user.class.php',
             'theme.class.php',
             'files.class.php',
+            'cli.class.php',
             'pagination.class.php'
         );
 

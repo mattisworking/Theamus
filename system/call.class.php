@@ -3,7 +3,7 @@
 /**
  * Call - Theamus content control class
  * PHP Version 5.5.3
- * Version 1.5.0
+ * Version 1.6.0
  * @package Theamus
  * @link http://github.com/helllomatt/Theamus
  * @author MMT (helllomatt)
@@ -1777,6 +1777,10 @@ class Call {
      * @return 
      */
     public function show_page_information() {
+        if ($this->Theamus->using_cli) {
+            return;
+        }
+        
         $setting = $this->Theamus->settings['show_page_information'];
         
         $call = $this->get_call_type();
