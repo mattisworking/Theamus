@@ -207,5 +207,19 @@ function update_160($Theamus) {
             "groups" => "administrators",
             "permanent" => 1,
             "enabled" => 1,
-            "prefix" => "tm_")); // Insert the sandbox feature into the database
+            "db_prefix" => "tm_")); // Insert the sandbox feature into the database
+    
+    // Create the crons table
+    $Theamus->DB->custom_query("CREATE TABLE IF NOT EXISTS `{$Theamus->DB->system_table("crons")}` (".
+          "`id` int(11) NOT NULL AUTO_INCREMENT,".
+          "`feature` varchar(250) NOT NULL,".
+          "`command` varchar(500) NOT NULL,".
+          "`arguments` text NOT NULL,".
+          "`recurrence` int(11) NOT NULL,".
+          "`last_run_time` datetime NOT NULL,".
+          "`active` int(11) NOT NULL,".
+          "PRIMARY KEY (`id`)".
+        ") ENGINE=InnoDB  DEFAULT CHARSET=latin1  AUTO_INCREMENT=1 ;");
+
+    return true;
 }

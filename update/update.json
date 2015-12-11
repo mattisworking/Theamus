@@ -1,9 +1,12 @@
 {
-    "version": "1.5.0",
+    "version": "1.6.0",
     "changes": {
         "database": [],
         "files": [],
         "bugs": [
+            "[Bug] - Fixed an issue when updating table rows, you couldn't use functions in the SQL",
+            "[Feature] - Cron Jobs with Theamus! - https://github.com/helllomatt/Theamus/issues/215",
+            "[Feature] - Run Theamus through the Command Line!",
             "[Bug] - Logging functions now accurately say where the log was called from. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/230)",
             "[Bug] - Multiple site login from the same domain. Cookies are now set to the path of the installation instead of the base domain. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/229)",
             "[Feature] - Introduced the Sandbox. A place for you to test out all of your API needs. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/224)",

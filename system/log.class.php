@@ -3,7 +3,7 @@
 /**
  * Log - Theamus logging class
  * PHP Version 5.5.3
- * Version 1.5.0
+ * Version 1.6.0
  * @package Theamus
  * @link http://github.com/helllomatt/Theamus
  * @author MMT (helllomatt)
@@ -87,7 +87,7 @@ class Log {
         $trace = $e->getTrace();
         
         // Array for the functions to ignore
-        $log_functions = array("general", "query", "developer", "system", "include");
+        $log_functions = array("general", "cli", "query", "developer", "system", "include");
         
         /* The way that the trace follows files back is strange. trace[0] will give the 
          * file and line that called this function, but not the function itself. All of the 
@@ -125,7 +125,7 @@ class Log {
         if ($message == '') throw new Exception('"Message" is a required log variable and was found to be empty.');
 
         // Check for a valid type
-        $valid_types = array('general', 'developer', 'system', 'query');
+        $valid_types = array('general', 'developer', 'system', 'query', 'cli');
         if ($type == '' || !in_array($type, $valid_types)) throw new Exception('The log type is invalid.');
 
         // Define the query data that has the log record information
@@ -165,6 +165,24 @@ class Log {
         if (in_array('general', $this->logging_permission)) {
             // Try to add the log to the query data or handle the error
             try { $this->add_log_query_data($message, 'general', $this->get_call_info()); }
+            catch (Exception $e) { $this->handle_exception($e); }
+        }
+
+        return; // Return!
+    }
+    
+    
+    /**
+     * Adds a general log record to the database
+     *
+     * @param sting $message
+     * @return
+     */
+    public function cli($message) {
+        // Check if the site admins want to log general records
+        if (in_array('cli', $this->logging_permission)) {
+            // Try to add the log to the query data or handle the error
+            try { $this->add_log_query_data($message, 'cli', $this->get_call_info()); }
             catch (Exception $e) { $this->handle_exception($e); }
         }
 
