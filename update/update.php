@@ -18,7 +18,7 @@ if (class_exists('tData')) {
             if (!$update_function()) return false;
         }
 
-        update_version('1.6.0'); // Update the version
+        update_version('1.6.1'); // Update the version
 
         update_cleanup(); // Cleanup!
 

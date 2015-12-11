@@ -3,7 +3,6 @@
 /**
  * Theamus
  * PHP Version 5.5.3
- * Version 1.6.0
  * @package Theamus
  * @link http://github.com/helllomatt/Theamus
  * @author MMT (helllomatt)
@@ -26,7 +25,7 @@ class Theamus {
     
     protected $timer;
 
-    public $version = '1.6.0';
+    public $version = '1.6.1';
 
 
     /**

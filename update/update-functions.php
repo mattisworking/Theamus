@@ -200,14 +200,18 @@ function update_150($Theamus) {
 }
 
 function update_160($Theamus) {
-    $Theamus->DB->insert_table_row(
-        $Theamus->DB->system_table("features"),
-        array("alias" => "sandbox",
-            "name" => "Sandbox",
-            "groups" => "administrators",
-            "permanent" => 1,
-            "enabled" => 1,
-            "db_prefix" => "tm_")); // Insert the sandbox feature into the database
+    $features = $Theamus->DB->fetch_rows($Theamus->DB->select_from_table($Theamus->DB->system_table("features"), array("alias")));
+    
+    if (!in_array("sandbox", $features)) {
+        $Theamus->DB->insert_table_row(
+            $Theamus->DB->system_table("features"),
+            array("alias" => "sandbox",
+                "name" => "Sandbox",
+                "groups" => "administrators",
+                "permanent" => 1,
+                "enabled" => 1,
+                "db_prefix" => "tm_")); // Insert the sandbox feature into the database
+    }
     
     // Create the crons table
     $Theamus->DB->custom_query("CREATE TABLE IF NOT EXISTS `{$Theamus->DB->system_table("crons")}` (".
