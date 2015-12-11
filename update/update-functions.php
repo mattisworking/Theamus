@@ -200,7 +200,7 @@ function update_150($Theamus) {
 }
 
 function update_160($Theamus) {
-    $features = $Theamus->DB->fetch_rows($Theamus->DB->select_from_table($Theamus->DB->system_table("features"), array("alias")));
+    $features = $Theamus->DB->flatten_array($Theamus->DB->fetch_rows($Theamus->DB->select_from_table($Theamus->DB->system_table("features"), array("alias"))));
     
     if (!in_array("sandbox", $features)) {
         $Theamus->DB->insert_table_row(
