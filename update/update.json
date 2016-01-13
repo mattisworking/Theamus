@@ -4,7 +4,7 @@
         "database": [],
         "files": [],
         "bugs": [
-            
+            "[Bug] - Fixed the issue where you could not log out. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/241)"
         ]
     },
     "authors": [
