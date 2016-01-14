@@ -410,6 +410,7 @@ section[type="card"] div.card_input-wrapper p.input-help {
 section[type="card"] div.card_input-wrapper input[type="checkbox"],
 section[type="card"] div.card_input-wrapper input[type="radio"] {
     float: left;
+    margin-top: 2px;
 }
 section[type="card"] div.card_input-wrapper input[type="text"],
 section[type="card"] div.card_input-wrapper input[type="password"],

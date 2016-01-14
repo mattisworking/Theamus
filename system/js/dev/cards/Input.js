@@ -175,10 +175,10 @@ Theamus.Style.Card.Input.prototype = {
     , loadInteractiveLabel: function() {
         var label = document.createElement(this.locale.label.element);
         label.classList.add(this.locale.label.normal.defaultClass);
-        if (this.locale.label.direction === "left") label.classList.add(this.locale.label.normal.leftClass);
+        if (this.input.label.info.direction === "left") label.classList.add(this.locale.label.normal.leftClass);
         else label.classList.add(this.locale.label.normal.upClass);
         label.setAttribute("for", this.input.id);
-        label.innerHTML = this.locale.label.text;
+        label.innerHTML = this.input.label.info.text;
         this.input.parentNode.insertBefore(label, this.input);
     }
     
