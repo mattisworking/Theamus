@@ -49,9 +49,12 @@ Theamus.Style.Card.Progress.prototype = {
     }
 
     , createPercentage: function() {
-        var percentage = document.createElement(this.locale.percentage.elementType);
-        percentage.classList.add(this.locale.percentage.class);
-        this.progress.element.appendChild(percentage);
+        var percentage = this.progress.element.querySelector("."+this.locale.percentage.class);
+        if (!percentage) { 
+            percentage = document.createElement(this.locale.percentage.elementType);
+            percentage.classList.add(this.locale.percentage.class);
+            this.progress.element.appendChild(percentage);
+        }
         this.progress.percentage = percentage;
         this.updatePercentage(0);
     }

@@ -33,6 +33,14 @@ class CLI {
     
     
     /**
+     * Boolean to catch errors or not 
+     * 
+     * @var boolean $from_cron
+     */
+    private $from_cron = false;
+    
+    
+    /**
      * Hello, how are you command line?
      * 
      * @param object $t The Theamus object
@@ -79,7 +87,9 @@ class CLI {
      * 
      * @param string[] $argv Command line parameters passed to Theamus
      */
-    public function run($argv) {
+    public function run($argv, $from_cron = false) {
+        $this->from_cron = $from_cron;
+        
         // Check for any arguments
         if (count($argv) <= 1) $this->error_out("No command was given to run!");
         
@@ -160,13 +170,18 @@ class CLI {
         // If the command is a class method, run it and handle errors
         if ($command['type'] == "class") {
             $class = ${$command['info'][1]} = new $command['info'][1]($this->Theamus);
-            try { $response = call_user_func(array($class, $command['info'][2]), $args); }
-            catch (Exception $e) { $this->error_out($e->getMessage()); }
+            
+            if (!$this->from_cron) {
+                try { $response = call_user_func(array($class, $command['info'][2]), $args); }
+                catch (Exception $e) { $this->error_out($e->getMessage()); }
+            } else $response = call_user_func(array($class, $command['info'][2]), $args);
             
         // If the command is a function, run it and handle errors
         } elseif ($command['type'] == "function") {
-            try { $response = $command['info'][1]($this->Theamus, $args); }
-            catch (Exception $e) { $this->error_out($e->getMessage()); }
+            if (!$this->from_cron) {
+                try { $response = $command['info'][1]($this->Theamus, $args); }
+                catch (Exception $e) { $this->error_out($e->getMessage()); }
+            } else $response = $command['info'][1]($this->Theamus, $args);
         }
     }
     

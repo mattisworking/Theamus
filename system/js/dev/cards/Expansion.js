@@ -42,13 +42,18 @@ Theamus.Style.Card.Expansion.prototype = {
     }
     
     , createChevron: function() {
-        var chevron = document.createElement(this.locale.chevron.element);
-        chevron.innerHTML = this.locale.chevron.innerHTML;
-        chevron.classList.add(this.locale.chevron.class);
-        chevron.removeEventListener("click", function(){return;}, false);
+        var chevron = this.card.querySelector("."+this.locale.chevron.class);
         
-        if (this.header) this.header.appendChild(chevron);
-        else this.card.appendChild(chevron);
+        if (!chevron) {
+            chevron = document.createElement(this.locale.chevron.element);
+            chevron.innerHTML = this.locale.chevron.innerHTML;
+            chevron.classList.add(this.locale.chevron.class);
+            chevron.removeEventListener("click", function(){return;}, false);
+            
+            if (this.header) this.header.appendChild(chevron);
+            else this.card.appendChild(chevron);
+        }
+        
         this.chevron = chevron;
         
         this.addChevronListeners();

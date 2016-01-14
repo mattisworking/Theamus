@@ -216,8 +216,8 @@ class User {
                     )));
 
         session_destroy();
-        setcookie("session", null, -1, "/");
-        setcookie("userid", null, -1, "/");
+        setcookie("session", null, -1, $this->get_cookie_path());
+        setcookie("userid", null, -1, $this->get_cookie_path());
         return array("url" => $this->send_to_login(true));
     }
 

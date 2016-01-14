@@ -1,11 +1,26 @@
 Theamus.Style.Card.Input = function(input) {
     this.input = input;
-    this.input.label = {};
+    this.input.label = {element:{}, info:{}};
+    
+    
     this.defineInputVariables();
     if (this.checkInput() === false) return;
-    this.getInputAttachments();
-    this.getLabelInformation();
-    if (this.createLabel() === false) return;
+    if (input.labels.length === 0) {
+        this.getInputAttachments();
+        this.getLabelInformation(this.input.label);
+        if (this.createLabel() === false) return;
+    } else {
+        input.labels[0].info = {};
+        
+        this.getInputAttachments(true);
+        
+        this.input.label = input.labels[0];
+        this.input.label.info.startLeft = this.getLabelStartLeft();
+        
+        this.defineLabelDefaults();
+        this.getLabelInformation(input.labels[0]);
+        this.addLabelInformation(input.labels[0]);
+    }
     this.addInputEvents();
 };
 
@@ -89,32 +104,30 @@ Theamus.Style.Card.Input.prototype = {
     }
 
     , defineLabelDefaults: function() {
-        this.input.label.startLeft = 20;
-        this.input.label.isClean = false;
+        if (!this.input.label.info.startLeft) this.input.label.info.startLeft = 20;
+        this.input.label.info.isClean = false;
     }
     
-    , getLabelInformation: function() {
-        this.input.label.text = this.input.getAttribute(this.locale.data.labelText);
-        this.input.label.direction = this.input.getAttribute(this.locale.data.labelDirection);
-        this.input.label.action = this.input.getAttribute(this.locale.data.labelAction);
+    , getLabelInformation: function(label) {
+        label.info.text = this.input.getAttribute(this.locale.data.labelText);
+        label.info.direction = this.input.getAttribute(this.locale.data.labelDirection);
+        label.info.action = this.input.getAttribute(this.locale.data.labelAction);
         
-        this.cleanLabelInformation();
+        return this.cleanLabelInformation(label);
     }
     
-    , cleanLabelInformation: function() {
-        if (!this.input.label.text) this.input.label.text = this.locale.defaults.labelText;
-        if (!this.input.label.direction) this.input.label.direction = this.locale.defaults.labelDirection;
-        if (!this.input.label.action) this.input.label.action = this.locale.defaults.labelAction;
+    , cleanLabelInformation: function(label) {
+        if (!label.info.text) label.info.text = this.locale.defaults.labelText;
+        if (!label.info.direction) label.info.direction = this.locale.defaults.labelDirection;
+        if (!label.info.action) label.info.action = this.locale.defaults.labelAction;
         
-        this.input.removeAttribute(this.locale.data.labelText);
-        this.input.removeAttribute(this.locale.data.labelDirection);
-        this.input.removeAttribute(this.locale.data.labelAction);
+        return label;
     }
 
     , createLabel: function() {
-        if (this.input.label.text === "") return false;
+        if (this.locale.label.text === "") return false;
         if (this.input.classList.contains(this.locale.cleanClass)) {
-            this.input.label.isClean = true;
+            this.locale.label.isClean = true;
             this.loadPlaceholder();
         } else if (this.input.label.action === "none") {
             this.loadNormalLabel();
@@ -130,13 +143,13 @@ Theamus.Style.Card.Input.prototype = {
     }
 
     , loadPlaceholder: function() {
-        this.input.setAttribute("placeholder", this.input.label.text);
+        this.input.setAttribute("placeholder", this.locale.label.text);
     }
 
     , loadNormalLabel: function() {
         var label = document.createElement(this.locale.label.element);
-        label.innerHTML = this.input.label.text;
-        if (this.input.label.direction === "left") label.classList.add(this.locale.label.normal.leftClass);
+        label.innerHTML = this.input.label.info.text;
+        if (this.input.label.info.direction === "left") label.classList.add(this.locale.label.normal.leftClass);
         else label.classList.add(this.locale.label.normal.upClass);
         this.input.parentNode.insertBefore(label, this.input);
     }
@@ -144,29 +157,38 @@ Theamus.Style.Card.Input.prototype = {
     , loadTextLabel: function() {
         this.defineLabelDefaults();
         var label = document.createElement(this.locale.label.element);
-        label.innerHTML = this.input.label.text;
+        label.innerHTML = this.input.label.info.text;
         label.setAttribute("for", this.input.id);
         label.style.left = this.getLabelStartLeft() + "px";
         this.input.parentNode.insertBefore(label, this.input);
+        
+        label.info = this.input.label.info;
         this.addLabelInformation(label);
     }
 
     , loadInteractiveLabel: function() {
         var label = document.createElement(this.locale.label.element);
         label.classList.add(this.locale.label.normal.defaultClass);
-        if (this.input.label.direction === "left") label.classList.add(this.locale.label.normal.leftClass);
+        if (this.locale.label.direction === "left") label.classList.add(this.locale.label.normal.leftClass);
         else label.classList.add(this.locale.label.normal.upClass);
         label.setAttribute("for", this.input.id);
-        label.innerHTML = this.input.label.text;
+        label.innerHTML = this.locale.label.text;
         this.input.parentNode.insertBefore(label, this.input);
+    }
+    
+    , mergeObjects: function(a, b) {
+        var c = {}, attrname;
+        for (attrname in a) { c[attrname] = a[attrname]; }
+        for (attrname in b) { c[attrname] = b[attrname]; }
+        return c;
     }
 
     , addLabelInformation: function(label) {
         var width = this.getBoldedLabelWidth(label);
         this.input.label.element = label;
-        this.input.label.info = this.locale.label;
-        this.input.label.inputOffset = width + this.locale.label.padding;
-        this.input.label.labelOffset = (width * -1) - (this.locale.label.padding - 10);
+        this.input.label.element.info = this.mergeObjects(this.locale.label, label.info);
+        this.input.label.element.inputOffset = width + this.locale.label.padding;
+        this.input.label.element.labelOffset = (width * -1) - (this.locale.label.padding - 10);
     }
 
     , getBoldedLabelWidth: function(label) {
@@ -177,17 +199,22 @@ Theamus.Style.Card.Input.prototype = {
         return boldWidth;
     }
 
-    , getInputAttachments: function() {
+    , getInputAttachments: function(reinit) {
+        if (!reinit) reinit = false;
+        
         var i, child, before = true, attachments = {before: [], after: []},
-            children = this.input.parentNode.children;
+            children = this.input.parentNode.children, start = (reinit) ? 1 : 0;
+            
         for (i = 0; i < children.length; i++) {
             child = children[i];
+            if (child.tagName.toLowerCase() === this.locale.label.element) continue;
             if (this.locale.textInputs.indexOf(child.type) > -1) before = false;
             if (this.locale.textInputs.indexOf(child.type) === -1) {
                 if (before === true) attachments.before.push(child);
                 else attachments.after.push(child);
             }
         }
+        
         this.input.attachments = attachments;
     }
 
@@ -208,29 +235,29 @@ Theamus.Style.Card.Input.prototype = {
     }
 
     , eventFocusInput: function() {
-        if (this.label.isClean === true) return;
-        if (this.label.action === "disappear") this.label.element.style.display = "none";
-        else if (this.label.direction === "left") {
-            this.label.element.classList.add(this.label.info.slideLeftClass);
-            this.label.element.style.left = this.label.labelOffset + "px";
-            this.parentNode.setAttribute("style", "width: calc(100% - " + this.label.inputOffset + "px);");
-            this.parentNode.style.left = this.label.inputOffset + "px";
-        } else if (this.label.direction === "up") {
-            this.label.element.classList.add(this.label.info.slideUpClass);
-            this.parentNode.classList.add(this.label.info.slideUpClass);
+        if (this.label.element.info.isClean === true) return;
+        if (this.label.element.info.action === "disappear") this.label.element.style.display = "none";
+        else if (this.label.element.info.direction === "left") {
+            this.label.element.classList.add(this.label.element.info.slideLeftClass);
+            this.label.element.style.left = this.label.element.labelOffset + "px";
+            this.parentNode.setAttribute("style", "width: calc(100% - " + this.label.element.inputOffset + "px);");
+            this.parentNode.style.left = this.label.element.inputOffset + "px";
+        } else if (this.label.element.info.direction === "up") {
+            this.label.element.classList.add(this.label.element.info.slideUpClass);
+            this.parentNode.classList.add(this.label.element.info.slideUpClass);
         }
     }
 
     , eventBlurInput: function() {
-        if (this.label.isClean === true || this.value !== "") return;
-        if (this.label.action === "disappear") this.label.element.style.display = "block";
-        else if (this.label.direction === "left") {
-            this.label.element.classList.remove(this.label.info.slideLeftClass);
-            this.label.element.style.left = this.label.startLeft + "px";
+        if (this.label.element.info.isClean === true || this.value !== "") return;
+        if (this.label.element.info.action === "disappear") this.label.element.style.display = "block";
+        else if (this.label.element.info.direction === "left") {
+            this.label.element.classList.remove(this.label.element.info.slideLeftClass);
+            this.label.element.style.left = this.label.element.info.startLeft + "px";
             this.parentNode.removeAttribute("style");
-        } else if (this.label.direction === "up") {
-            this.label.element.classList.remove(this.label.info.slideUpClass);
-            this.parentNode.classList.remove(this.label.info.slideUpClass);
+        } else if (this.label.element.info.direction === "up") {
+            this.label.element.classList.remove(this.label.element.info.slideUpClass);
+            this.parentNode.classList.remove(this.label.element.info.slideUpClass);
         }
     }
 
