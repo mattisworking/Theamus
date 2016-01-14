@@ -10,36 +10,38 @@
 
 <div class="st_new-row left-image">
     <a href="features/settings/img/stats.png" target="new">
-        <img src="features/settings/img/stats.png">
+        <img src="features/settings/img/cli.png">
     </a>
     <div class="st_new-text">
-        <h2>Information for you, my dear.</h2>
+        <h2>CLI</h2>
         <p>
-            It's not much right now, but you can see the amount of database queries made and the time it took for a page to render on your website now.
+            The command line. Oh how sweet you can be.<br>
+            Run Theamus throught the command line!
         </p>
     </div>
 </div>
 
 <div class="st_new-row right-image">
     <a href="features/settings/img/json.png" target="new">
-        <img src="features/settings/img/json.png">
+        <img src="features/settings/img/cron.png">
     </a>
     <div class="st_new-text">
-        <h2>Talk like a computer</h2>
+        <h2>I'll have one Cron, please!</h2>
         <p>
-            Every page can now be returned as if it were JSON. Strip out all of the HTML and just get the content and scripts when you request it.
+            Use Theamus to register cron commands so your features can be working around the clock!
         </p>
     </div>
 </div>
 
 <div class="st_new-row left-image">
     <a href="features/settings/img/password.png" target="new">
-        <img src="features/settings/img/password.png">
+        <img src="features/settings/img/sandbox.png">
     </a>
     <div class="st_new-text">
-        <h2>Password Reset!</h2>
+        <h2>Sandbox</h2>
         <p>
-            Oh boy, password resets for you and all of your users. How cool!
+            Note: Sand not included.<br>
+            Use the sandbox to test your feature's API's! Head <a href="<?php echo $Theamus->base_url; ?>sandbox">over there</a> now! <span style="color: #888">Secondary Note: developer mode must be on.</span>
         </p>
     </div>
 </div>
