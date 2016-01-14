@@ -6,7 +6,8 @@
         "bugs": [
             "[Bug] - Fixed the issue where you could not log out. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/241)",
             "[Enhancement] - Added the ability to 'Reinitialize' cards, so that they can be more dynamic with content [GitHub Issue](https://github.com/helllomatt/Theamus/issues/233)",
-            "[Bug] - Fixed an isse where cards were initializing twice. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/233)"
+            "[Bug] - Fixed an issue where cards were initializing twice. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/233)",
+            "[Bug] - Fixed an issue where failed cron jobs weren't resetting their active status. [GitHub Issue](https://github.com/helllomatt/Theamus/issues/242)"
         ]
     },
     "authors": [

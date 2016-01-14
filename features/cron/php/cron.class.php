@@ -208,8 +208,11 @@ class Cron {
      
         // Set the job activity, run it, then update the run time information
         $this->update_last_run_time($job);
-        $this->Theamus->CLI->run($run_argv);
-        $this->set_job_activity($job, 0);
+        try { $this->Theamus->CLI->run($run_argv, true); }
+        catch (Exception $e) { 
+            $this->set_job_activity($job, 0);
+            $this->Theamus->Log->cli("Job failed to run: {$job['command']}. Error Message: ".$e->getMessage());
+        }
     }
     
     
@@ -226,10 +229,6 @@ class Cron {
             $lrt = strtotime($job['last_run_time']);
             $nrt = $lrt + ($job['recurrence'] * 60);
             $current_time = time(); // minus five for buffer
-            
-            $this->Theamus->CLI->out(date("d-m-Y g:i s", $lrt));
-            $this->Theamus->CLI->out(date("d-m-Y g:i s", $nrt));
-            $this->Theamus->CLI->out(date("d-m-Y g:i s", $current_time));
             
             // If the job can be run, run it.
             if (($current_time + 5) >= $nrt && $job['active'] == 0) {
