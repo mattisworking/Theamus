@@ -5,14 +5,15 @@ Theamus.Style.Card.Input = function(input) {
     
     this.defineInputVariables();
     if (this.checkInput() === false) return;
-    if (input.labels.length === 0) {
+    if (!input.labels || input.labels.length === 0) {
         this.getInputAttachments();
         this.getLabelInformation(this.input.label);
         if (this.createLabel() === false) return;
+        
     } else {
         input.labels[0].info = {};
         
-        this.getInputAttachments(true);
+        this.getInputAttachments(true); 
         
         this.input.label = input.labels[0];
         this.input.label.info.startLeft = this.getLabelStartLeft();
@@ -42,6 +43,7 @@ Theamus.Style.Card.Input.prototype = {
             offsetDefault: 20,
             offsetPadding: 25
         },
+        ignoreInputs: ["hidden"],
         textInputs: [
                 "text",
                 "password",
@@ -125,11 +127,11 @@ Theamus.Style.Card.Input.prototype = {
     }
 
     , createLabel: function() {
-        if (this.locale.label.text === "") return false;
+        if (this.locale.label.text === "" || this.locale.ignoreInputs.indexOf(this.input.type) > -1) return false;
         if (this.input.classList.contains(this.locale.cleanClass)) {
             this.locale.label.isClean = true;
             this.loadPlaceholder();
-        } else if (this.input.label.action === "none") {
+        } else if (this.input.label.info.action === "none") {
             this.loadNormalLabel();
         } else if (this.locale.textInputs.indexOf(this.input.type) > -1) {
             this.loadTextLabel();
@@ -147,11 +149,15 @@ Theamus.Style.Card.Input.prototype = {
     }
 
     , loadNormalLabel: function() {
+        if (this.input.parentNode.querySelector(this.locale.label.element)) return;
         var label = document.createElement(this.locale.label.element);
         label.innerHTML = this.input.label.info.text;
         if (this.input.label.info.direction === "left") label.classList.add(this.locale.label.normal.leftClass);
         else label.classList.add(this.locale.label.normal.upClass);
         this.input.parentNode.insertBefore(label, this.input);
+        
+        label.info = this.input.label.info;
+        this.addLabelInformation(label);
     }
 
     , loadTextLabel: function() {
@@ -202,15 +208,17 @@ Theamus.Style.Card.Input.prototype = {
     , getInputAttachments: function(reinit) {
         if (!reinit) reinit = false;
         
-        var i, child, before = true, attachments = {before: [], after: []},
+        var i, child, input = this.input, pos = 0, before = true, attachments = {before: [], after: []},
             children = this.input.parentNode.children, start = (reinit) ? 1 : 0;
+            
+        while ((input = input.previousSibling) !== null) pos++;
             
         for (i = 0; i < children.length; i++) {
             child = children[i];
-            if (child.tagName.toLowerCase() === this.locale.label.element) continue;
+            if (i === pos || child.tagName.toLowerCase() === this.locale.label.element || !child.classList.contains("input-attachment")) continue;
             if (this.locale.textInputs.indexOf(child.type) > -1) before = false;
             if (this.locale.textInputs.indexOf(child.type) === -1) {
-                if (before === true) attachments.before.push(child);
+                if (i < pos || before) attachments.before.push(child);
                 else attachments.after.push(child);
             }
         }
@@ -235,7 +243,7 @@ Theamus.Style.Card.Input.prototype = {
     }
 
     , eventFocusInput: function() {
-        if (this.label.element.info.isClean === true) return;
+        if (this.label.element.info.isClean === true || this.label.element.info.action === "none") return;
         if (this.label.element.info.action === "disappear") this.label.element.style.display = "none";
         else if (this.label.element.info.direction === "left") {
             this.label.element.classList.add(this.label.element.info.slideLeftClass);
@@ -249,7 +257,7 @@ Theamus.Style.Card.Input.prototype = {
     }
 
     , eventBlurInput: function() {
-        if (this.label.element.info.isClean === true || this.value !== "") return;
+        if (this.label.element.info.isClean === true || this.value !== "" || this.label.element.info.action === "none") return;
         if (this.label.element.info.action === "disappear") this.label.element.style.display = "block";
         else if (this.label.element.info.direction === "left") {
             this.label.element.classList.remove(this.label.element.info.slideLeftClass);
