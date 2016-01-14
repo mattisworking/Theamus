@@ -36,6 +36,7 @@ section[type="card"] div.card_text-wrapper:after,
 section[type="card"] div.card_text-expansion-wrapper:after {
     clear: both;
 }
+section[type="card"] > :only-child { padding: 0 10px !important; }
 section[type="card"]:not(:first-of-type) {
     margin-top: 15px;
 }
@@ -246,7 +247,8 @@ section[type="card"] section[type="card_expansion"].card_expanded {
     -webkit-transition: max-height 1s ease-in 0s, padding .1s ease-in 0s;
     visibility: visible;
 }
-section[type="card"] section[type="card_expansion"].card_expanded:only-of-type {
+section[type="card"] section[type="card_expansion"].card_expanded:only-of-type,
+section[type="card"] section[type="card_expansion"].card_expanded:not(:last-child) {
     border: 0;
     margin-top: -10px;
     padding-bottom: 10px;
@@ -374,6 +376,9 @@ section[type="card"] div.card_input-wrapper label.label-normal {
 }
 section[type="card"] div.card_input-wrapper:not(:first-child).out-up {
     margin-top: 30px;
+}
+section[type="card"] section[type="card_collapsible-expansion"] div.card_input-wrapper.out-up {
+    margin-top: 30px !important;
 }
 section[type="card"] div.card_input-wrapper label.out-up {
     left: 10px !important;

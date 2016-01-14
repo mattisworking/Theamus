@@ -115,6 +115,11 @@ Theamus.Style.Card.prototype = {
         var i, input;
         for (i = 0; i < this.card.inputs.raw.length; i++) {
             input = this.card.inputs.raw[i];
+            if (input.type === "checkbox") {
+                delete this.card.inputs.raw[i];
+                continue;
+            }
+            
             this.card.inputs.object[input.id] = new Theamus.Style.Card.Input(input);
         }
     }

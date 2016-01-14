@@ -45,7 +45,7 @@ Theamus.Style = {
         for (i = 0; i < this.cards.raw.length; i++) {
             card = this.cards.raw[i];
             if (!card.id) card.id = this.makeID();
-            this.cards.good.push(card);
+            if (this.cards.good.indexOf(card) === -1) this.cards.good.push(card);
         }
     }
     
@@ -66,6 +66,19 @@ Theamus.Style = {
                 this.cards.object[card.id] = new Theamus.Style.Card(card);
             }
         }
+    }
+    
+    , reinitializeCard: function(cardID) {
+        if (!this.destroyCard(cardID)) return false;
+        this.cards.object[cardID] = new Theamus.Style.Card(document.getElementById(cardID));
+        return 1;
+    }
+    
+    , destroyCard: function(cardID) {
+        card = this.getCard(cardID);
+        if (!card) return false;
+        delete this.cards.object[cardID];
+        return true;
     }
 
     , getAllCards: function() {

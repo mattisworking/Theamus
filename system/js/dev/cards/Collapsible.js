@@ -64,12 +64,16 @@ Theamus.Style.Card.Collapsible.prototype = {
     }
 
     , createChevron: function() {
-        var chevron = document.createElement(this.locale.chevron.elementType);
-        chevron.classList.add(this.locale.chevron.class);
-        if (this.collapsible.isSelectable) {
-            chevron.classList.add(this.locale.chevron.selectableClass);
+        var chevron = this.collapsible.querySelector("."+this.locale.chevron.class);
+        if (!chevron) {
+            chevron = document.createElement(this.locale.chevron.elementType);
+            chevron.classList.add(this.locale.chevron.class);
+            if (this.collapsible.isSelectable) {
+                chevron.classList.add(this.locale.chevron.selectableClass);
+            }
+            chevron.innerHTML = this.locale.chevron.innerHTML;
         }
-        chevron.innerHTML = this.locale.chevron.innerHTML;
+        
         this.collapsible.chevron = chevron;
         this.setHeaderListeners();
         this.addChevron();
@@ -152,30 +156,30 @@ Theamus.Style.Card.Collapsible.prototype = {
     , checkSelectable: function() {
         if (!this.collapsible.getAttribute(this.locale.selectable.elementData.name)) return;
         
-        var checkbox = document.createElement(this.locale.selectable.input.element);
-        checkbox.classList.add(this.locale.selectable.input.class);
-        checkbox.setAttribute("type", this.locale.selectable.input.type);
-        checkbox.setAttribute("name", this.collapsible.getAttribute(this.locale.selectable.elementData.name));
+        var checkbox = this.collapsible.header.querySelector("."+this.locale.selectable.input.class);
         
-        if (this.collapsible.getAttribute(this.locale.selectable.elementData.id)) {
-            checkbox.setAttribute("id", this.collapsible.getAttribute(this.locale.selectable.elementData.id));
+        if (!checkbox) {
+            checkbox = document.createElement(this.locale.selectable.input.element);
+            checkbox.classList.add(this.locale.selectable.input.class);
+            checkbox.setAttribute("type", this.locale.selectable.input.type);
+            checkbox.setAttribute("name", this.collapsible.getAttribute(this.locale.selectable.elementData.name));
+        
+            if (this.collapsible.getAttribute(this.locale.selectable.elementData.id)) {
+                checkbox.setAttribute("id", this.collapsible.getAttribute(this.locale.selectable.elementData.id));
+            }
+            
+            if (this.collapsible.getAttribute(this.locale.selectable.elementData.value)) {
+                checkbox.setAttribute("value", this.collapsible.getAttribute(this.locale.selectable.elementData.value));
+            } else {
+                checkbox.setAttribute("value", "");
+            }
         }
-        
-        if (this.collapsible.getAttribute(this.locale.selectable.elementData.value)) {
-            checkbox.setAttribute("value", this.collapsible.getAttribute(this.locale.selectable.elementData.value));
-        } else {
-            checkbox.setAttribute("value", "");
-        }
-        
+            
         checkbox.header = this.collapsible.header;
         
         this.collapsible.header.appendChild(checkbox);
         this.collapsible.isSelectable = true;
         this.collapsible.checkbox = checkbox;
-        
-        this.collapsible.removeAttribute(this.locale.selectable.elementData.id);
-        this.collapsible.removeAttribute(this.locale.selectable.elementData.name);
-        this.collapsible.removeAttribute(this.locale.selectable.elementData.value);
         
         this.collapsible.header.classList.add(this.locale.header.selectableClass);
     }
